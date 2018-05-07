@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.project.dao.PraiseMapper">
+  <resultMap id="BaseResultMap" type="com.company.project.model.Praise">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="praise_id" jdbcType="INTEGER" property="praiseId" />
+    <result column="praise_from" jdbcType="INTEGER" property="praiseFrom" />
+    <result column="praise_to" jdbcType="VARCHAR" property="praiseTo" />
+    <result column="content" jdbcType="INTEGER" property="content" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="last_update_by" jdbcType="VARCHAR" property="lastUpdateBy" />
+    <result column="last_update_date" jdbcType="TIMESTAMP" property="lastUpdateDate" />
+    <result column="enable_flag" jdbcType="INTEGER" property="enableFlag" />
+  </resultMap>
+  <select id="getPraiseCountInfo" resultType="com.company.project.dto.PraiseTitleDTO">
+	SELECT
+	  t.d14 + 1 AS issue,
+	  t.praiseCount
+	FROM
+	  (SELECT
+	    DATEDIFF(d.create_date, '2018-01-01') DIV 14 AS d14,
+	    COUNT(*) praiseCount
+	  FROM
+	    `praise` d
+	  GROUP BY d14) t
+  </select>
+  <select id="getPraiseList"  resultMap="BaseResultMap"> 
+	  SELECT
+	  CONCAT(
+	    u.`nick_name`,
+	    '(',
+	    u.`user_name`,
+	    ')'
+	  ) uniqueName,
+	  IFNULL(t1.give, 0) give,
+	  IFNULL(t2.gain, 0) gain,
+	  IFNULL(t2.praise_to, 0) praise_to,
+	  IFNULL(t1.praise_from, 0) praise_from
+	FROM
+	  users u
+	  LEFT JOIN
+	    (SELECT
+	      COUNT(1) give,
+	      p.`praise_from`
+	    FROM
+	      `praise` p
+	   <where> 
+	    <if test="praiseDateBegin != null and praiseDateBegin != ''">
+	        AND p.create_date &gt;= #{praiseDateBegin}
+	    </if> 
+	    <if test="praiseDateEnd != null and praiseDateEnd != ''">
+	        AND p.create_date &lt; #{praiseDateEnd}
+	    </if>
+	  </where>
+	  GROUP BY p.`praise_from`) t1
+	    ON t1.praise_from = u.`user_name`
+	  LEFT JOIN
+	    (SELECT
+	      COUNT(1) gain,
+	      p.`praise_to`
+	    FROM
+	      `praise` p
+	   <where> 
+	    <if test="praiseDateBegin != null and praiseDateBegin != ''">
+	        AND p.create_date &gt;= #{praiseDateBegin}
+	    </if> 
+	    <if test="praiseDateEnd != null and praiseDateEnd != ''">
+	        AND p.create_date &lt; #{praiseDateEnd}
+	    </if>
+	  </where>
+	    GROUP BY p.`praise_to`) t2
+	    ON t2.praise_to = u.`user_name`
+		
+	  <where> 
+	    <if test="userName != null and userName != ''">
+	        AND u.user_name = #{userName}
+	    </if> 
+	  </where> 
+	  ORDER BY t2.gain DESC
+  </select>
+  <select id="getPraiseDetail" resultType="com.company.project.dto.PraiseListDTO">
+	SELECT
+	  u.`id`,
+	  u.`user_name` AS userName,
+	  u.`nick_name` AS nickName,
+	  u.`portrait`,
+	  u.`signature`,
+	  u.`sex`,
+	  p.`content`,
+	  p.`create_date` createDate,
+	  p.`praise_id` praiseId
+	FROM
+	  users u
+	  JOIN `praise` p
+	    ON u.`user_name` = p.`praise_from`
+	<where> 
+	    <if test="praiseDateBegin != null and praiseDateBegin != ''">
+	        AND p.create_date &gt;= #{praiseDateBegin}
+	    </if> 
+	    <if test="praiseDateEnd != null and praiseDateEnd != ''">
+	        AND p.create_date &lt; #{praiseDateEnd}
+	    </if>
+	    <if test="praiseTo != null and praiseTo != ''">
+	        AND p.praise_to = #{praiseTo}
+	    </if>
+	  </where>
+  </select>
+</mapper>
