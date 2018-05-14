@@ -4,7 +4,6 @@ import com.company.project.core.BaseController;
 import com.company.project.core.Result;
 import com.company.project.core.ResultGenerator;
 import com.company.project.dto.PraiseListQueryDTO;
-import com.company.project.dto.PraiseTitleDTO;
 import com.company.project.model.Praise;
 import com.company.project.model.Users;
 import com.company.project.service.PraiseService;
@@ -72,8 +71,8 @@ public class PraiseController extends BaseController{
     
     @GetMapping("/title")
     public Result title() {
-    	List<PraiseTitleDTO> list = praiseService.getPraiseCountInfo();
-        return ResultGenerator.genSuccessResult(list);
+    	//List<PraiseCountDTO> list = praiseService.getPraiseCountInfo();
+        return ResultGenerator.genSuccessResult("");
     }
     
     @GetMapping("/list")

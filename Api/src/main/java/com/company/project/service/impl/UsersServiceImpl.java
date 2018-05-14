@@ -26,4 +26,9 @@ public class UsersServiceImpl extends AbstractService<Users> implements UsersSer
     public List<Users> getUsers(){
     	return usersMapper.getUsers();
     }
+    
+    @Override
+    public void update(Users users) {
+    	usersMapper.update(users);
+    }
 }

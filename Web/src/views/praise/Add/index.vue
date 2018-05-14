@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
-    <el-form ref="form" :model="form" :rules="formRules" label-width="80px">
+    <el-form ref="form" :model="form" label-width="80px">
       <el-form-item label="姓名">
-        <user-input ref="userInput" :data="form" :onFocusGetData="true"></user-input>
+        <user-input :data="form"></user-input>
       </el-form-item>
       <el-form-item label="内容">
         <el-input
@@ -29,33 +29,24 @@ export default {
       form: {
         userName: '',
         content: ''
-      },
-      formRules: {
-        content: [
-          { required: true, message: '请输入点赞内容', tirgger: 'blur' }
-        ]
       }
     }
   },
   methods: {
     onSubmit(formName) {
+      this.form.praiseTo = this.form.userName
+      if (!this.form.praiseTo && !this.form.content) {
+        this.$message.error('请输入必填项!')
+        return false
+      }
       this.logining = true
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          this.form.praiseTo = this.form.userName
-          this.$ajax.post(ApiUrl.praiseAddUrl, this.form).then(result => {
-            this.logining = false
-            this.$message.success('点赞成功!')
-            this.form.content = ''
-            this.form.userName = ''
-          }, result => {
-            this.logining = false
-            this.$message.success(result)
-          })
-        } else {
-          this.logining = false
-          this.$message.error('!')
-        }
+      this.$ajax.post(ApiUrl.praiseAddUrl, this.form).then(result => {
+        this.logining = false
+        this.$message.success('点赞成功!')
+        this.form.content = ''
+        this.form.userName = ''
+      }, result => {
+        this.logining = false
       })
     }
   }

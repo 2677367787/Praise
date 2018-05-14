@@ -6,58 +6,41 @@
             <div class="card-main">
                 <div class="card-img-border"  @mouseover="onMousemove()" @mouseout="onMouseout()">
                     <div class="card-img-padding">
-                        <img class="card-img" width="160" height="160" src="https://pic2.zhimg.com/f7458a3e9_xl.jpg">
+                        <img class="card-img" :src="imageUrl" width="160" height="160">
                     </div>
                     <el-upload
+                        style="display:block;"
+                        v-if="this.isOneself"
                         class="avatar-uploader"
                         action="http://localhost:8088/users/fileUpload"
+                        :headers="header"
                         name="file"
                         :show-file-list="false"
                         :on-success="handleAvatarSuccess"
                         :before-upload="beforeAvatarUpload">
-                        <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                        
-                            <div id="upload-avatar-div" class="Mask UserAvatarEditor-mask Mask-hidden" @click="uploadAvatar()">
-                                <div class="Mask-mask Mask-mask--black UserAvatarEditor-maskInner"></div>
-                                <div class="Mask-content">
-                                    <svg class="Zi Zi--Camera UserAvatarEditor-cameraIcon" fill="currentColor" viewBox="0 0 24 24" width="36" height="36">
-                                        <path d="M20.094 6S22 6 22 8v10.017S22 20 19 20H4.036S2 20 2 18V7.967S2 6 4 6h3s1-2 2-2h6c1 0 2 2 2 2h3.094zM12 16a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7zm0 1.5a5 5 0 1 0-.001-10.001A5 5 0 0 0 12 17.5zm7.5-8a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" fill-rule="evenodd"></path>
-                                    </svg>
-                                    <div class="UserAvatarEditor-maskInnerText">修改我的头像</div>
-                                </div>
+                        <div id="upload-avatar-div" class="Mask UserAvatarEditor-mask Mask-hidden">
+                            <div class="Mask-mask Mask-mask--black UserAvatarEditor-maskInner"></div>
+                            <div class="Mask-content">
+                                <svg class="Zi Zi--Camera UserAvatarEditor-cameraIcon" fill="currentColor" viewBox="0 0 24 24" width="36" height="36">
+                                    <path d="M20.094 6S22 6 22 8v10.017S22 20 19 20H4.036S2 20 2 18V7.967S2 6 4 6h3s1-2 2-2h6c1 0 2 2 2 2h3.094zM12 16a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7zm0 1.5a5 5 0 1 0-.001-10.001A5 5 0 0 0 12 17.5zm7.5-8a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" fill-rule="evenodd"></path>
+                                </svg>
+                                <div class="UserAvatarEditor-maskInnerText">修改我的头像</div>
                             </div>
-                        
+                        </div>
                     </el-upload>
                 </div>
                 <div class="card-content">
                     <h1 class="card-nickname">{{form.nickName}}</h1>
-                    <div><span>{{form.signature}}</span></div>
+                    <div>
+                        <span v-if="form.signature">{{form.signature}}</span>
+                        <span v-else>这个人很懒,什么都没有填写</span>
+                    </div>
                     <div class="box-user-avatat">
                         <svg-icon :icon-class="'boy'" v-if="form.sex===1" class="user-avatat"></svg-icon>
                         <svg-icon :icon-class="'girl'" v-else class="user-avatat"></svg-icon>
                     </div>
-                    <div class="card-tag">
-                        <el-tag
-                        :key="tag"
-                        v-for="tag in dynamicTags"
-                        size="medium"
-                        :disable-transitions="false"
-                        @close="handleClose(tag)">
-                        {{tag}}
-                        </el-tag>
-                        <el-input
-                        class="input-new-tag"
-                        v-if="inputVisible"
-                        v-model="inputValue"
-                        ref="saveTagInput"
-                        size="small"
-                        @keyup.enter.native="handleInputConfirm"
-                        @blur="handleInputConfirm"
-                        >
-                        </el-input>
-                        <el-button v-else class="button-new-tag" size="small" @click="showInput">+印象标签</el-button>
-                    </div>
-                    <div class="edit-button"><el-button type="primary" plain @click="dialogFormVisible = true">编辑个人资料</el-button></div> 
+                    <impress-tag ref="impressTag" :userName="username" v-if="!this.isOneself" @onSave="onSave"></impress-tag>
+                    <div class="edit-button"><el-button type="primary" v-if="this.isOneself" plain @click="dialogFormVisible = true">编辑个人资料</el-button></div>
                 </div>
             </div>
         </div>
@@ -98,11 +81,11 @@
             <div class="tag-content">2018年5月6日 14:16:17  你赞了王武</div>
         </div>
         <el-dialog title="编辑资料" :visible.sync="dialogFormVisible">
-            <el-form :model="form">
-                <el-form-item label="姓名" :label-width="formLabelWidth">
+            <el-form :model="form" :rules="formRules">
+                <el-form-item label="姓名" :label-width="formLabelWidth" prop="nickName">
                     <el-input v-model="form.nickName" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="工号" :label-width="formLabelWidth">
+                <el-form-item label="工号" :label-width="formLabelWidth" prop="userName"> 
                     <el-input v-model="form.userName" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="性别" :label-width="formLabelWidth">
@@ -123,22 +106,28 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+                <el-button type="primary" @click="saveUserInfo">确 定</el-button>
             </div>
         </el-dialog>
     </div>
 </template>
 <script>
 import { ApiUrl } from '@/api/apiUrl'
+import store from '@/store'
+import { getToken } from '@/utils/auth'
+import { mapGetters } from 'vuex'
+import impressTag from './views/impressTag'
+
 export default {
   name: 'home',
+  components: {
+    impressTag
+  },
   data() {
     return {
       dialogFormVisible: false,
-      dynamicTags: ['标签一', '标签二', '标签三'],
-      inputVisible: false,
-      inputValue: '',
       imageUrl: '',
+      isOneself: true,
       form: {
         nickName: '',
         userName: '',
@@ -154,47 +143,38 @@ export default {
         ]
       },
       formLabelWidth: '120px',
-      loading: false
+      loading: false,
+      username: ''
     }
   },
   methods: {
-    handleClose(tag) {
-      this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1)
-    },
-
-    showInput() {
-      this.inputVisible = true
-      this.$nextTick(_ => {
-        this.$refs.saveTagInput.$refs.input.focus()
-      })
-    },
-    handleInputConfirm() {
-      const inputValue = this.inputValue
-      if (inputValue) {
-        this.dynamicTags.push(inputValue)
-      }
-      this.inputVisible = false
-      this.inputValue = ''
-    },
     loadingData() {
       this.loading = true
-      this.$ajax.get(ApiUrl.getUsersInfoUrl).then(result => {
+      this.$ajax.get(ApiUrl.getUsersInfoUrl + this.username).then(result => {
         console.log(result.data)
         this.form = result.data
+        this.imageUrl = result.portrait
       })
       this.loading = false
     },
     onMousemove() {
       console.log('move')
       var div = document.getElementById('upload-avatar-div')
-      div.classList.remove('Mask-hidden')
+      if (div) div.classList.remove('Mask-hidden')
     },
     onMouseout() {
       var div = document.getElementById('upload-avatar-div')
-      div.classList.add('Mask-hidden')
+      if (div) div.classList.add('Mask-hidden')
     },
-    uploadAvatar() {
-
+    onSave(data) {
+      console.log(this.username)
+      if (!this.username) {
+        return
+      }
+      const param = { userName: this.username, tag: data }
+      this.$ajax.post(this.$apiUrl.impressTagAddUrl, param).then(result => {
+        this.$refs.impressTag.loadData()
+      })
     },
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)
@@ -205,15 +185,47 @@ export default {
 
       if (!isJPG) {
         this.$message.error('上传头像图片只能是 JPG 格式!')
+        return
       }
       if (!isLt2M) {
         this.$message.error('上传头像图片大小不能超过 2MB!')
+        return
       }
-      return isJPG && isLt2M
+    },
+    saveUserInfo() {
+      console.log(this.form)
+      this.$ajax.put(ApiUrl.saveUserInfoUrl, this.form).then(result => {
+        this.dialogFormVisible = false
+        this.$message.success(result.message)
+      })
+    }
+  },
+  created() {
+    console.log(this.$route.query.username + '---' + this.name)
+    if (this.$route.query.username && this.name !== this.$route.query.username) {
+      this.username = this.$route.query.username
+      this.isOneself = false
+    } else {
+      this.username = this.name
+      this.isOneself = true
     }
   },
   mounted() {
     this.loadingData()
+  },
+  computed: {
+    header() {
+      let token
+      if (store.getters.token) {
+        token = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
+      } else {
+        token = store.getters.token
+      }
+      return { 't-token': token }
+    },
+    ...mapGetters([
+      'name'
+    ])
   }
 }
 </script>
@@ -278,22 +290,6 @@ export default {
 h1 {
     padding: 0px;
     margin: 0px;
-}
-
-.el-tag + .el-tag {
-    margin-left: 10px;
-}
-.button-new-tag {
-    margin-left: 10px;
-    height: 32px;
-    line-height: 30px;
-    padding-top: 0;
-    padding-bottom: 0;
-}
-.input-new-tag {
-    width: 90px;
-    margin-left: 10px;
-    vertical-align: bottom;
 }
 
 .Card-Small {
@@ -412,14 +408,16 @@ h1 {
     margin-bottom: 14px;
     fill: #fff;
 }
-
+.avatar-uploader{
+    height: 0px;
+}
 .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    display: block;
+
 }
 .avatar-uploader .el-upload:hover {
     border-color: #409EFF;
@@ -427,13 +425,16 @@ h1 {
 .avatar-uploader-icon {
     color: #8c939d;
     width: 160px;
-    height: 160px;
+    height: 142px;
     text-align: center;
 }
 .avatar {
     width: 150px;
-    height: 150px;
+    height: 140px;
     display: block;
+}
+.el-upload {
+    display: block !important;
 }
 </style>
 

@@ -42,9 +42,9 @@ CREATE TABLE `impress_tag` (
   `tag` VARCHAR (50) NOT NULL COMMENT '印象标签',
   `count` INT(10) NOT NULL DEFAULT '0' COMMENT '赞同人数',
   `create_by` VARCHAR (30) NOT NULL COMMENT '创建人',
-  `create_date` DATETIME NOT NULL COMMENT '创建时间',
+  `create_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `last_update_by` VARCHAR(30) NOT NULL COMMENT '最后更新人',
-  `last_update_date` DATETIME NOT NULL COMMENT '最后更新时间',
+  `last_update_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后更新时间',
   `enable_flag` INT(1) DEFAULT '1' COMMENT '是否有效',
   PRIMARY KEY (`impress_id`)
 ) ENGINE=INNODB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='印象标签';
@@ -56,9 +56,9 @@ CREATE TABLE `impress_tag_detail` (
   `agreeBy` VARCHAR (30) NOT NULL COMMENT '赞同人',
   `count` INT(11) NOT NULL DEFAULT '0' COMMENT '次数',
   `create_by` VARCHAR (30) NOT NULL COMMENT '创建人',
-  `create_date` DATETIME NOT NULL COMMENT '创建时间',
+  `create_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `last_update_by` VARCHAR(30) NOT NULL COMMENT '最后更新人',
-  `last_update_date` DATETIME NOT NULL COMMENT '最后更新时间',
+  `last_update_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后更新时间',
   `enable_flag` INT(1) DEFAULT '1' COMMENT '是否有效',
   PRIMARY KEY (`impress_detail_id`)
 ) ENGINE=INNODB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='印象标签详细';
@@ -76,3 +76,20 @@ CREATE TABLE `praise` (
   `enable_flag` INT(1) DEFAULT '1' COMMENT '是否有效',
   PRIMARY KEY (`praise_id`)
 ) ENGINE=INNODB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='点赞表';
+
+DROP TABLE IF EXISTS `meeting`;
+CREATE TABLE `meeting` (
+  `meeting_id` INT(11) NOT NULL AUTO_INCREMENT  COMMENT '主键(自增长)',
+  `tally` INT(4) COMMENT '会议次数',
+  `start` DATE COMMENT '开始时间',
+  `end` DATE COMMENT '结束时间',
+  `theme` VARCHAR(200) COMMENT '内容',
+  `content` VARCHAR(2000) COMMENT '内容',
+  `is_send_emai` INT(1) DEFAULT '0' COMMENT '是否发送邮件',
+  `create_by` VARCHAR (30) NOT NULL COMMENT '创建人',
+  `create_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `last_update_by` VARCHAR(30) NOT NULL COMMENT '最后更新人',
+  `last_update_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后更新时间',
+  `enable_flag` INT(1) DEFAULT '1' COMMENT '是否有效',
+  PRIMARY KEY (`meeting_id`)
+) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='会议表';

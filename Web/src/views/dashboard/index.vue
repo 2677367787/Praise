@@ -1,8 +1,10 @@
 <template>
   <div class="app-container">
-    <div>{{new Date().getFullYear()}}年第{{MeetingNumber}}次双周例会</div>
-    <div>本周主题:{{MeetingTheme}}</div>
-    <div id="myChart" :style="{width:'500px',height:'500px'}"></div>
+    <div>{{new Date().getFullYear()}}年第{{meeting.tally}}次双周例会</div>
+    <p></p>
+    <div>本周主题:{{meeting.theme}}</div>
+    <p></p>
+    <div id="myChart" :style="{width:'700px',height:'300px'}"></div>
   </div>
 </template>
 <script>
@@ -10,45 +12,74 @@ export default {
   name: 'Chart',
   data() {
     return {
-      MeetingTheme: '',
-      MeetingNumber: ''
+      meeting: ''
     }
   },
   mounted() {
-    this.drawLine()
+    this.initChart()
   },
   methods: {
-    drawLine() {
-      console.log(1)
+    initChart() {
       const myChart = this.$echarts.init(document.getElementById('myChart'), 'light')
-      this.$ajax.get('praise/title').then(result => {
-        const { message, code, data } = result
-        if (code === 200) {
-          var chartTitle = new Array(5)
-          var chartData = new Array(5)
-          for (let index = 0; index < data.length; index++) {
-            chartTitle[index] = `第${data[index].issue}次例会`
-            chartData[index] = data[index].praiseCount
-            this.MeetingNumber = data[index].issue
-          }
-          myChart.setOption({
-            title: { text: '例会点赞趋势图' },
-            tooltip: {},
-            xAxis: {
-              data: chartTitle
+      this.$ajax.get(this.$apiUrl.getCharts).then(result => {
+        var chartData = result.data.reverse().map(m => { return m.praiseCount })
+        var chartTitle = result.data.map(m => { return m.issue })
+        myChart.setOption({
+          title: { text: '例会点赞趋势图' },
+          xAxis: {
+            data: chartTitle,
+            boundaryGap: false,
+            axisTick: {
+              show: false
+            }
+          },
+          grid: {
+            left: 10,
+            right: 10,
+            bottom: 20,
+            top: 30,
+            containLabel: true
+          },
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              type: 'cross'
             },
-            yAxis: {},
-            series: [
-              {
-                name: '点赞数量',
-                type: 'line',
-                data: chartData
-              }
-            ]
-          })
-        } else {
-          this.$message.error(message)
-        }
+            padding: [5, 10]
+          },
+          yAxis: {
+            axisTick: {
+              show: false
+            }
+          },
+          series: [
+            {
+              name: '点赞数量',
+              smooth: true,
+              type: 'line',
+              itemStyle: {
+                normal: {
+                  color: '#3888fa',
+                  lineStyle: {
+                    color: '#3888fa',
+                    width: 2
+                  },
+                  areaStyle: {
+                    color: '#f3f8ff'
+                  }
+                }
+              },
+              data: chartData,
+              animationDuration: 2800,
+              animationEasing: 'quadraticOut'
+            }
+          ]
+        })
+      })
+
+      this.$ajax.get(this.$apiUrl.getNewestMeeting).then(result => {
+        this.meeting = result.data
+        console.log(result.data)
       })
     }
   }

@@ -41,7 +41,6 @@ export default {
   },
   watch: {
     history(newValue, oldValue) {
-      console.log(`'新值:${newValue}旧值:${oldValue}`)
       if (newValue === '') {
         this.nickName = ''
       }
@@ -49,7 +48,6 @@ export default {
   },
   computed: {
     history() {
-      console.log(this.data.fieldName)
       return this.data[this.fieldName]
     }
   },
@@ -73,7 +71,6 @@ export default {
   },
   mounted() {
     this.childData = this.data
-    console.log(this.fieldName)
   }
 }
 </script>

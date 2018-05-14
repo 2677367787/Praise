@@ -76,19 +76,6 @@ export const constantRouterMap = [
       }
     ]
   },
-
-  {
-    path: '/form',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
-      }
-    ]
-  },
   {
     path: '/user/center',
     component: Layout,
@@ -110,12 +97,23 @@ export const constantRouterMap = [
       }
     ]
   },
-
+  {
+    path: '/about',
+    component: Layout,
+    children: [
+      {
+        path: 'about',
+        name: 'about',
+        component: () => import('@/views/about/about'),
+        meta: { title: '关于', icon: 'form' }
+      }
+    ]
+  },
   { path: '*', redirect: '/404', hidden: true }
 ]
 
 export default new Router({
-  mode: 'history', // 后端支持可开
+  mode: 'hash', // 后端支持可开
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRouterMap
 })

@@ -77,6 +77,11 @@ public class Praise {
     private String gain;
 
     /**
+     * 工号
+     */         
+    @Transient
+    private String username;
+    /**
      * 获取主键(自增长)
      *
      * @return praise_id - 主键(自增长)
@@ -260,5 +265,13 @@ public class Praise {
 
 	public void setGain(String gain) {
 		this.gain = gain;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 }

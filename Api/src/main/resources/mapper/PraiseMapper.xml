@@ -15,8 +15,8 @@
     <result column="last_update_date" jdbcType="TIMESTAMP" property="lastUpdateDate" />
     <result column="enable_flag" jdbcType="INTEGER" property="enableFlag" />
   </resultMap>
-  <select id="getPraiseCountInfo" resultType="com.company.project.dto.PraiseTitleDTO">
-	SELECT
+  <select id="getPraiseCountInfo" resultType="com.company.project.dto.PraiseCountDTO">
+	<!-- SELECT
 	  t.d14 + 1 AS issue,
 	  t.praiseCount
 	FROM
@@ -25,7 +25,16 @@
 	    COUNT(*) praiseCount
 	  FROM
 	    `praise` d
-	  GROUP BY d14) t
+	  GROUP BY d14) t -->
+	SELECT
+	  COUNT(1) as praiseCount
+	FROM
+	  `praise` p
+	WHERE p.`create_date` &gt;= #{praiseDateBegin}
+	  AND p.`create_date` &lt; DATE_ADD(
+	    STR_TO_DATE(#{praiseDateEnd}, '%Y-%m-%d %H'),
+	    INTERVAL 1 DAY
+	  )
   </select>
   <select id="getPraiseList"  resultMap="BaseResultMap"> 
 	  SELECT
@@ -38,7 +47,8 @@
 	  IFNULL(t1.give, 0) give,
 	  IFNULL(t2.gain, 0) gain,
 	  IFNULL(t2.praise_to, 0) praise_to,
-	  IFNULL(t1.praise_from, 0) praise_from
+	  IFNULL(t1.praise_from, 0) praise_from,
+	  u.user_name as username
 	FROM
 	  users u
 	  LEFT JOIN
@@ -52,7 +62,10 @@
 	        AND p.create_date &gt;= #{praiseDateBegin}
 	    </if> 
 	    <if test="praiseDateEnd != null and praiseDateEnd != ''">
-	        AND p.create_date &lt; #{praiseDateEnd}
+	        AND p.create_date &lt; DATE_ADD(
+			    STR_TO_DATE(#{praiseDateEnd}, '%Y-%m-%d %H'),
+			    INTERVAL 1 DAY
+			  )
 	    </if>
 	  </where>
 	  GROUP BY p.`praise_from`) t1
@@ -68,7 +81,10 @@
 	        AND p.create_date &gt;= #{praiseDateBegin}
 	    </if> 
 	    <if test="praiseDateEnd != null and praiseDateEnd != ''">
-	        AND p.create_date &lt; #{praiseDateEnd}
+	        AND p.create_date &lt; DATE_ADD(
+			    STR_TO_DATE(#{praiseDateEnd}, '%Y-%m-%d %H'),
+			    INTERVAL 1 DAY
+			  )
 	    </if>
 	  </where>
 	    GROUP BY p.`praise_to`) t2

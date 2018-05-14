@@ -13,7 +13,7 @@
                 end-placeholder="结束日期"
                 :picker-options="pickerOptions">
             </el-date-picker>
-            <user-input ref="userInput" :data="form" :fieldName="'userNo'"></user-input>
+            <user-input ref="userInput" :data="form" :fieldName="'userName'"></user-input>
             <el-button type="primary" @click="query">Query</el-button>
             <el-button type="primary" @click="onClear">Clear</el-button>
         </el-form-item>
@@ -22,7 +22,10 @@
       <el-table  :data="list" v-loading.body="listLoading" element-loading-text="数据加载中..." border fit highlight-current-row>
           <el-table-column prop="date" label="#" type="index" width="60" align="center">
           </el-table-column>
-          <el-table-column prop="uniqueName" label="姓名">
+          <el-table-column label="姓名">
+              <template slot-scope="scope" >
+                  <router-link :to="{name:'home',query:{username:scope.row.username}}">{{scope.row.uniqueName}}</router-link>
+              </template> 
           </el-table-column>
           <el-table-column label="收到的赞">
               <template slot-scope="scope" >
@@ -109,16 +112,6 @@ export default {
       }
     }
   },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'gray',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    }
-  },
   created() {
     const end = new Date()
     const start = new Date()
@@ -130,9 +123,8 @@ export default {
     getParam() {
       const param = {}
       if (this.form.praiseDate && this.form.praiseDate.length > 0) {
-        console.log(this.form.praiseDate[1])
         param.praiseDateBegin = this.$moment(this.form.praiseDate[0]).format('YYYY-MM-DD')
-        param.praiseDateEnd = this.$moment(this.form.praiseDate[1]).add(1, 'days').format('YYYY-MM-DD')
+        param.praiseDateEnd = this.$moment(this.form.praiseDate[1]).format('YYYY-MM-DD')
       } else {
         param.praiseDateBegin = ''
         param.praiseDateEnd = ''
@@ -172,6 +164,9 @@ export default {
 }
 </script>
 <style rel="stylesheet/scss"  scoped>
+  a {
+    color: #66b1ff;
+  }
   .query-region{
     padding: 15px 0px;
     background: #EFF0F2;

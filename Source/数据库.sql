@@ -1,0 +1,187 @@
+/*
+SQLyog Ultimate v12.5.0 (64 bit)
+MySQL - 5.6.17 : Database - praisesystem
+*********************************************************************
+*/
+
+/*!40101 SET NAMES utf8 */;
+
+/*!40101 SET SQL_MODE=''*/;
+
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/`praisesystem` /*!40100 DEFAULT CHARACTER SET utf8 */;
+
+USE `praisesystem`;
+
+/*Table structure for table `impress_tag` */
+
+DROP TABLE IF EXISTS `impress_tag`;
+
+CREATE TABLE `impress_tag` (
+  `impress_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键(自增长)',
+  `user_name` varchar(30) NOT NULL COMMENT '用户名编号',
+  `tag` varchar(50) NOT NULL COMMENT '印象标签',
+  `count` int(10) NOT NULL DEFAULT '0' COMMENT '赞同人数',
+  `create_by` varchar(30) NOT NULL COMMENT '创建人',
+  `create_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `last_update_by` varchar(30) NOT NULL COMMENT '最后更新人',
+  `last_update_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后更新时间',
+  `enable_flag` int(1) DEFAULT '1' COMMENT '是否有效',
+  PRIMARY KEY (`impress_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8 COMMENT='印象标签';
+
+/*Data for the table `impress_tag` */
+
+insert  into `impress_tag`(`impress_id`,`user_name`,`tag`,`count`,`create_by`,`create_date`,`last_update_by`,`last_update_date`,`enable_flag`) values 
+(1,'233','765758',0,'6396000749','2018-05-13 19:01:16','6396000749','2018-05-13 19:01:16',1),
+(2,'6396000748','124124',0,'6396000749','2018-05-13 19:04:09','6396000749','2018-05-13 19:04:09',1),
+(3,'6396000748','546',0,'6396000749','2018-05-13 19:04:35','6396000749','2018-05-13 19:04:35',1),
+(4,'6396000748','124124',0,'6396000749','2018-05-13 19:05:17','6396000749','2018-05-13 19:05:17',1),
+(5,'6396000748','23333',0,'6396000749','2018-05-13 19:05:32','6396000749','2018-05-13 19:05:32',1),
+(6,'6396000748','1111111',0,'6396000749','2018-05-13 19:05:40','6396000749','2018-05-13 19:05:40',1),
+(7,'6396000748','42421',0,'6396000749','2018-05-13 19:05:53','6396000749','2018-05-13 19:05:53',1),
+(8,'6396000748','1233',0,'6396000749','2018-05-13 19:06:44','6396000749','2018-05-13 19:06:44',1),
+(9,'6396000748','555',0,'6396000749','2018-05-13 19:06:45','6396000749','2018-05-13 19:06:45',1),
+(16,'6396000748','12421',0,'6396000749','2018-05-13 20:17:48','6396000749','2018-05-13 20:17:48',1),
+(17,'6396000748','33333',0,'6396000749','2018-05-13 20:18:40','6396000749','2018-05-13 20:18:40',1),
+(18,'6396000748','111',0,'6396000749','2018-05-13 20:25:31','6396000749','2018-05-13 20:25:31',1),
+(19,'6396000748','2333',0,'6396000749','2018-05-13 20:25:35','6396000749','2018-05-13 20:25:35',1),
+(20,'6396000748','124124',0,'6396000749','2018-05-13 20:26:03','6396000749','2018-05-13 20:26:03',1),
+(21,'6396000748','323',0,'6396000749','2018-05-13 20:26:04','6396000749','2018-05-13 20:26:04',1),
+(22,'6396000748','2222222222222222222222222222222',0,'6396000749','2018-05-13 20:26:21','6396000749','2018-05-13 20:26:21',1),
+(23,'6396000748','3333333333333333333333333333333333333',0,'6396000749','2018-05-13 20:26:24','6396000749','2018-05-13 20:26:24',1),
+(24,'6396000748','33333333',0,'6396000749','2018-05-13 20:26:29','6396000749','2018-05-13 20:26:29',1),
+(25,'6396000748','44444444443',0,'6396000749','2018-05-13 20:26:33','6396000749','2018-05-13 20:26:33',1),
+(26,'6396000741','9999',0,'6396000749','2018-05-14 20:08:23','6396000749','2018-05-14 20:08:23',1),
+(27,'6396000743','帅',0,'6396000749','2018-05-14 22:44:31','6396000749','2018-05-14 22:44:31',1),
+(28,'6396000745','。、。。233',0,'6396000749','2018-05-14 22:52:23','6396000749','2018-05-14 22:52:23',1),
+(29,'6396000741','342141',0,'6396000748','2018-05-14 23:44:13','6396000748','2018-05-14 23:44:13',1);
+
+/*Table structure for table `impress_tag_detail` */
+
+DROP TABLE IF EXISTS `impress_tag_detail`;
+
+CREATE TABLE `impress_tag_detail` (
+  `impress_detail_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键(自增长)',
+  `impress_id` int(11) NOT NULL COMMENT '主表外键',
+  `agreeBy` varchar(30) NOT NULL COMMENT '赞同人',
+  `count` int(11) NOT NULL DEFAULT '0' COMMENT '次数',
+  `create_by` varchar(30) NOT NULL COMMENT '创建人',
+  `create_date` datetime NOT NULL COMMENT '创建时间',
+  `last_update_by` varchar(30) NOT NULL COMMENT '最后更新人',
+  `last_update_date` datetime NOT NULL COMMENT '最后更新时间',
+  `enable_flag` int(1) DEFAULT '1' COMMENT '是否有效',
+  PRIMARY KEY (`impress_detail_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='印象标签详细';
+
+/*Data for the table `impress_tag_detail` */
+
+/*Table structure for table `meeting` */
+
+DROP TABLE IF EXISTS `meeting`;
+
+CREATE TABLE `meeting` (
+  `meeting_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键(自增长)',
+  `tally` int(4) DEFAULT NULL,
+  `start` date DEFAULT NULL COMMENT '开始时间',
+  `end` date DEFAULT NULL COMMENT '结束时间',
+  `theme` varchar(200) DEFAULT NULL COMMENT '内容',
+  `content` varchar(2000) DEFAULT NULL COMMENT '内容',
+  `is_send_emai` int(1) DEFAULT '0' COMMENT '是否发送邮件',
+  `create_by` varchar(30) NOT NULL COMMENT '创建人',
+  `create_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `last_update_by` varchar(30) NOT NULL COMMENT '最后更新人',
+  `last_update_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后更新时间',
+  `enable_flag` int(1) DEFAULT '1' COMMENT '是否有效',
+  PRIMARY KEY (`meeting_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COMMENT='会议表';
+
+/*Data for the table `meeting` */
+
+insert  into `meeting`(`meeting_id`,`tally`,`start`,`end`,`theme`,`content`,`is_send_emai`,`create_by`,`create_date`,`last_update_by`,`last_update_date`,`enable_flag`) values 
+(1,1,'2018-01-01','2018-01-14','测试1',NULL,0,'','2018-05-12 23:48:02','','2018-05-12 23:48:02',1),
+(2,2,'2018-01-15','2018-01-31','测试2',NULL,0,'','2018-05-12 23:48:12','','2018-05-12 23:48:12',1),
+(3,3,'2018-02-01','2018-02-28','测试3',NULL,0,'','2018-05-12 23:48:19','','2018-05-12 23:48:19',1),
+(4,4,'2018-03-01','2018-03-15','测试4',NULL,0,'','2018-05-12 23:48:45','','2018-05-12 23:48:45',1),
+(5,5,'2018-03-16','2018-03-31','测试5',NULL,0,'','2018-05-12 23:48:55','','2018-05-12 23:48:55',1),
+(6,6,'2018-04-01','2018-04-15','测试6',NULL,0,'','2018-05-12 23:49:08','','2018-05-12 23:49:08',1),
+(7,7,'2018-04-16','2018-04-30','测试7',NULL,0,'','2018-05-12 23:50:23','','2018-05-12 23:50:23',1),
+(8,8,'2018-05-01','2018-05-13','测试8',NULL,0,'','2018-05-12 23:50:40','','2018-05-12 23:50:40',1);
+
+/*Table structure for table `praise` */
+
+DROP TABLE IF EXISTS `praise`;
+
+CREATE TABLE `praise` (
+  `praise_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键(自增长)',
+  `praise_from` varchar(50) NOT NULL COMMENT '来自',
+  `praise_to` varchar(50) NOT NULL COMMENT '目标',
+  `content` varchar(2000) NOT NULL COMMENT '内容',
+  `create_by` varchar(30) NOT NULL COMMENT '创建人',
+  `create_date` datetime NOT NULL COMMENT '创建时间',
+  `last_update_by` varchar(30) NOT NULL COMMENT '最后更新人',
+  `last_update_date` datetime NOT NULL COMMENT '最后更新时间',
+  `enable_flag` int(1) DEFAULT '1' COMMENT '是否有效',
+  PRIMARY KEY (`praise_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8 COMMENT='点赞表';
+
+/*Data for the table `praise` */
+
+insert  into `praise`(`praise_id`,`praise_from`,`praise_to`,`content`,`create_by`,`create_date`,`last_update_by`,`last_update_date`,`enable_flag`) values 
+(1,'6396000743','6396000749','3425','6396000741','2018-04-18 21:49:02','6396000741','2018-04-18 21:49:02',1),
+(2,'6396000745','6396000749','帅','6396000741','2018-01-18 21:49:02','6396000741','2018-04-18 21:49:02',1),
+(3,'6396000741','6396000749','能力强','6396000741','2018-02-18 21:49:02','6396000741','2018-04-18 21:49:02',1),
+(4,'6396000748','6396000741','而我份额为','6396000742','2018-03-18 21:49:02','6396000742','2018-04-18 21:49:02',1),
+(5,'6396000741','6396000749','段位高','6396000742','2018-04-18 21:49:02','6396000742','2018-04-18 21:49:02',1),
+(6,'6396000749','6396000748','额外高温高','6396000742','2018-01-11 21:49:02','6396000742','2018-04-18 21:49:02',1),
+(7,'6396000749','6396000741','24124','6396000749','2018-05-05 23:16:03','6396000749','2018-05-05 23:16:03',1),
+(8,'6396000749','6396000743','3333333333','6396000749','2018-05-05 23:18:24','6396000749','2018-05-05 23:18:24',1),
+(9,'6396000749','6396000743','33333333333333','6396000749','2018-05-05 23:19:31','6396000749','2018-05-05 23:19:31',1),
+(10,'6396000749','6396000741','1111111111111111','6396000749','2018-05-05 23:20:13','6396000749','2018-05-05 23:20:13',1),
+(11,'6396000749','6396000748','23333333333333','6396000749','2018-05-06 20:29:35','6396000749','2018-05-06 20:29:35',1),
+(12,'6396000749','6396000748','233333333','6396000749','2018-05-09 21:52:37','6396000749','2018-05-09 21:52:37',1),
+(13,'6396000749','6396000748','呆呆呆呆呆呆呆呆地','6396000749','2018-05-09 21:52:57','6396000749','2018-05-09 21:52:57',1),
+(19,'6396000749','6396000741','李四','6396000749','2018-05-13 17:32:16','6396000749','2018-05-13 17:32:16',1),
+(20,'6396000749','6396000743','第三方速度','6396000749','2018-05-13 17:32:50','6396000749','2018-05-13 17:32:50',1),
+(21,'6396000749','6396000741','大杀四方','6396000749','2018-05-13 17:37:05','6396000749','2018-05-13 17:37:05',1),
+(22,'6396000749','6396000748','12412','6396000749','2018-05-13 22:50:08','6396000749','2018-05-13 22:50:08',1),
+(23,'6396000749','6396000741','但我却都劝我放弃我','6396000749','2018-05-14 23:00:10','6396000749','2018-05-14 23:00:10',1);
+
+/*Table structure for table `users` */
+
+DROP TABLE IF EXISTS `users`;
+
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键(自增长)',
+  `user_name` varchar(30) NOT NULL COMMENT '用户名编号',
+  `nick_name` varchar(255) NOT NULL COMMENT '姓名',
+  `password` varchar(128) NOT NULL COMMENT '密码',
+  `portrait` varchar(300) DEFAULT '' COMMENT '头像路径',
+  `signature` varchar(500) DEFAULT '' COMMENT '个性签名',
+  `sex` int(1) DEFAULT NULL COMMENT '性别',
+  `status` int(4) NOT NULL COMMENT '状态',
+  `register_date` datetime NOT NULL COMMENT '注册时间',
+  `register_ip` varchar(128) NOT NULL COMMENT '注册IP',
+  `login_time` datetime NOT NULL COMMENT '最后一次登录时间',
+  `login_ip` varchar(128) NOT NULL COMMENT '登录IP',
+  `enable_flag` int(1) DEFAULT '1' COMMENT '是否有效',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='用户信息表';
+
+/*Data for the table `users` */
+
+insert  into `users`(`id`,`user_name`,`nick_name`,`password`,`portrait`,`signature`,`sex`,`status`,`register_date`,`register_ip`,`login_time`,`login_ip`,`enable_flag`) values 
+(2,'6396000749','唐志1','5e4b025bd32bf8c63130b5df462e66b3','2.jpg','一点一滴的磨练都是通往强者之路的基石',1,1,'2018-04-14 16:15:06','','2018-04-14 17:27:23','',1),
+(3,'6396000748','黄三','33903b3dfb0c5fe941fdf27a71f5b48d','','2412442424214',0,0,'2018-03-15 16:15:06','','2018-04-14 16:15:06','',1),
+(4,'admin','管理员','7917f2596f8bb70c954893f200ba6274','','',NULL,0,'2018-03-28 16:15:06','','2018-04-14 16:15:06','',1),
+(5,'6396000741','张三','5e4b025bd32bf8c63130b5df462e66b3','','',NULL,0,'2018-03-28 16:15:06','','2018-04-14 16:15:06','',1),
+(6,'6396000743','李四','5e4b025bd32bf8c63130b5df462e66b3','','',NULL,0,'2018-03-28 16:15:06','','2018-04-14 16:15:06','',1),
+(7,'6396000745','王武','5e4b025bd32bf8c63130b5df462e66b3','','',NULL,0,'2018-03-28 16:15:06','','2018-04-14 16:15:06','',1);
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

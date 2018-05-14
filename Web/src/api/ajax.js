@@ -10,6 +10,7 @@ const axiosIns = axios.create({})
 if (process.env.NODE_ENV === 'development') {
   axiosIns.defaults.baseURL = 'http://localhost:8088'
 }
+axiosIns.defaults.baseURL = 'http://localhost:8088/web/'
 // 添加请求拦截器
 axiosIns.interceptors.request.use(function(config) {
   // 在发送请求之前做些什么
@@ -35,14 +36,12 @@ axiosIns.interceptors.response.use((res) => {
   NProgress.done()
   return Promise.reject(error)
 })
-const ajaxMethod = ['get', 'post']
+const ajaxMethod = ['get', 'post', 'put']
 const ajax = {}
 ajaxMethod.forEach((method) => {
   ajax[method] = function(uri, data, config) {
     if (method === 'get') {
       data = { params: data }
-    } else {
-      console.log(config)
     }
     return new Promise(function(resolve, reject) {
       axiosIns[method](uri, data, config)
@@ -50,7 +49,6 @@ ajaxMethod.forEach((method) => {
           if (response.data.code === 200) {
             resolve(response.data)
           } else if (response.data.code === 401) {
-            console.log(401)
             store.dispatch('FedLogOut').then(() => {
               location.reload()// 为了重新实例化vue-router对象 避免bug
             })

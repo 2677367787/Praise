@@ -11,4 +11,5 @@ import com.company.project.core.Service;
  */
 public interface UsersService extends Service<Users> {
 	List<Users> getUsers();
+	void update(Users user);
 }

@@ -22,4 +22,14 @@
   <select id="getUsers" resultMap="BaseResultMap">
 	select * from users
   </select>
+  <update id="update" parameterType="com.company.project.model.Users">
+  	UPDATE
+	  `praisesystem`.`users`
+	SET
+	  `user_name` = #{userName},
+	  `nick_name` = #{nickName},
+	  `signature` = #{signature},
+	  `sex` = #{sex}
+	WHERE `id` = #{id};
+  </update>
 </mapper>

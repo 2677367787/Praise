@@ -2,6 +2,8 @@ package com.company.project.dto;
 
 import java.util.Date;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 public class PraiseListQueryDTO {
 	/**
 	 * 工号
@@ -10,10 +12,12 @@ public class PraiseListQueryDTO {
 	/**
 	 * 点赞开始时间
 	 */
+	@JSONField (format="yyyy-MM-dd") 
 	private String praiseDateBegin;
 	/**
 	 * 点赞结束时间
 	 */
+	@JSONField (format="yyyy-MM-dd") 
 	private String praiseDateEnd;
 	
 	private String praiseTo;
