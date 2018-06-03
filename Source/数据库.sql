@@ -31,7 +31,7 @@ CREATE TABLE `impress_tag` (
   `last_update_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后更新时间',
   `enable_flag` int(1) DEFAULT '1' COMMENT '是否有效',
   PRIMARY KEY (`impress_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8 COMMENT='印象标签';
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8 COMMENT='印象标签';
 
 /*Data for the table `impress_tag` */
 
@@ -75,7 +75,9 @@ insert  into `impress_tag`(`impress_id`,`user_name`,`tag`,`count`,`create_by`,`c
 (43,'6396000743','213333333333333333333',0,'22','2018-05-30 22:17:13','22','2018-05-30 22:17:13',1),
 (44,'6396000743','123',0,'22','2018-05-30 22:18:49','22','2018-05-30 22:18:49',1),
 (45,'6396000743','123',0,'22','2018-05-30 22:18:50','22','2018-05-30 22:18:50',1),
-(46,'6396000743','123',0,'22','2018-05-30 22:18:51','22','2018-05-30 22:18:51',1);
+(46,'6396000743','123',0,'22','2018-05-30 22:18:51','22','2018-05-30 22:18:51',1),
+(47,'admin','qq12312',0,'6396000749','2018-06-03 18:37:35','6396000749','2018-06-03 18:37:35',1),
+(48,'admin','asfas ',0,'6396000749','2018-06-03 18:37:37','6396000749','2018-06-03 18:37:37',1);
 
 /*Table structure for table `impress_tag_detail` */
 
@@ -107,7 +109,7 @@ CREATE TABLE `meeting` (
   `end` date DEFAULT NULL COMMENT '结束时间',
   `theme` varchar(200) DEFAULT NULL COMMENT '内容',
   `content` varchar(2000) DEFAULT NULL COMMENT '内容',
-  `is_send_emai` int(1) DEFAULT '0' COMMENT '是否发送邮件',
+  `is_send_email` tinyint(1) DEFAULT '0' COMMENT '是否发送邮件',
   `create_by` varchar(30) NOT NULL COMMENT '创建人',
   `create_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `last_update_by` varchar(30) NOT NULL COMMENT '最后更新人',
@@ -118,16 +120,16 @@ CREATE TABLE `meeting` (
 
 /*Data for the table `meeting` */
 
-insert  into `meeting`(`meeting_id`,`tally`,`start`,`end`,`theme`,`content`,`is_send_emai`,`create_by`,`create_date`,`last_update_by`,`last_update_date`,`enable_flag`) values 
-(1,1111,'2018-01-01','2018-01-14','测试12222','333333',0,'','2018-05-12 23:48:02','','2018-05-12 23:48:02',1),
+insert  into `meeting`(`meeting_id`,`tally`,`start`,`end`,`theme`,`content`,`is_send_email`,`create_by`,`create_date`,`last_update_by`,`last_update_date`,`enable_flag`) values 
+(1,11,'2018-01-01','2018-01-14','测试12222','333333',0,'','2018-05-12 23:48:02','','2018-05-12 23:48:02',1),
 (2,2,'2018-01-15','2018-01-31','测试2','内容',0,'','2018-05-12 23:48:12','','2018-05-12 23:48:12',1),
-(3,3,'2018-02-01','2018-02-28','测试3',NULL,0,'','2018-05-12 23:48:19','','2018-05-12 23:48:19',1),
-(4,4,'2018-03-01','2018-03-15','测试4',NULL,0,'','2018-05-12 23:48:45','','2018-05-12 23:48:45',1),
-(5,5,'2018-03-16','2018-03-31','测试5',NULL,0,'','2018-05-12 23:48:55','','2018-05-12 23:48:55',1),
+(3,3,'2018-02-01','2018-02-28','测试3','2333',0,'','2018-05-12 23:48:19','','2018-05-12 23:48:19',1),
+(4,4,'2018-03-01','2018-03-15','测试4','23333',1,'','2018-05-12 23:48:45','','2018-05-12 23:48:45',1),
+(5,5,'2018-03-16','2018-03-31','测试5','',1,'','2018-05-12 23:48:55','','2018-05-12 23:48:55',1),
 (6,6,'2018-04-01','2018-04-15','测试6',NULL,0,'','2018-05-12 23:49:08','','2018-05-12 23:49:08',1),
 (7,7,'2018-04-16','2018-04-30','测试7',NULL,0,'','2018-05-12 23:50:23','','2018-05-12 23:50:23',1),
 (8,8,'2018-05-01','2018-05-13','测试8',NULL,0,'','2018-05-12 23:50:40','','2018-05-12 23:50:40',1),
-(9,NULL,'2018-05-23','2018-05-30','12','124',0,'22','2018-05-30 23:49:02','22','2018-05-30 23:49:02',1),
+(9,1,'2018-05-23','2018-05-30','12','124',0,'22','2018-05-30 23:49:02','22','2018-05-30 23:49:02',1),
 (10,10,'2018-04-30','2018-04-30','12','124',0,'22','2018-05-30 23:51:47','22','2018-05-30 23:51:47',1);
 
 /*Table structure for table `praise` */
@@ -183,23 +185,24 @@ CREATE TABLE `tasks` (
   `tasks_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键(自增长)',
   `demand_title` varchar(300) DEFAULT NULL COMMENT '需求标题',
   `demand_content` varchar(2000) DEFAULT NULL COMMENT '需求内容',
-  `status` int(1) DEFAULT '1' COMMENT '状态 1待接受,2待完成,3已完成',
+  `status` int(1) DEFAULT '0' COMMENT '状态 0待充能,1待接受,2待完成,3已完成',
+  `accept_by` varchar(30) DEFAULT NULL COMMENT '接受人',
+  `accept_date` datetime DEFAULT NULL COMMENT '接受时间',
   `create_by` varchar(30) NOT NULL COMMENT '创建人',
   `create_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `last_update_by` varchar(30) NOT NULL COMMENT '最后更新人',
   `last_update_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后更新时间',
   `enable_flag` int(1) DEFAULT '1' COMMENT '是否有效',
   PRIMARY KEY (`tasks_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='任务表';
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COMMENT='任务表';
 
 /*Data for the table `tasks` */
 
-insert  into `tasks`(`tasks_id`,`demand_title`,`demand_content`,`status`,`create_by`,`create_date`,`last_update_by`,`last_update_date`,`enable_flag`) values 
-(1,NULL,NULL,1,'6396000749','2018-05-22 22:49:08','6396000749','2018-05-22 22:49:08',1),
-(2,NULL,NULL,1,'6396000749','2018-05-23 22:46:07','6396000749','2018-05-23 22:46:07',1),
-(3,NULL,NULL,1,'6396000749','2018-05-23 22:46:15','6396000749','2018-05-23 22:46:15',1),
-(4,NULL,NULL,1,'6396000749','2018-05-28 22:29:24','6396000749','2018-05-28 22:29:24',1),
-(5,'12312',NULL,1,'6396000749','2018-05-28 22:31:12','6396000749','2018-05-28 22:31:12',1);
+insert  into `tasks`(`tasks_id`,`demand_title`,`demand_content`,`status`,`accept_by`,`accept_date`,`create_by`,`create_date`,`last_update_by`,`last_update_date`,`enable_flag`) values 
+(1,'111111111','333333333333333',2,'6396000749','2018-06-03 23:59:15','22','2018-05-31 23:14:31','22','2018-05-31 23:14:31',1),
+(2,'222222222222','没有什么要补充的，我只想单纯的帮忙点个赞~',2,'6396000749','2018-06-03 17:12:59','22','2018-05-31 23:30:51','22','2018-05-31 23:30:51',1),
+(10,'行政村感受到过分的话电风扇发达国家','行政村感受到过分的话电风扇发达国家行政村感受到过分的话电风扇发达国家行政村感受到过分的话电风扇发达国家行政村感受到过分的话电风扇发达国家行政村感受到过分的话电风扇发达国家行政村感受到过分的话电风扇发达国家行政村感受到过分的话电风扇发达国家行政村感受到过分的话电风扇发达国家行政村感受到过分的话电风扇发达国家行政村感受到过分的话电风扇发达国家',2,'6396000748','2018-06-03 19:25:47','6396000749','2018-06-03 17:28:13','6396000749','2018-06-03 17:28:13',1),
+(11,'1233333333333333','222222222222',0,NULL,NULL,'6396000749','2018-06-03 18:11:03','6396000749','2018-06-03 18:11:03',1);
 
 /*Table structure for table `tasks_detail` */
 
@@ -209,16 +212,23 @@ CREATE TABLE `tasks_detail` (
   `tasks_detail_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键(自增长)',
   `tasks_id` int(11) NOT NULL COMMENT '任务ID',
   `demand_content` varchar(2000) DEFAULT '0' COMMENT '补充信息',
-  `evaluate` varchar(10) DEFAULT '0' COMMENT '评价',
+  `evaluate` double(3,2) DEFAULT '0.00' COMMENT '打分',
+  `comment` varchar(1000) DEFAULT '' COMMENT '评论',
   `create_by` varchar(30) NOT NULL COMMENT '创建人',
   `create_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `last_update_by` varchar(30) NOT NULL COMMENT '最后更新人',
   `last_update_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后更新时间',
   `enable_flag` int(1) DEFAULT '1' COMMENT '是否有效',
   PRIMARY KEY (`tasks_detail_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='任务明细';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='任务明细';
 
 /*Data for the table `tasks_detail` */
+
+insert  into `tasks_detail`(`tasks_detail_id`,`tasks_id`,`demand_content`,`evaluate`,`comment`,`create_by`,`create_date`,`last_update_by`,`last_update_date`,`enable_flag`) values 
+(1,1,'没有什么要补充的，我只想单纯的帮忙点个赞~',3.50,'','6396000748','2018-06-03 19:52:19','6396000748','2018-06-03 19:52:19',1),
+(2,1,'没有什么要补充的，我只想单纯的帮忙点个赞~',0.00,'','6396000748','2018-06-03 19:52:20','6396000748','2018-06-03 19:52:20',1),
+(3,1,'没有什么要补充的，我只想单纯的帮忙点个赞~',0.00,'','6396000749','2018-06-03 23:55:01','6396000749','2018-06-03 23:55:01',1),
+(4,2,'没有什么要补充的，我只想单纯的帮忙点个赞~',3.00,'','6396000749','2018-06-03 23:55:19','6396000749','2018-06-03 23:55:19',1);
 
 /*Table structure for table `users` */
 
@@ -244,17 +254,12 @@ CREATE TABLE `users` (
 /*Data for the table `users` */
 
 insert  into `users`(`id`,`user_name`,`nick_name`,`password`,`portrait`,`signature`,`sex`,`status`,`register_date`,`register_ip`,`login_time`,`login_ip`,`enable_flag`) values 
-(2,'6396000749','唐志1','5e4b025bd32bf8c63130b5df462e66b3','http://localhost:8099/images/2.jpg','一点一滴的磨练都是通往强者之路的基石',1,1,'2018-04-14 16:15:06','','2018-04-14 17:27:23','',1),
-(3,'6396000748','黄三','5e4b025bd32bf8c63130b5df462e66b3','','241244242421421',0,0,'2018-03-15 16:15:06','','2018-04-14 16:15:06','',1),
+(2,'6396000749','唐志','fbaa75a6bad8bbdbf509fa4f95757af6','http://localhost:8099/images/2.jpg','一点一滴的磨练都是通往强者之路的基石',1,1,'2018-04-14 16:15:06','','2018-04-14 17:27:23','',1),
+(3,'6396000748','黄三','01e19b80f9ad9634ed53c1701694aaec','','241244242421421',0,0,'2018-03-15 16:15:06','','2018-04-14 16:15:06','',1),
 (4,'admin','管理员','b676cc5fb659ffe396904c581c3503b2','http://localhost:8099/images/4.jpg','',NULL,0,'2018-03-28 16:15:06','','2018-04-14 16:15:06','',1),
 (5,'6396000741','张三','24e6019fe5f90a76a2126b013e2c69e8','','',NULL,0,'2018-03-28 16:15:06','','2018-04-14 16:15:06','',1),
 (6,'6396000743','李四','864f5b4a9c5d4e45d0efe3f89545843b','','',NULL,0,'2018-03-28 16:15:06','','2018-04-14 16:15:06','',1),
-(7,'6396000745','王武','2274f14708662553d6e633cfc5418863','','',NULL,0,'2018-03-28 16:15:06','','2018-04-14 16:15:06','',1),
-(12,'6396000749','123','af17a6d2be6676b4cf53b3ae81796fa6','','',1,1,'2018-05-30 20:50:55',NULL,'2018-05-30 20:50:55',NULL,1),
-(13,'','','74be16979710d4c4e7c6647856088456','','',1,1,'2018-05-30 21:34:59',NULL,'2018-05-30 21:34:59',NULL,1),
-(14,'124','123','af17a6d2be6676b4cf53b3ae81796fa6','','124124',1,1,'2018-05-30 21:44:28',NULL,'2018-05-30 21:44:28',NULL,1),
-(15,'12','12312','bc7235a51e34c1d3ebfddeb538c20c71','','231223',1,1,'2018-05-30 22:15:10',NULL,'2018-05-30 22:15:10',NULL,1),
-(16,'22','1','b58cfbdcc8dcf8e96131d148d7de9fb5','','1',1,1,'2018-05-30 22:16:15',NULL,'2018-05-30 22:16:15',NULL,1);
+(7,'6396000745','王武','2274f14708662553d6e633cfc5418863','','',NULL,0,'2018-03-28 16:15:06','','2018-04-14 16:15:06','',1);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
