@@ -1,6 +1,5 @@
 <template>
     <div class="app-container">
-      <div>
       <el-form ref="form" :model="form" class="query-region" label-width="120px">
         <el-form-item label="周期">
             <el-date-picker
@@ -13,12 +12,11 @@
                 end-placeholder="结束日期"
                 :picker-options="pickerOptions">
             </el-date-picker>
-            <user-input ref="userInput" :data="form" :fieldName="'userName'"></user-input>
+            <user-input :formData="form"></user-input>
             <el-button type="primary" @click="query">Query</el-button>
             <el-button type="primary" @click="onClear">Clear</el-button>
         </el-form-item>
       </el-form>
-      </div>
       <el-table  :data="list" v-loading.body="listLoading" element-loading-text="数据加载中..." border fit highlight-current-row>
           <el-table-column prop="date" label="#" type="index" width="60" align="center">
           </el-table-column>
@@ -29,18 +27,19 @@
           </el-table-column>
           <el-table-column label="收到的赞">
               <template slot-scope="scope" >
-                  <el-button @click="showGainDetail(scope.row)"type="text" v-if="scope.row.gain > 0" size="small">{{scope.row.gain}}　　(详细)</el-button> 
+                  <el-button @click="showGainDetail(scope.row,'from')"type="text" v-if="scope.row.gain > 0" size="small">{{scope.row.gain}}　　(详细)</el-button> 
                   <div v-else>0</div>
               </template> 
           </el-table-column>
           <el-table-column label="送出的赞">
               <template slot-scope="scope">
-                  <el-button type="text" size="small">{{scope.row.give}}</el-button> 
+                    <el-button @click="showGainDetail(scope.row,'to')" v-if="scope.row.give > 0" type="text" size="small">{{scope.row.give}}　　(详细)</el-button> 
+                  <div v-else>0</div>
               </template>
           </el-table-column>
       </el-table>
-      <el-dialog title="详细信息" :visible.sync="dialogFormVisible">
-        <div slot="title">{{master}}收到</div>  
+      <el-dialog id="showMsg" title="详细信息" :visible.sync="dialogFormVisible">
+        <div slot="title">{{master}}{{action}}</div>  
         <el-row>
           <el-col :span="24">
             <template v-for="(user,index) in pariseList">  
@@ -83,6 +82,7 @@ export default {
       },
       pariseList: '',
       master: '',
+      action: '',
       pickerOptions: {
         shortcuts: [{
           text: '最近二周',
@@ -113,13 +113,25 @@ export default {
     }
   },
   created() {
-    const end = new Date()
-    const start = new Date()
-    start.setTime(start.getTime() - 3600 * 1000 * 24 * 14)
-    this.form.praiseDate = [start, end]
-    this.query()
+    this.getCycle()
   },
   methods: {
+    getCycle() {
+      this.$ajax.get(this.$apiUrl.getNewestMeeting).then(result => {
+        console.log(result.data.end)
+        const end = new Date()
+        const start = new Date()
+        if (start.getTime() > result.data.end) {
+          start.setTime(result.data.end + 3600 * 1000 * 24)
+          this.form.praiseDate = [start, end]
+        } else {
+          start.setTime(result.data.start)
+          end.setTime(result.data.end)
+          this.form.praiseDate = [start, end]
+        }
+        this.query()
+      })
+    },
     getParam() {
       const param = {}
       if (this.form.praiseDate && this.form.praiseDate.length > 0) {
@@ -142,23 +154,25 @@ export default {
         this.listLoading = false
       })
     },
-    showGainDetail(row) {
+    showGainDetail(row, type) {
       this.master = row.uniqueName
       this.dialogFormVisible = true
       const param = this.getParam()
-      param.praiseTo = row.praiseTo
+      if (type === 'from') {
+        param.praiseTo = row.praiseTo
+        this.action = '收到'
+      } else {
+        param.praiseFrom = row.praiseFrom
+        this.action = '送出'
+      }
       this.$ajax.get(ApiUrl.praiseDetailUrl, param).then(result => {
         this.pariseList = result.data
-        console.log(result.data)
       })
       this.listLoading = false
     },
     onClear() {
       const spaceModle = { praiseDate: [], userName: '' }
       this.form = spaceModle
-    },
-    onRead() {
-      alert(1)
     }
   }
 }
@@ -166,6 +180,13 @@ export default {
 <style rel="stylesheet/scss"  scoped>
   a {
     color: #66b1ff;
+  }
+  .el-row {
+    max-height: 350px;
+    overflow-y: auto;
+  }
+  .el-dialog__body{
+    padding: 0px;
   }
   .query-region{
     padding: 15px 0px;
@@ -186,10 +207,6 @@ export default {
       clear: both;
       visibility: hidden;
       height: 0;
-  }
-
-  .jimi_lists .jimi3 {
-      /* background: url(./img/mine.jpg) no-repeat 0 0; */
   }
 
   .jimi_lists .header_img {

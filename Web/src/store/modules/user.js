@@ -1,4 +1,3 @@
-import { logout } from '@/api/login'
 import { getToken, setToken, removeToken, setUserInfo, getUserInfo } from '@/utils/auth'
 import ajax from '@/api/ajax'
 
@@ -35,7 +34,6 @@ const user = {
       return new Promise((resolve, reject) => {
         ajax.post(userInfo.url, userInfo).then(response => {
           const data = response.data
-          console.log(data)
           setToken(data.token)
           setUserInfo(data)
           commit('SET_TOKEN', data.token)
@@ -78,16 +76,10 @@ const user = {
 
     // 登出
     LogOut({ commit, state }) {
-      return new Promise((resolve, reject) => {
-        logout(state.token).then(() => {
-          commit('SET_TOKEN', '')
-          commit('SET_ROLES', [])
-          removeToken()
-          resolve()
-        }).catch(error => {
-          reject(error)
-        })
-      })
+      console.log('1213')
+      commit('SET_TOKEN', '')
+      commit('SET_ROLES', [])
+      removeToken()
     },
 
     // 前端 登出

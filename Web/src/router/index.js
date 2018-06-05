@@ -24,8 +24,6 @@ import Layout from '../views/layout/Layout'
 export const constantRouterMap = [
   { path: '/login', component: () => import('@/views/login/index'), hidden: true },
   { path: '/404', component: () => import('@/views/404'), hidden: true },
-
-  { path: '/activity', component: () => import('@/views/activity/activity.vue'), hidden: true },
   {
     path: '/',
     component: Layout,
@@ -63,19 +61,50 @@ export const constantRouterMap = [
       }
     ]
   },
-
   {
-    path: '/tree',
+    path: '/meeting',
     component: Layout,
     children: [
       {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
+        path: 'meeting',
+        name: 'meeting',
+        component: () => import('@/views/weekMeeting/list'),
+        meta: { title: '双周例会', icon: 'tree' }
       }
     ]
   },
+  {
+    path: '/tasks',
+    component: Layout,
+    redirect: '/tasks/list',
+    isDetail: true,
+    children: [
+      {
+        path: 'list',
+        name: 'tasks',
+        component: () => import('@/views/tasks/list'),
+        meta: { title: '任务中心', icon: 'tree' }
+      },
+      {
+        path: 'detail',
+        name: 'tasksDetail',
+        component: () => import('@/views/tasks/detail'),
+        meta: { title: '任务详情', icon: 'password' }
+      }
+    ]
+  },
+  // {
+  //   path: '/tree',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'tree',
+  //       name: 'Tree',
+  //       component: () => import('@/views/tree/index'),
+  //       meta: { title: 'Tree', icon: 'tree' }
+  //     }
+  //   ]
+  // },
   {
     path: '/user/center',
     component: Layout,

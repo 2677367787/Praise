@@ -3,57 +3,85 @@
 @import './transition.scss';
 @import './element-ui.scss';
 @import './sidebar.scss';
-
 body {
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
 }
 
 html {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 *,
 *:before,
 *:after {
-  box-sizing: inherit;
+    box-sizing: inherit;
 }
 
-div:focus{
-  outline: none;
+div:focus {
+    outline: none;
 }
 
 a:focus,
 a:active {
-  outline: none;
+    outline: none;
 }
 
 a,
 a:focus,
 a:hover {
-  cursor: pointer;
-  color: inherit;
-  text-decoration: none;
+    cursor: pointer;
+    color: inherit;
+    text-decoration: none;
 }
 
 .clearfix {
-  &:after {
-    visibility: hidden;
-    display: block;
-    font-size: 0;
-    content: " ";
-    clear: both;
-    height: 0;
-  }
+    &:after {
+        visibility: hidden;
+        display: block;
+        font-size: 0;
+        content: " ";
+        clear: both;
+        height: 0;
+    }
 }
 
 //main-container全局样式
-.app-main{
-  min-height: 100%
+.app-main {
+    min-height: 100%
 }
 
 .app-container {
-  padding: 20px;
+    padding: 20px;
+}
+
+// 覆盖标签页文本框样式
+.input-new-tag .el-input__inner {
+    height: 28px;
+    line-height: 28px;
+}
+
+//覆盖卡片填充样式
+.el-card__header {
+    padding: 10px;
+}
+
+.el-card__body {
+    padding: 10px;
+}
+
+//覆盖弹出框
+#showMsg .el-dialog__header {
+    padding: 15px 20px 10px;
+}
+
+#showMsg .el-dialog__body {
+    padding: 0px 10px 20px;
+}
+
+#showMsg .el-dialog__headerbtn {
+    top: 15px;
+    right: 10px;
 }

@@ -44,71 +44,32 @@
                 </div>
             </div>
         </div>
-        <div class="achievement">
-            <div class="Card-Small Profile-sideColumn">
-                <div class="Card-header">
-                    <div class="Card-headerText">当前</div>
-                </div>
-                <div class="Profile-sideColumnItem">
-                    <div class="IconGraf">
-                        <div class="IconGraf-iconWrapper">
-                            <svg-icon :icon-class="'praise'" class="user-avatat"></svg-icon>
-                        </div>
-                        获得 7 次赞同
+        <el-row style="padding-top:20px;">
+            <el-col :span="24" >
+                <el-card class="box-card">
+                    <div slot="header" class="clearfix">
+                        <span>获赞画像</span>
                     </div>
-                    <div class="Profile-sideColumnItemValue">送出 7 次赞同</div>
-                </div>
-            </div>
-            <div class="Card-Small Profile-sideColumn">
-                <div class="Card-header">
-                    <div class="Card-headerText">历史</div>
-                </div>
-                <div class="Profile-sideColumnItem">
-                    <div class="IconGraf">
-                        <div class="IconGraf-iconWrapper">
-                            <svg-icon :icon-class="'praise'" class="user-avatat"></svg-icon>
-                        </div>
-                        获得 7 次赞同
+                    <pie-chart ref="praiseFrom"></pie-chart>
+                </el-card>
+
+                <el-card class="box-card">
+                    <div slot="header" class="clearfix">
+                        <span>点赞画像</span>
                     </div>
-                    <div class="Profile-sideColumnItemValue">送出 7 次赞同</div>
-                </div>
+                    <pie-chart ref="praiseTo"></pie-chart>
+                </el-card>
+            </el-col>
+        </el-row>
+        <el-card class="dynamic">
+            <div slot="header" class="clearfix">
+                <span>动态</span>
             </div>
-        </div>
-        <div class="dynamic">
-            <div></div>
             <div class="tag-content">2018年5月6日 14:16:17  张三赞了你</div>
             <div class="tag-content">2018年5月6日 14:16:17  李四赞了你</div>
             <div class="tag-content">2018年5月6日 14:16:17  你赞了王武</div>
-        </div>
-        <el-dialog title="编辑资料" :visible.sync="dialogFormVisible">
-            <el-form :model="form" :rules="formRules">
-                <el-form-item label="姓名" :label-width="formLabelWidth" prop="nickName">
-                    <el-input v-model="form.nickName" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="工号" :label-width="formLabelWidth" prop="userName"> 
-                    <el-input v-model="form.userName" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="性别" :label-width="formLabelWidth">
-                    <el-radio-group v-model="form.sex">
-                        <el-radio :label="1">男</el-radio>
-                        <el-radio :label="0">女</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-                <el-form-item label="个性签名" :label-width="formLabelWidth">
-                    <el-input
-                    type="textarea"
-                    :rows="3"
-                    class="input-conten"
-                    placeholder="请输入内容"
-                    v-model="form.signature">
-                    </el-input>
-                </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="saveUserInfo">确 定</el-button>
-            </div>
-        </el-dialog>
+        </el-card>
+        <edit :formData="form" :userName="username" :visible="dialogFormVisible" @onClose="onClose"></edit>
     </div>
 </template>
 <script>
@@ -117,11 +78,13 @@ import store from '@/store'
 import { getToken } from '@/utils/auth'
 import { mapGetters } from 'vuex'
 import impressTag from './views/impressTag'
+import PieChart from './views/PieChart'
+import Edit from './views/Edit'
 
 export default {
   name: 'home',
   components: {
-    impressTag
+    impressTag, PieChart, Edit
   },
   data() {
     return {
@@ -134,17 +97,10 @@ export default {
         sex: '',
         signature: ''
       },
-      formRules: {
-        nickName: [
-          { required: true, message: '请输入工号', tirgger: 'blur' }
-        ],
-        userName: [
-          { required: true, message: '请输入用户名', tirgger: 'blur' }
-        ]
-      },
-      formLabelWidth: '120px',
       loading: false,
-      username: ''
+      username: '',
+      contentData: [],
+      titleData: []
     }
   },
   methods: {
@@ -153,7 +109,7 @@ export default {
       this.$ajax.get(ApiUrl.getUsersInfoUrl + this.username).then(result => {
         console.log(result.data)
         this.form = result.data
-        this.imageUrl = result.portrait
+        this.imageUrl = result.data.portrait
       })
       this.loading = false
     },
@@ -167,7 +123,6 @@ export default {
       if (div) div.classList.add('Mask-hidden')
     },
     onSave(data) {
-      console.log(this.username)
       if (!this.username) {
         return
       }
@@ -192,12 +147,37 @@ export default {
         return
       }
     },
-    saveUserInfo() {
-      console.log(this.form)
-      this.$ajax.put(ApiUrl.saveUserInfoUrl, this.form).then(result => {
-        this.dialogFormVisible = false
-        this.$message.success(result.message)
+    loadingPieChart() {
+      this.$ajax.get(ApiUrl.praiseToPortraitUrl + this.username).then(result => {
+        const contentData = result.data.map(m => {
+          const { name, praiseNum: value } = m
+          return { name, value }
+        })
+        const titleData = result.data.map(m => {
+          return m.name
+        })
+        const tips = '送出'
+        const data = { contentData, titleData, tips }
+        this.$refs.praiseTo.initData(data)
+        this.$refs.praiseTo.initChart()
       })
+
+      this.$ajax.get(ApiUrl.praiseFromPortraitUrl + this.username).then(result => {
+        const contentData = result.data.map(m => {
+          const { name, praiseNum: value } = m
+          return { name, value }
+        })
+        const titleData = result.data.map(m => {
+          return m.name
+        })
+        const tips = '获的'
+        const data = { contentData, titleData, tips }
+        this.$refs.praiseFrom.initData(data)
+        this.$refs.praiseFrom.initChart()
+      })
+    },
+    onClose() {
+      this.dialogFormVisible = false
     }
   },
   created() {
@@ -209,6 +189,7 @@ export default {
       this.username = this.name
       this.isOneself = true
     }
+    this.loadingPieChart()
   },
   mounted() {
     this.loadingData()
@@ -235,9 +216,15 @@ export default {
     padding: 20px;
 }
 
+.box-card {
+    width: 480px;
+    float: left;
+    margin-right: 20px;
+}
+
 .card{
     background:#ffffff;
-    padding-bottom: 50px;
+    padding-bottom: 20px;
     .card-head {
         height: 50px;
         background: #66b1ff

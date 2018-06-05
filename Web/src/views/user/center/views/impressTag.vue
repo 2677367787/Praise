@@ -7,7 +7,7 @@
         :disable-transitions="false">
         {{tag.tag}}
         </el-tag>
-        <div v-if="this.isOneself" class="panel">
+        <span v-if="this.isOneself">
             <el-input
             class="input-new-tag"
             v-if="inputVisible"
@@ -18,7 +18,7 @@
             >
             </el-input>
             <el-button v-else class="button-new-tag" size="small" @click="showInput">+印象标签</el-button>
-        </div>
+        </span>
   </div>
 </template>
 <script>
@@ -73,31 +73,24 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.el-tag + .el-tag {
-    margin-left: 10px;
-}
-
-.card-tag{
-  float: left;
+.el-tag {
+  margin: 3px 10px 5px 0px;
 }
 
 .button-new-tag {
-    margin-left: 10px;
     height: 28px;
     line-height: 28px;
     padding-top: 0;
     padding-bottom: 0;
+    vertical-align: middle;
 }
 .input-new-tag {
     width: 90px;
-    margin-left: 10px;
-    vertical-align: bottom;
     height: 28px;
     line-height: 28px;
+    vertical-align: middle;
 }
-.panel{
-  float: right;
-}
+
 .input-new-tag input{
   height: 28px;
 }

@@ -10,7 +10,7 @@ const axiosIns = axios.create({})
 if (process.env.NODE_ENV === 'development') {
   axiosIns.defaults.baseURL = 'http://localhost:8088'
 }
-axiosIns.defaults.baseURL = 'http://localhost:8088/web/'
+// axiosIns.defaults.baseURL = 'http://10.5.192.47:9001/web/'
 // 添加请求拦截器
 axiosIns.interceptors.request.use(function(config) {
   // 在发送请求之前做些什么
@@ -36,7 +36,7 @@ axiosIns.interceptors.response.use((res) => {
   NProgress.done()
   return Promise.reject(error)
 })
-const ajaxMethod = ['get', 'post', 'put']
+const ajaxMethod = ['get', 'post', 'put', 'delete']
 const ajax = {}
 ajaxMethod.forEach((method) => {
   ajax[method] = function(uri, data, config) {

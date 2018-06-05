@@ -15,9 +15,12 @@
               <a href="javascript:;">我的消息</a>
               <el-badge class="mark" :value="3" />
           </el-dropdown-item>
-          <el-dropdown-item>
-            <router-link to="/Setting">设置</router-link>
-          </el-dropdown-item>
+          <router-link to="/user/center">
+              <el-dropdown-item>设置</el-dropdown-item>
+          </router-link>
+          <router-link to="/user/center/password">
+              <el-dropdown-item>修改密码</el-dropdown-item>
+          </router-link>
           <el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>
         </el-dropdown-menu>
     </el-dropdown>

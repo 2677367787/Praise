@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-form ref="form" :model="form" label-width="80px">
       <el-form-item label="姓名">
-        <user-input :data="form"></user-input>
+        <user-input :formData="form"></user-input>
       </el-form-item>
       <el-form-item label="内容">
         <el-input

@@ -4,7 +4,7 @@ import 'normalize.css/normalize.css'// A modern alternative to CSS resets
 
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import locale from 'element-ui/lib/locale/lang/en'
+import locale from 'element-ui/lib/locale/lang/zh-CN'
 
 import '@/styles/index.scss' // global css
 
@@ -21,6 +21,13 @@ import moment from 'moment' // 日期格式化组件
 import UserInput from '@/components/UserInput/index'
 import { ApiUrl } from '@/api/apiUrl'
 
+import * as filters from './filters' // global filters
+import Users from '@/components/Users/index'
+// register global utility filters.
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key])
+})
+
 Vue.use(ElementUI, { locale, size: 'small' })
 Vue.prototype.$echarts = echarts
 Vue.prototype.$ajax = ajax
@@ -29,6 +36,7 @@ Vue.prototype.$moment = moment
 Vue.prototype.$apiUrl = ApiUrl
 Vue.config.productionTip = false
 Vue.component('user-input', UserInput)
+Vue.component('users', Users)
 new Vue({
   el: '#app',
   router,

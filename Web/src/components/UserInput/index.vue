@@ -1,76 +1,80 @@
 <template>
   <el-autocomplete
   popper-class="my-autocomplete"
-  v-model="nickName"
-  :debounce="500"
+  v-model="model"
+  :debounce="200"
   size="small"
-  value-key="nickName"
   :fetch-suggestions="querySearch"
   placeholder="请输入工号或姓名"
   @select="handleSelect"
-  :trigger-on-focus="false">
+  @input="test"
+  :trigger-on-focus="true">
   <i
     class="el-icon-close suffix"
     slot="suffix"
     @click="handleIconClick">
   </i>
   <template slot-scope="{ item }">
-    <div class="name">{{ item.nickName }}</div>
-    <span class="addr">{{ item.userName }}</span>
+    <div class="name">{{ item.nickName }}(<span class="addr">{{ item.userName }}</span>)</div>
   </template>
 </el-autocomplete>
 </template>
 <script>
-import { ApiUrl } from '@/api/apiUrl'
 export default {
   name: 'UserInput',
   data() {
     return {
-      nickName: '',
-      childData: ''
+      model: ''
     }
   },
   props: {
-    data: {
+    formData: {
       type: Object
     },
-    fieldName: {
+    text: {
+      type: String,
+      default: 'nickName'
+    },
+    value: {
       type: String,
       default: 'userName'
     }
   },
   watch: {
-    history(newValue, oldValue) {
+    fieldText(newValue, oldValue) {
       if (newValue === '') {
-        this.nickName = ''
+        this.model = ''
       }
     }
   },
   computed: {
-    history() {
-      return this.data[this.fieldName]
+    fieldText() {
+      return this.formData[this.value]
     }
   },
   methods: {
     querySearch(queryString, cb) {
-      if (!queryString) {
-        this.data.userName = ''
-        return
-      }
-      this.$ajax.get(ApiUrl.getUsersListByNameUrl + queryString).then(result => {
+      const param = { userName: queryString }
+      this.$ajax.get(this.$apiUrl.usersUrl, param).then(result => {
         cb(result.data)
       })
     },
     handleSelect(item) {
-      this.data[this.fieldName] = item.userName
+      this.formData[this.value] = item.userName
+      this.model = item.nickName
     },
     handleIconClick() {
-      this.nickName = ''
-      this.data.userName = ''
+      this.model = ''
+      this.formData[this.value] = ''
+    },
+    test(a) {
+      console.log(a)
     }
   },
   mounted() {
-    this.childData = this.data
+    if (this.formData[this.text]) {
+      this.model = this.formData[this.text]
+    }
   }
 }
 </script>
