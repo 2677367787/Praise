@@ -8,16 +8,14 @@ import com.company.project.dto.PraiseListQueryDTO;
 import com.company.project.model.Meeting;
 import com.company.project.service.MeetingService;
 import com.company.project.service.PraiseService;
-
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by tang zhi on 2018/05/13.
@@ -33,6 +31,8 @@ public class MeetingController extends BaseController {
 
 	@PostMapping
 	public Result add(@RequestBody Meeting meeting) {
+        meeting.setCreateBy(this.getUserName());
+        meeting.setLastUpdateBy(this.getUserName());
 		meetingService.save(meeting);
 		return ResultGenerator.genSuccessResult();
 	}
@@ -61,25 +61,38 @@ public class MeetingController extends BaseController {
 		return ResultGenerator.genSuccessResult(meeting);
 	}
 
+	@GetMapping
+	public Result list(PraiseListQueryDTO param) {
+		PageHelper.startPage(param.getPageNum(), param.getPageSize());
+		List<Meeting> list = meetingService.findAll();
+		PageInfo<Meeting> pageInfo = new PageInfo<>(list);
+		return ResultGenerator.genSuccessResult(pageInfo);
+	}
+
 	@GetMapping("/charts")
 	public Result charts() {
-		List<PraiseCountDTO> rsultList = new ArrayList<>(5);
+		List<PraiseCountDTO> resultList = new ArrayList<>(5);
 		// 查询最近6次双周会议时间
 		List<Meeting> list = meetingService.getChart();
 		list.forEach(meeting -> {
-			// 查询每次会议时间区间段产生的赞
-			PraiseListQueryDTO queryParam = new PraiseListQueryDTO();
-			
-			queryParam.setPraiseDateBegin(DateFormatUtils.format(meeting.getStart(), "yyyy-MM-dd"));
-			queryParam.setPraiseDateEnd(DateFormatUtils.format(meeting.getEnd(), "yyyy-MM-dd"));
-			PraiseCountDTO praiseCount = new PraiseCountDTO();
-			praiseCount = praiseService.getPraiseCountInfo(queryParam);
-			if (praiseCount.getPraiseCount() == null) {
-				praiseCount.setPraiseCount("0");;
+			try {
+				// 查询每次会议时间区间段产生的赞
+				PraiseListQueryDTO queryParam = new PraiseListQueryDTO();
+
+				queryParam.setPraiseDateBegin(DateFormatUtils.format(meeting.getStart(), "yyyy-MM-dd"));
+				queryParam.setPraiseDateEnd(DateFormatUtils.format(meeting.getEnd(), "yyyy-MM-dd"));
+
+				PraiseCountDTO praiseCount = praiseService.getPraiseCountInfo(queryParam);
+				if (praiseCount.getPraiseCount() == null) {
+					praiseCount.setPraiseCount("0");
+				}
+				String end = DateFormatUtils.format(meeting.getEnd(), "MM-dd");
+				praiseCount.setIssue(end);
+				resultList.add(praiseCount);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			praiseCount.setIssue("第" + meeting.getTally() + "次");
-			rsultList.add(praiseCount);
 		});
-		return ResultGenerator.genSuccessResult(rsultList);
+		return ResultGenerator.genSuccessResult(resultList);
 	}
 }

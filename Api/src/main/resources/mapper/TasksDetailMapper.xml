@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.project.dao.TasksDetailMapper">
+    <resultMap id="BaseResultMap" type="com.company.project.model.TasksDetail">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="tasks_detail_id" jdbcType="INTEGER" property="tasksDetailId" />
+        <result column="tasks_id" jdbcType="INTEGER" property="tasksId" />
+        <result column="demand_content" jdbcType="VARCHAR" property="demandContent" />
+        <result column="evaluate" jdbcType="DOUBLE" property="evaluate" />
+        <result column="comment" jdbcType="VARCHAR" property="comment" />
+        <result column="is_comment" jdbcType="INTEGER" property="isComment" />
+        <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+        <result column="last_update_by" jdbcType="VARCHAR" property="lastUpdateBy" />
+        <result column="last_update_date" jdbcType="TIMESTAMP" property="lastUpdateDate" />
+        <result column="enable_flag" jdbcType="INTEGER" property="enableFlag" />
+    </resultMap>
+    <update id="updateStatusByTasksId" parameterType="Integer">
+        UPDATE
+            `praisesystem`.`tasks` t
+        SET
+        t.`status` = 1
+        WHERE `tasks_id` = #{tasksId}
+        AND
+        (SELECT
+        COUNT(1)
+        FROM
+        `tasks_detail` td
+        WHERE td.`tasks_id` = #{tasksId}) > 2
+    </update>
+    <delete id="deleteByMainId">
+        DELETE
+        FROM
+          `praisesystem`.`tasks_detail`
+        WHERE `tasks_id` = #{tasksId}
+    </delete>
+</mapper>

@@ -36,8 +36,8 @@ public class Meeting {
     /**
      * 是否发送邮件
      */
-    @Column(name = "is_send_emai")
-    private Integer isSendEmai;
+    @Column(name = "is_send_email")
+    private Boolean isSendEmail;
 
     /**
      * 创建人
@@ -178,8 +178,8 @@ public class Meeting {
      *
      * @return is_send_emai - 是否发送邮件
      */
-    public Integer getIsSendEmai() {
-        return isSendEmai;
+    public Boolean getIsSendEmail() {
+        return isSendEmail;
     }
 
     /**
@@ -187,8 +187,8 @@ public class Meeting {
      *
      * @param isSendEmai 是否发送邮件
      */
-    public void setIsSendEmai(Integer isSendEmai) {
-        this.isSendEmai = isSendEmai;
+    public void setIsSendEmail(Boolean isSendEmai) {
+        this.isSendEmail = isSendEmai;
     }
 
     /**

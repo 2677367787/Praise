@@ -81,7 +81,7 @@ export const constantRouterMap = [
     children: [
       {
         path: 'list',
-        name: 'tasks',
+        name: 'tasksList',
         component: () => import('@/views/tasks/list'),
         meta: { title: '任务中心', icon: 'tree' }
       },
@@ -90,6 +90,25 @@ export const constantRouterMap = [
         name: 'tasksDetail',
         component: () => import('@/views/tasks/detail'),
         meta: { title: '任务详情', icon: 'password' }
+      }
+    ]
+  },
+  {
+    path: '/vote',
+    component: Layout,
+    isDetail: true,
+    children: [
+      {
+        path: 'list',
+        name: 'voteList',
+        component: () => import('@/views/vote/list/index'),
+        meta: { title: '投票', icon: 'praise' }
+      },
+      {
+        path: 'detail',
+        name: 'voteDetail',
+        component: () => import('@/views/vote/detail'),
+        meta: { title: '投票详情', icon: 'password' }
       }
     ]
   },

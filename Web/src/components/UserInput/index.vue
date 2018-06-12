@@ -5,9 +5,8 @@
   :debounce="200"
   size="small"
   :fetch-suggestions="querySearch"
-  placeholder="请输入工号或姓名"
+  :placeholder="placeholder"
   @select="handleSelect"
-  @input="test"
   :trigger-on-focus="true">
   <i
     class="el-icon-close suffix"
@@ -38,6 +37,10 @@ export default {
     value: {
       type: String,
       default: 'userName'
+    },
+    placeholder: {
+      type: String,
+      default: '请输入工号或姓名'
     }
   },
   watch: {
@@ -66,9 +69,6 @@ export default {
     handleIconClick() {
       this.model = ''
       this.formData[this.value] = ''
-    },
-    test(a) {
-      console.log(a)
     }
   },
   mounted() {

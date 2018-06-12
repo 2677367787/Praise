@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.project.dao.TasksMapper">
+    <resultMap id="BaseResultMap" type="Tasks">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="tasks_id" jdbcType="INTEGER" property="tasksId" />
+        <result column="demand_title" jdbcType="VARCHAR" property="demandTitle" />
+        <result column="demand_content" jdbcType="VARCHAR" property="demandContent" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+        <result column="accept_by" jdbcType="VARCHAR" property="acceptBy" />
+        <result column="accept_date" jdbcType="TIMESTAMP" property="acceptDate" />
+        <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+        <result column="last_update_by" jdbcType="VARCHAR" property="lastUpdateBy" />
+        <result column="last_update_date" jdbcType="TIMESTAMP" property="lastUpdateDate" />
+        <result column="enable_flag" jdbcType="INTEGER" property="enableFlag" />
+        <result column="unionCreateBy" jdbcType="VARCHAR" property="unionCreateBy" />
+    </resultMap>
+    <select id="findAll" resultMap="BaseResultMap">
+        SELECT
+            `tasks_id`,
+            `demand_title`,
+            `demand_content`,
+            t.`status`,
+            t.`accept_by`,
+            accept_date,
+            t.`create_by`,
+            `create_date`,
+            `last_update_by`,
+            `last_update_date`,
+            t.`enable_flag`,
+            (SELECT
+                 GROUP_CONCAT(DISTINCT CONCAT( u.`nick_name`, '(', u.`user_name`, ')' ))
+            FROM
+                 `tasks_detail` d
+                 JOIN `users` u
+                     ON d.create_by = u.user_name
+            WHERE d.tasks_id = t.`tasks_id`
+            ) AS unionCreateBy
+        FROM
+            `tasks` t
+        <where>
+            <if test="praiseDateBegin != null and praiseDateBegin != ''">
+                AND t.create_date &gt;= #{praiseDateBegin}
+            </if>
+            <if test="praiseDateEnd != null and praiseDateEnd != ''">
+                AND t.create_date &lt; DATE_ADD(
+                STR_TO_DATE(#{praiseDateEnd}, '%Y-%m-%d %H'),
+                INTERVAL 1 DAY
+                )
+            </if>
+            <if test="userName != null and userName != ''">
+                AND t.create_by = #{userName}
+            </if>
+        </where>
+    </select>
+</mapper>

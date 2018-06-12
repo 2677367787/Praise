@@ -60,4 +60,13 @@ export class ApiUrl {
   static getMeetingListUrl = '/meeting'
   // 新会议
   static meetingUrl = '/meeting'
+
+  // 投票模块
+  static voteUrl = '/vote';
+
+  // 投票选项明细
+  static voteOptionDetailUrl = '/vote/option/detail';
+
+  // 已选择的选项
+  static voteOptionChoosedUrl = '/vote/option/detail/choosed/';
 }

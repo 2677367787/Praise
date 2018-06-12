@@ -16,7 +16,7 @@ export default {
     },
     width: {
       type: String,
-      default: '75%'
+      default: '100%'
     },
     height: {
       type: String,
@@ -75,6 +75,9 @@ export default {
   methods: {
     setOptions({ chartTitle, chartData } = {}) {
       this.chart.setOption({
+        title: {
+          text: '最近10次例会点赞统计'
+        },
         xAxis: {
           data: chartTitle,
           boundaryGap: false,
@@ -83,10 +86,10 @@ export default {
           }
         },
         grid: {
-          left: 10,
-          right: 10,
+          left: 20,
+          right: 30,
           bottom: 20,
-          top: 30,
+          top: 50,
           containLabel: true
         },
         tooltip: {
@@ -119,6 +122,12 @@ export default {
               }
             },
             data: chartData,
+            markPoint: {
+              data: [
+                { type: 'max', name: '最多' },
+                { type: 'min', name: '最少' }
+              ]
+            },
             animationDuration: 2800,
             animationEasing: 'quadraticOut'
           }

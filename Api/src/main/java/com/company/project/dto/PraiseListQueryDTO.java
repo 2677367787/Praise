@@ -20,7 +20,19 @@ public class PraiseListQueryDTO {
 	@JSONField (format="yyyy-MM-dd") 
 	private String praiseDateEnd;
 	
+	/**
+	 * 点赞
+	 */
 	private String praiseTo;
+	
+	/**
+	 * 被点赞
+	 */
+	private String praiseFrom;
+	
+	private int pageNum;
+	
+	private int pageSize;
 	
 	public String getPraiseDateBegin() {
 		return praiseDateBegin;
@@ -45,5 +57,23 @@ public class PraiseListQueryDTO {
 	}
 	public void setPraiseTo(String praiseTo) {
 		this.praiseTo = praiseTo;
+	}
+	public String getPraiseFrom() {
+		return praiseFrom;
+	}
+	public void setPraiseFrom(String praiseFrom) {
+		this.praiseFrom = praiseFrom;
+	} 
+	public int getPageNum() {
+		return pageNum;
+	}
+	public void setPageNum(int pageNum) {
+		this.pageNum = pageNum;
+	}
+	public int getPageSize() {
+		return pageSize;
+	}
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
 	}
 }

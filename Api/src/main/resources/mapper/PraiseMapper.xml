@@ -16,16 +16,6 @@
     <result column="enable_flag" jdbcType="INTEGER" property="enableFlag" />
   </resultMap>
   <select id="getPraiseCountInfo" resultType="com.company.project.dto.PraiseCountDTO">
-	<!-- SELECT
-	  t.d14 + 1 AS issue,
-	  t.praiseCount
-	FROM
-	  (SELECT
-	    DATEDIFF(d.create_date, '2018-01-01') DIV 14 AS d14,
-	    COUNT(*) praiseCount
-	  FROM
-	    `praise` d
-	  GROUP BY d14) t -->
 	SELECT
 	  COUNT(1) as praiseCount
 	FROM
@@ -111,17 +101,62 @@
 	FROM
 	  users u
 	  JOIN `praise` p
-	    ON u.`user_name` = p.`praise_from`
+		<if test="praiseTo != null and praiseTo != ''">
+	        ON u.`user_name` = p.`praise_from`
+	    </if>
+	    <if test="praiseFrom != null and praiseFrom != ''">
+	        ON u.`user_name` = p.`praise_to`
+	    </if>
 	<where> 
 	    <if test="praiseDateBegin != null and praiseDateBegin != ''">
 	        AND p.create_date &gt;= #{praiseDateBegin}
 	    </if> 
 	    <if test="praiseDateEnd != null and praiseDateEnd != ''">
-	        AND p.create_date &lt; #{praiseDateEnd}
+	        AND p.create_date &lt; DATE_ADD(
+			    STR_TO_DATE(#{praiseDateEnd}, '%Y-%m-%d %H'),
+			    INTERVAL 1 DAY
+			  )
 	    </if>
 	    <if test="praiseTo != null and praiseTo != ''">
 	        AND p.praise_to = #{praiseTo}
 	    </if>
+	    <if test="praiseFrom != null and praiseFrom != ''">
+	        AND p.praise_from = #{praiseFrom}
+	    </if>
 	  </where>
+  </select>
+  <select id="getPraiseToPieChartData" resultType="com.company.project.dto.PieChartDTO">
+	SELECT
+	  u.`nick_name` as name,
+	  b.praiseNum
+	FROM
+	  users u
+	  JOIN
+	    (SELECT
+	      p.`praise_to`,
+	      COUNT(1) praiseNum
+	    FROM
+	      `praise` p
+	    WHERE p.`praise_from` = #{userName}
+	    GROUP BY p.`praise_to`
+	    LIMIT 0, 15) b
+	    ON u.user_name = b.praise_to
+  </select>
+  <select id="getPraiseFromPieChartData" resultType="com.company.project.dto.PieChartDTO">
+	SELECT
+	  u.`nick_name` name,
+	  b.praiseNum
+	FROM
+	  users u
+	  JOIN
+	    (SELECT
+	      p.`praise_from`,
+	      COUNT(1) praiseNum
+	    FROM
+	      `praise` p
+	    WHERE p.`praise_to` = #{userName}
+	    GROUP BY p.`praise_from`
+	    LIMIT 0, 15) b
+	    ON u.user_name = b.praise_from
   </select>
 </mapper>

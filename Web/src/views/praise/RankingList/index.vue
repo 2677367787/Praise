@@ -47,7 +47,7 @@
                 <div class="header_img jimi3 fl">
                   <svg-icon :icon-class="'defaultAvatar'" class="user-avatat"></svg-icon>
                 </div>
-                <div class="unique-name">{{user.nickName}}{{(user.userName)}}</div>
+                <div class="unique-name">{{user.nickName}}({{(user.userName)}})&nbsp;&nbsp;&nbsp;<span class="time">{{user.createDate|parseTime('{m}-{d} {h}:{i}')}}</span></div>
                 <div :class="(index+1)%2==0?'lim_bubble':'lim_bubble2'">
                   <p class="lim_dot">{{user.content}}</p>
                 </div>
@@ -168,6 +168,7 @@ export default {
       this.$ajax.get(ApiUrl.praiseDetailUrl, param).then(result => {
         this.pariseList = result.data
       })
+      console.log(this.pariseList)
       this.listLoading = false
     },
     onClear() {
@@ -304,5 +305,8 @@ export default {
   .user-avatat{
     height: 60px;
     width: 60px;
+  }
+  .time {
+    color:gray;
   }
 </style>

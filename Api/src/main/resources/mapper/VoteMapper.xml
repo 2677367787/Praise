@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.project.dao.VoteMapper">
+    <resultMap id="BaseResultMap" type="com.company.project.model.Vote">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="vote_id" jdbcType="INTEGER" property="voteId" />
+        <result column="theme" jdbcType="VARCHAR" property="theme" />
+        <result column="additional" jdbcType="VARCHAR" property="additional" />
+        <result column="type" jdbcType="INTEGER" property="type" />
+        <result column="votes_number" jdbcType="INTEGER" property="votesNumber" />
+        <result column="participants" jdbcType="INTEGER" property="participants" />
+        <result column="select_myself" jdbcType="BIT" property="selectMyself" />
+        <result column="most_select" jdbcType="INTEGER" property="mostSelect" />
+        <result column="least_select" jdbcType="INTEGER" property="leastSelect" />
+        <result column="close_date" jdbcType="TIMESTAMP" property="closeDate" />
+        <result column="is_send_email" jdbcType="BIT" property="isSendEmail" />
+        <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+        <result column="last_update_by" jdbcType="VARCHAR" property="lastUpdateBy" />
+        <result column="last_update_date" jdbcType="TIMESTAMP" property="lastUpdateDate" />
+        <result column="enable_flag" jdbcType="INTEGER" property="enableFlag" />
+    </resultMap>
+    <select id="findAll" resultMap="BaseResultMap">
+        SELECT
+            `vote_id`,
+            `theme`,
+            `additional`,
+            `type`,
+            `participants`,
+            `votes_number`,
+            `select_myself`,
+            `most_select`,
+            `least_select`,
+            `close_date`,
+            `is_send_email`,
+            `create_by`,
+            `create_date`,
+            `last_update_by`,
+            `last_update_date`,
+            `enable_flag`
+        FROM
+            `praisesystem`.`vote` t
+        <where>
+            <if test="praiseDateBegin != null and praiseDateBegin != ''">
+                AND t.create_date &gt;= #{praiseDateBegin}
+            </if>
+            <if test="praiseDateEnd != null and praiseDateEnd != ''">
+                AND t.create_date &lt; DATE_ADD(
+                STR_TO_DATE(#{praiseDateEnd}, '%Y-%m-%d %H'),
+                INTERVAL 1 DAY
+                )
+            </if>
+            <if test="userName != null and userName != ''">
+                AND t.create_by = #{userName}
+            </if>
+        </where>
+    </select>
+    <select id="findCombinationById" resultMap="findCombinationByIdMap">
+        SELECT
+            v.`vote_id`,
+            v.`theme`,
+            v.`additional`,
+            v.`type`,
+            v.`votes_number`,
+            v.`participants`,
+            v.`select_myself`,
+            v.`most_select`,
+            v.`least_select`,
+            v.`close_date`,
+            v.`is_send_email`,
+            v.`create_by`,
+            v.`create_date`,
+            vo.`option_id`,
+            vo.`vote_id`,
+            vo.`option_text`,
+            vod.`option_detail_id`,
+            vod.`option_id`,
+            vod.`voters`,
+            vod.`share`
+        FROM
+            `vote` v
+            JOIN `vote_option` vo
+                ON v.`vote_id` = vo.`vote_id`
+            LEFT JOIN `vote_option_detail` vod
+                ON vod.`option_id` = vo.`option_id`
+        WHERE v.`vote_id` = #{voteId}
+    </select>
+    <resultMap id="findCombinationByIdMap" type="com.company.project.dto.VoteDTO">
+        <id property="voteId" column="vote_id" />
+        <association property="vote" javaType="com.company.project.model.Vote">
+            <id column="vote_id" jdbcType="INTEGER" property="voteId" />
+            <result column="theme" jdbcType="VARCHAR" property="theme" />
+            <result column="additional" jdbcType="VARCHAR" property="additional" />
+            <result column="type" jdbcType="INTEGER" property="type" />
+            <result column="votes_number" jdbcType="INTEGER" property="votesNumber" />
+            <result column="participants" jdbcType="INTEGER" property="participants" />
+            <result column="select_myself" jdbcType="BIT" property="selectMyself" />
+            <result column="most_select" jdbcType="INTEGER" property="mostSelect" />
+            <result column="least_select" jdbcType="INTEGER" property="leastSelect" />
+            <result column="close_date" jdbcType="TIMESTAMP" property="closeDate" />
+            <result column="is_send_email" jdbcType="BIT" property="isSendEmail" />
+            <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+            <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+        </association>
+        <collection property="voteOption" ofType="com.company.project.model.VoteOption">
+            <id column="option_id" jdbcType="INTEGER" property="optionId" />
+            <result column="vote_id" jdbcType="INTEGER" property="voteId" />
+            <result column="option_text" jdbcType="VARCHAR" property="optionText" />
+            <collection property="voteOptionDetails" ofType="com.company.project.model.VoteOptionDetail">
+                <id column="option_detail_id" jdbcType="INTEGER" property="optionDetailId" />
+                <result column="option_id" jdbcType="INTEGER" property="optionId" />
+                <result column="voters" jdbcType="VARCHAR" property="voters" />
+                <result column="share" jdbcType="INTEGER" property="share" />
+            </collection>
+        </collection>
+    </resultMap>
+    <insert id="add" useGeneratedKeys="true" keyProperty="voteId">
+        INSERT INTO `praisesystem`.`vote` (
+            `theme`,
+            `additional`,
+            `type`,
+            `votes_number`,
+            `select_myself`,
+            `most_select`,
+            `least_select`,
+            `close_date`,
+            `is_send_email`,
+            `create_by`,
+            `last_update_by`
+        )
+        VALUES(
+            #{theme},
+            #{additional},
+            #{type},
+            #{votesNumber},
+            #{selectMyself},
+            #{mostSelect},
+            #{leastSelect},
+            #{closeDate},
+            #{isSendEmail},
+            #{createBy},
+            #{lastUpdateBy}
+        )
+    </insert>
+</mapper>

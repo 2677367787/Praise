@@ -144,7 +144,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .grid-content {
     min-height: 36px;
     line-height: 36px;

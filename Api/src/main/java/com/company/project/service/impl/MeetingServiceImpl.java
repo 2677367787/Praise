@@ -20,10 +20,12 @@ import javax.annotation.Resource;
 public class MeetingServiceImpl extends AbstractService<Meeting> implements MeetingService {
     @Resource
     private MeetingMapper meetingMapper;
-	public Meeting getNewest() {
+	@Override
+    public Meeting getNewest() {
 		return meetingMapper.getNewest();
 	}
-	public List<Meeting> getChart(){
+	@Override
+    public List<Meeting> getChart(){
 		return meetingMapper.getChart();
 	}
 }

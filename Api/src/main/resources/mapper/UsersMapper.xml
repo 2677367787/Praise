@@ -19,16 +19,31 @@
     <result column="login_ip" jdbcType="VARCHAR" property="loginIp" />
     <result column="enable_flag" jdbcType="INTEGER" property="enableFlag" />
   </resultMap>
-  <select id="getUsers" resultMap="BaseResultMap">
-	select * from users
+  <select id="getAllUser" resultMap="BaseResultMap">
+	SELECT
+      `user_name`,
+      `nick_name`,
+      `portrait`,
+      `signature`,
+      `sex`,
+      `status`
+    FROM
+      `praisesystem`.`users` u
+      <where>
+          <if test="userName!='' and userName != null">
+              and u.user_name like CONCAT('%', #{userName}, '%') or u.nick_name like CONCAT('%', #{userName}, '%')
+          </if>
+      </where>
+
   </select>
-  <update id="update" parameterType="com.company.project.model.Users">
+  <update id="updateUser" parameterType="com.company.project.model.Users">
   	UPDATE
 	  `praisesystem`.`users`
 	SET
 	  `user_name` = #{userName},
 	  `nick_name` = #{nickName},
 	  `signature` = #{signature},
+	  `portrait` = #{portrait},
 	  `sex` = #{sex}
 	WHERE `id` = #{id};
   </update>

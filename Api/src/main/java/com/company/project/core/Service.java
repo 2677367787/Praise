@@ -1,5 +1,6 @@
 package com.company.project.core;
 
+import com.company.project.dto.PraiseListQueryDTO;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import tk.mybatis.mapper.entity.Condition;
 
@@ -19,4 +20,11 @@ public interface Service<T> {
     List<T> findByIds(String ids);//通过多个ID查找//eg：ids -> “1,2,3,4”
     List<T> findByCondition(Condition condition);//根据条件查找
     List<T> findAll();//获取所有
+
+	/**
+	 * 通过参数获取所有
+	 * @param param
+	 * @return
+	 */
+    List<T> findAll(PraiseListQueryDTO param);
 }

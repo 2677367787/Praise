@@ -11,7 +11,7 @@
     <result column="end" jdbcType="DATE" property="end" />
     <result column="theme" jdbcType="VARCHAR" property="theme" />
     <result column="content" jdbcType="VARCHAR" property="content" />
-    <result column="is_send_emai" jdbcType="INTEGER" property="isSendEmai" />
+    <result column="is_send_email" jdbcType="INTEGER" property="isSendEmail" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
     <result column="last_update_by" jdbcType="VARCHAR" property="lastUpdateBy" />
@@ -19,23 +19,23 @@
     <result column="enable_flag" jdbcType="INTEGER" property="enableFlag" />
   </resultMap>
   <select id="getNewest" resultMap="BaseResultMap">
-	SELECT
-	  `meeting_id`,
-	  `start`,
-	  `tally`,
-	  `end`,
-	  `theme`,
-	  `content`,
-	  `is_send_emai`,
-	  `create_by`,
-	  `create_date`,
-	  `last_update_by`,
-	  `last_update_date`,
-	  `enable_flag`
-	FROM
-	  `praisesystem`.`meeting`
-	ORDER BY meeting_id DESC
-	LIMIT 0, 1
+	  SELECT
+		  `meeting_id`,
+		  `start`,
+		  `tally`,
+		  `end`,
+		  `theme`,
+		  `content`,
+		  `is_send_email`,
+		  `create_by`,
+		  `create_date`,
+		  `last_update_by`,
+		  `last_update_date`,
+		  `enable_flag`
+	  FROM
+		  `praisesystem`.`meeting`
+	  ORDER BY start DESC
+	  LIMIT 0, 1
   </select>
   <select id="getChart" resultMap="BaseResultMap">
 	SELECT
@@ -45,7 +45,7 @@
 	  `end`,
 	  `theme`,
 	  `content`,
-	  `is_send_emai`,
+	  `is_send_email`,
 	  `create_by`,
 	  `create_date`,
 	  `last_update_by`,
@@ -53,7 +53,7 @@
 	  `enable_flag`
 	FROM
 	  `praisesystem`.`meeting`
-	ORDER BY meeting_id DESC
-	LIMIT 0, 6
+	ORDER BY create_date DESC
+	LIMIT 0, 10
   </select>
 </mapper>

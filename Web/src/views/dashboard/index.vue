@@ -1,20 +1,18 @@
 <template>
-  <div class="app-container">
-    <el-row>{{new Date().getFullYear()}}年第{{meeting.tally}}次双周例会</el-row>
-    <el-row>周期：{{meeting.start| parseTime('{y}-{m}-{d}')}}&nbsp;至&nbsp;{{meeting.end| parseTime('{y}-{m}-{d}')}}</el-row>
-    <el-row>本周主题：{{meeting.theme}}</el-row>
-    <div class="title">例会点赞趋势图</div>
+  <div class="app-container dashboard-editor-container">
+    <panel-group @handleSetLineChartData="handleSetLineChartData"></panel-group>
     <el-row style="background:#fff;margin-bottom:32px;"> 
       <line-chart></line-chart>
     </el-row>
   </div>
 </template>
 <script>
+import PanelGroup from './components/PanelGroup'
 import LineChart from './components/LineChart'
 import { Storage } from '@/api/storage.js'
 export default {
   name: 'Chart',
-  components: { LineChart },
+  components: { LineChart, PanelGroup },
   data() {
     return {
       meeting: ''
@@ -41,7 +39,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style rel="stylesheet/scss" lang="scss" scoped>
   .el-row {
     margin-bottom: 20px;
     &:last-child {
@@ -51,4 +49,14 @@ export default {
   .title{
     font-weight: bold;
   }
+  .dashboard-editor-container {
+    padding: 32px;
+    background-color: rgb(240, 242, 245);
+    .chart-wrapper {
+      background: #fff;
+      padding: 16px 16px 0;
+      margin-bottom: 32px;
+    }
+  }
 </style>
+

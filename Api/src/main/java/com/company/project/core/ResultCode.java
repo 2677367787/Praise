@@ -3,8 +3,9 @@ package com.company.project.core;
 /**
  * 响应码枚举，参考HTTP状态码的语义
  */
+@SuppressWarnings({"ALL", "AlibabaEnumConstantsMustHaveComment"})
 public enum ResultCode {
-    SUCCESS(200),//成功
+    @SuppressWarnings("AlibabaEnumConstantsMustHaveComment") SUCCESS(200),//成功
     FAIL(400),//失败
     UNAUTHORIZED(401),//未认证（签名错误）
     NOT_FOUND(404),//接口不存在

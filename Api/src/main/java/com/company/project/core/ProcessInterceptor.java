@@ -8,7 +8,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 public class ProcessInterceptor implements HandlerInterceptor {  
 	  
-	  
+    public final String METHOD_NAME = "OPTIONS";
     @Override  
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {  
   
@@ -23,7 +23,7 @@ public class ProcessInterceptor implements HandlerInterceptor {
   
         String method= httpServletRequest.getMethod();  
   
-        if (method.equals("OPTIONS")){  
+        if (METHOD_NAME.equals(method)){
             httpServletResponse.setStatus(200);  
             return false;  
         }  
