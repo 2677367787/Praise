@@ -46,7 +46,7 @@
                   <span class="card-title">选项</span>
               </div>
               <table class="tab-option" v-if="!choosed">
-                  <tr v-if="vote.type===3">
+                  <tr v-if="vote.type!==2">
                     <td>
                       <el-tag>最少选择：{{vote.leastSelect}}</el-tag>
                       <el-tag>最多选择：{{vote.mostSelect}}</el-tag>
@@ -62,7 +62,7 @@
                   <template v-if="vote.type!==3">
                     <tr v-for="(item,index) in voteOption" :key="''+index">
                         <td v-if="vote.type===1">
-                          <el-tag type="info">{{item.optionText}}</el-tag>
+                          <el-tag type="info" size="small">{{item.optionText}}</el-tag>
                           <el-input-number controls-position="right" :min='0' v-model="item.share" @change="handleChange" size="mini" :label="item.optionText"></el-input-number>
                         </td>
                         <td v-if="vote.type===2">
@@ -83,9 +83,9 @@
               </table>
               <table class="tab-option" v-else>
                 <tr v-for="(item,index) in voteOption" :key="''+index">
-                  <td style="min-width:400px;max-width:100%">
-                      <el-tag type="info">{{item.optionText}}</el-tag><el-tag>总票数：{{item.share}}</el-tag>
-                      <el-progress :stroke-width="5" :percentage="Math.round(((item.share/(vote.participants*vote.votesNumber))*100),2)"></el-progress>
+                  <td style="width:500px;max-width:100%">
+                      <el-tag type="info" size="small">{{item.optionText}}</el-tag><el-tag>总票数：{{item.share}}</el-tag>
+                      <el-progress :stroke-width="5" :percentage="Math.round(((item.share/(vote.participants*vote.votesNumber))*100)*10)/10"></el-progress>
                   </td>
                 </tr>
               </table>

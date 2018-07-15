@@ -1,11 +1,11 @@
 package com.company.project.service.impl;
 
+import com.company.project.core.AbstractService;
 import com.company.project.dao.VoteMapper;
 import com.company.project.dto.VoteDTO;
 import com.company.project.dto.VoteSaveDTO;
 import com.company.project.model.Vote;
 import com.company.project.service.VoteService;
-import com.company.project.core.AbstractService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,7 +14,9 @@ import java.util.List;
 
 
 /**
- * Created by tang zhi on 2018/06/09.
+ *
+ * @author tang zhi
+ * @date 2018/06/09
  */
 @Service
 @Transactional
@@ -35,5 +37,43 @@ public class VoteServiceImpl extends AbstractService<Vote> implements VoteServic
 	@Override
 	public void add(VoteSaveDTO vote) {
 		voteMapper.add(vote);
+	}
+
+	/**
+	 * 根据主键ID关联删除缩有记录
+	 * @param id 主表ID
+	 */
+	@Override
+	public void unionDeleteById(Integer id) {
+		mapper.deleteByPrimaryKey(id);
+		voteMapper.deleteOption(id);
+		voteMapper.deleteOptionDetail(id);
+	}
+
+	/**
+	 * 根据主键ID关联删除缩有记录
+	 * @param id 主表ID
+	 */
+	@Override
+	public void deleteOption(Integer id) {
+		voteMapper.deleteOption(id);
+	}
+
+	/**
+	 * 根据主键ID关联删除所有投票记录
+	 * @param id 主表ID
+	 */
+	@Override
+	public void deleteOptionDetail(Integer id) {
+		voteMapper.deleteOptionDetail(id);
+	}
+
+	/**
+	 * 查找还未关闭前3个投票
+	 * @return List 集合
+	 */
+	@Override
+	public List<Vote> getNotCloseTop3() {
+		return voteMapper.getNotCloseTop3();
 	}
 }

@@ -25,16 +25,20 @@ export default {
     initChart() {
       this.$ajax.get(this.$apiUrl.getNewestMeeting).then(result => {
         this.meeting = result.data
-        console.log(result.data)
       })
 
       this.$ajax.get(this.$apiUrl.usersUrl).then(result => {
+        console.log(result.data)
         const userList = {}
         result.data.map(m => {
           userList[m.userName] = m
         })
         new Storage().set('userList', userList)
       })
+    },
+
+    handleSetLineChartData() {
+
     }
   }
 }
@@ -50,7 +54,6 @@ export default {
     font-weight: bold;
   }
   .dashboard-editor-container {
-    padding: 32px;
     background-color: rgb(240, 242, 245);
     .chart-wrapper {
       background: #fff;

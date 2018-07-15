@@ -4,6 +4,8 @@ import com.company.project.core.Mapper;
 import com.company.project.dto.VoteDTO;
 import com.company.project.model.Vote;
 
+import java.util.List;
+
 /**
  * @author tanggzhi
  */
@@ -21,4 +23,14 @@ public interface VoteMapper extends Mapper<Vote> {
 	 * @param model 实体对象
 	 */
 	void add(Vote model);
+
+	void deleteOption(Integer id);
+
+	void deleteOptionDetail(Integer id);
+
+	/**
+	 * 查找还未关闭前3个投票
+	 * @return List 集合
+	 */
+	List<Vote> getNotCloseTop3();
 }

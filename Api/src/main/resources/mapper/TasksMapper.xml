@@ -56,4 +56,23 @@
             </if>
         </where>
     </select>
+    <select id="getNotCloseTop3" resultMap="BaseResultMap">
+        SELECT
+        `tasks_id`,
+        `demand_title`,
+        `demand_content`,
+        `status`,
+        `accept_by`,
+        `accept_date`,
+        `create_by`,
+        `create_date`,
+        `last_update_by`,
+        `last_update_date`,
+        `enable_flag`
+        FROM
+        `praisesystem`.`tasks`
+        WHERE STATUS &lt; 2
+        ORDER BY `create_date` DESC
+        LIMIT 0, 3;
+    </select>
 </mapper>

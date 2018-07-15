@@ -26,4 +26,13 @@ public class TasksServiceImpl extends AbstractService<Tasks> implements TasksSer
     public List<Tasks> findAll(PraiseListQueryDTO param) {
         return tasksMapper.findAll(param);
     }
+
+	/**
+	 * 查询最近3个未被领取的任务
+	 * @return List<Tasks>集合
+	 */
+	@Override
+	public List<Tasks> getNotCloseTop3() {
+		return tasksMapper.getNotCloseTop3();
+	}
 }

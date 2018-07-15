@@ -65,9 +65,12 @@
             <div slot="header" class="clearfix">
                 <span>动态</span>
             </div>
-            <div class="tag-content">2018年5月6日 14:16:17  张三赞了你</div>
-            <div class="tag-content">2018年5月6日 14:16:17  李四赞了你</div>
-            <div class="tag-content">2018年5月6日 14:16:17  你赞了王武</div>
+            <div class="tag-content" v-for="log in logs">
+                {{log.createDate|parseTime('{y}-{m}-{d} {h}:{i}:{s}')}}&nbsp;&nbsp;
+                {{log.beFrom|parseUserName}}&nbsp;&nbsp;
+                <span v-if="isOneself">给你</span>
+                <span v-else>给TA</span>{{log.type|logTypeConver}}
+            </div>
         </el-card>
         <edit :formData="form" :userName="username" :visible="dialogFormVisible" @onClose="onClose"></edit>
     </div>
@@ -97,6 +100,7 @@ export default {
         sex: '',
         signature: ''
       },
+      logs: {},
       loading: false,
       username: '',
       contentData: [],
@@ -174,6 +178,10 @@ export default {
         const data = { contentData, titleData, tips }
         this.$refs.praiseFrom.initData(data)
         this.$refs.praiseFrom.initChart()
+      })
+
+      this.$ajax.get(ApiUrl.getRecordByRelevant + this.username).then(result => {
+        this.logs = result.data
       })
     },
     onClose() {

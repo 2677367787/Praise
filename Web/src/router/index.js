@@ -69,7 +69,7 @@ export const constantRouterMap = [
         path: 'meeting',
         name: 'meeting',
         component: () => import('@/views/weekMeeting/list'),
-        meta: { title: '双周例会', icon: 'tree' }
+        meta: { title: '双周例会', icon: 'meeting' }
       }
     ]
   },
@@ -83,13 +83,13 @@ export const constantRouterMap = [
         path: 'list',
         name: 'tasksList',
         component: () => import('@/views/tasks/list'),
-        meta: { title: '任务中心', icon: 'tree' }
+        meta: { title: '任务中心', icon: 'task' }
       },
       {
         path: 'detail',
         name: 'tasksDetail',
         component: () => import('@/views/tasks/detail'),
-        meta: { title: '任务详情', icon: 'password' }
+        meta: { title: '任务详情', icon: 'task' }
       }
     ]
   },
@@ -102,13 +102,13 @@ export const constantRouterMap = [
         path: 'list',
         name: 'voteList',
         component: () => import('@/views/vote/list/index'),
-        meta: { title: '投票', icon: 'praise' }
+        meta: { title: '投票', icon: 'vote' }
       },
       {
         path: 'detail',
         name: 'voteDetail',
         component: () => import('@/views/vote/detail'),
-        meta: { title: '投票详情', icon: 'password' }
+        meta: { title: '投票详情', icon: 'vote' }
       }
     ]
   },

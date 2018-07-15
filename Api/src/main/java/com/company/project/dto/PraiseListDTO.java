@@ -9,7 +9,7 @@ public class PraiseListDTO implements Serializable {
 	 */
 	private static final long serialVersionUID = 11241241241242123L;
 
-	/*
+	/**
 	 * 内容
 	 */
 	private String content;
@@ -22,7 +22,7 @@ public class PraiseListDTO implements Serializable {
 		return content;
 	}
 
-	/*
+	/**
 	 * 目标
 	 */
 	private String praiseTo;
@@ -35,7 +35,7 @@ public class PraiseListDTO implements Serializable {
 		return praiseTo;
 	}
 
-	/*
+	/**
 	 * 来自
 	 */
 	private String praiseFrom;
@@ -48,7 +48,7 @@ public class PraiseListDTO implements Serializable {
 		return praiseFrom;
 	}
 
-	/*
+	/**
 	 * 主键(自增长)
 	 */
 	private Integer praiseId;
@@ -61,7 +61,7 @@ public class PraiseListDTO implements Serializable {
 		return praiseId;
 	}
 
-	/*
+	/**
 	 * 性别
 	 */
 	private Integer sex;
@@ -74,7 +74,7 @@ public class PraiseListDTO implements Serializable {
 		return sex;
 	}
 
-	/*
+	/**
 	 * 个性签名
 	 */
 	private String signature;
@@ -87,7 +87,7 @@ public class PraiseListDTO implements Serializable {
 		return signature;
 	}
 
-	/*
+	/**
 	 * 头像路径
 	 */
 	private String portrait;
@@ -100,7 +100,7 @@ public class PraiseListDTO implements Serializable {
 		return portrait;
 	}
 
-	/*
+	/**
 	 * 密码
 	 */
 	private String password;
@@ -113,7 +113,7 @@ public class PraiseListDTO implements Serializable {
 		return password;
 	}
 
-	/*
+	/**
 	 * 姓名
 	 */
 	private String nickName;
@@ -126,7 +126,7 @@ public class PraiseListDTO implements Serializable {
 		return nickName;
 	}
 
-	/*
+	/**
 	 * 用户名编号
 	 */
 	private String userName;
@@ -139,7 +139,7 @@ public class PraiseListDTO implements Serializable {
 		return userName;
 	}
 
-	/*
+	/**
 	 * 主键(自增长)
 	 */
 	private Integer id;

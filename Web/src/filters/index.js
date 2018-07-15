@@ -118,6 +118,22 @@ export function parseStatus(params) {
   }
   return result[params]
 }
+export function parseType(params) {
+  const result = {
+    1: '积分制',
+    2: '单选',
+    3: '多选'
+  }
+  return result[params]
+}
+
+export function logTypeConver(params) {
+  const result = {
+    1: '点赞',
+    2: '新的印象'
+  }
+  return result[params]
+}
 
 export function parseUserName(userName) {
   const userList = new Storage().get('userList')

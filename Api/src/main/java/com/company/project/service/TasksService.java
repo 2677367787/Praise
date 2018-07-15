@@ -18,4 +18,10 @@ public interface TasksService extends Service<Tasks> {
 	 */
 	@Override
 	List<Tasks> findAll(PraiseListQueryDTO param);
+
+	/**
+	 * 查询最近3个未被领取的任务
+	 * @return List<Tasks>集合
+	 */
+	List<Tasks> getNotCloseTop3();
 }

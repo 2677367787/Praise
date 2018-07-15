@@ -14,7 +14,7 @@
                 <user-input :formData="form" placeholder="发布人"></user-input>
                 <el-button type="primary" @click="onQuery">Query</el-button>
                 <el-button type="primary" @click="onClear">Clear</el-button>
-                <el-button type="primary" @click="dialogFormVisible=true">发起投票</el-button>
+                <el-button type="primary" @click="onAdd">发起投票</el-button>
             </el-form-item>
         </el-form>
         <el-table
@@ -32,10 +32,15 @@
                 <span>{{scope.row.createBy|parseUserName}}</span>
               </template>
             </el-table-column>
+            <el-table-column prop="type" label="投票类型" width="80">
+              <template slot-scope="scope"> 
+                <span>{{scope.row.type|parseType}}</span>
+              </template>
+            </el-table-column>
             <el-table-column
               prop="participants"
               label="参与人数"
-              width="100">
+              width="80">
             </el-table-column>
             <el-table-column
               prop="theme"
@@ -51,7 +56,7 @@
               label="操作"
               width="260">
               <template slot-scope="scope">
-                <el-button v-if="scope.row.createBy === scope.row.username" @click="onAddEnergy(scope.row)" type="success" size="mini">编辑</el-button>
+                <el-button v-if="scope.row.createBy === scope.row.username" @click="onEdit(scope.row)" type="success" size="mini">编辑</el-button>
                 <el-button @click="toDetail(scope.row)"  type="info" size="mini">投票</el-button>
                 <el-button v-if="scope.row.createBy === scope.row.username"  @click="onDelete(scope.row)" type="danger" size="mini">删除</el-button>
               </template>
@@ -66,16 +71,16 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
         </el-pagination>
-        <el-dialog title="发起投票" class="demo-dynamic" :visible.sync="dialogFormVisible">
-            <el-form :model="editform" label-width="100px" size="mini">
+        <el-dialog title="发起投票" class="demo-dynamic" :close-on-click-modal="false" :visible.sync="dialogFormVisible">
+            <el-form :model="editform" ref="editform" :rules="formRules" label-width="100px" size="mini">
                 <el-form-item label="投票类型">
                   <el-radio-group v-model="editform.type" @change="onTypeChange">
                     <el-tooltip class="item" effect="dark" placement="top">
                       <div slot="content">所有参与人有一个可用总分值<br/>可自由分配给可选项</div>
-                      <el-radio label="1">积分制</el-radio>
+                      <el-radio :label="1">积分制</el-radio>
                     </el-tooltip>
-                    <el-radio label="2">单选</el-radio>
-                    <el-radio label="3">多选</el-radio>
+                    <el-radio :label="2">单选</el-radio>
+                    <el-radio :label="3">多选</el-radio>
                   </el-radio-group>
                 </el-form-item>
                 <el-form-item label="投票主题"  prop="theme"> 
@@ -91,10 +96,10 @@
                       </el-input>
                 </el-form-item>
                 <el-form-item label="选项类型">
-                    <el-radio v-model="editform.optionType" label="0">项目组成员作为选项</el-radio>
-                    <el-radio v-model="editform.optionType" label="1">自定义选项</el-radio>
+                    <el-radio v-model="editform.optionType" :label="0">项目组成员作为选项</el-radio>
+                    <el-radio v-model="editform.optionType" :label="1">自定义选项</el-radio>
                 </el-form-item>
-                <template v-if="editform.optionType === '1'">
+                <template v-if="editform.optionType === 1">
                     <el-form-item
                         v-for="(option, index) in editform.voteOptions"
                         :label="'选项' + (index+1)"
@@ -109,19 +114,19 @@
                   <el-switch v-model="editform.selectMyself"></el-switch>
                 </el-form-item>
                     <el-row :gutter="0">
-                      <el-col :span="8" v-if="editform.type === '1'">
+                      <el-col :span="8" v-if="editform.type === 1">
                         <el-form-item :label="votesText">
                           <el-input v-model="editform.votesNumber" placeholder="总分" auto-complete="off" />
                         </el-form-item>
                       </el-col>
                       <el-col :span="8">
-                        <el-form-item :label="mostText" >
-                          <el-input v-model="editform.mostSelect" placeholder="最多选择" auto-complete="off" />
+                        <el-form-item :label="leastText" v-if="editform.type !== 2">
+                          <el-input v-model="editform.leastSelect" placeholder="最少选择" auto-complete="off" />
                         </el-form-item>
                       </el-col>
                       <el-col :span="8">
-                        <el-form-item :label="leastText">
-                          <el-input v-model="editform.leastSelect" placeholder="最少选择" auto-complete="off" />
+                        <el-form-item :label="mostText" v-if="editform.type !== 2">
+                          <el-input v-model="editform.mostSelect" placeholder="最多选择" auto-complete="off" />
                         </el-form-item>
                       </el-col>
                     </el-row>
@@ -133,8 +138,9 @@
                 </el-form-item>
                 <el-form-item>
                   <el-button @click="dialogFormVisible = false">取 消</el-button>
-                  <el-button v-if="editform.optionType === '1'" type="success" plain @click="addOption">新增选项</el-button>
-                  <el-button type="primary" @click="saveVote">确 定</el-button>
+                  <el-button v-if="editform.optionType === 1" type="success" plain @click="addOption">新增选项</el-button>
+                  <el-button type="primary" v-if="editform.edit === 'add'" @click="addVote('editform')">新 增</el-button>
+                  <el-button type="primary" v-else @click="saveVote('editform')">修 改</el-button>
                 </el-form-item>
             </el-form> 
         </el-dialog>
@@ -143,6 +149,8 @@
 <script>
 import { mapGetters } from 'vuex'
 import { Storage } from '@/api/storage.js'
+import { index } from './ctrls/index.js'
+import * as _ from 'lodash'
 export default {
   data() {
     return {
@@ -152,19 +160,14 @@ export default {
         praiseDate: [],
         userName: ''
       },
-      editform: {
-        voteId: '',
-        optionType: '0',
-        theme: '',
-        additional: '',
-        type: '1',
-        isSendEmail: true,
-        votesNumber: '',
-        mostSelect: '',
-        leastSelect: '',
-        voteOptions: [{
-          optionText: ''
-        }]
+      editform: {},
+      formRules: {
+        theme: [
+          { required: true, message: '请输入主题', tirgger: 'blur' }
+        ],
+        closeDate: [
+          { type: 'date', required: true, message: '请输入关闭时间', trigger: 'change' }
+        ]
       },
       loading: false,
       tableData: [],
@@ -173,8 +176,8 @@ export default {
       pageNum: 1,
       pageSize: 10,
       votesText: '总分',
-      mostText: '最少选择',
-      leastText: '最多选择',
+      mostText: '最多选择',
+      leastText: '最少选择',
       enabled: false
     }
   },
@@ -188,7 +191,11 @@ export default {
   },
   methods: {
     onTypeChange(item) {
-      console.log(item)
+      if (item === 2) {
+        this.editform.votesNumber = 1
+        this.editform.mostSelect = 1
+        this.editform.leastSelect = 1
+      }
     },
     getUserList() {
       const userList = new Storage().get('userList')
@@ -196,7 +203,6 @@ export default {
       for (const user in userList) {
         users.push(`${userList[user].nickName}(${user})`)
       }
-      console.log(users)
       return users
     },
     getParam() {
@@ -222,6 +228,7 @@ export default {
       this.listLoading = true
       this.$ajax.get(this.$apiUrl.voteUrl, param).then(
         result => {
+          console.log(result.data.list)
           this.tableData = result.data.list.map(map => {
             map.username = this.name
             return map
@@ -243,17 +250,27 @@ export default {
       this.pageNum = page
       this.onQuery()
     },
-    saveVote() {
-      if (!this.editform.votesNumber) {
-        this.editform.votesNumber = this.editform.mostSelect
-      }
-      this.$ajax.post(this.$apiUrl.voteUrl, this.editform).then(
-        result => {
-          this.$message.success('保存成功!')
-          this.dialogFormVisible = false
-          this.onQuery()
+    addVote(formName) {
+      this.saveData(formName, 'post')
+    },
+    saveVote(formName) {
+      this.saveData(formName, 'put')
+    },
+    saveData(formName, methodName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          if (this.editform.type === 3) {
+            this.editform.votesNumber = this.editform.mostSelect
+          }
+          this.$ajax[methodName](this.$apiUrl.voteUrl, this.editform).then(
+            result => {
+              this.$message.success('保存成功!')
+              this.dialogFormVisible = false
+              this.onQuery()
+            }
+          )
         }
-      )
+      })
     },
     toDetail(row) {
       this.$ajax.get(this.$apiUrl.voteOptionChoosedUrl + row.voteId).then(
@@ -292,6 +309,15 @@ export default {
           message: '已取消删除'
         })
       })
+    },
+    onEdit(row) {
+      this.editform = _.cloneDeep(row)
+      this.editform.closeDate = new Date(this.editform.closeDate)
+      this.dialogFormVisible = true
+    },
+    onAdd() {
+      this.editform = _.cloneDeep(index.orgForm)
+      this.dialogFormVisible = true
     }
   },
   mounted() {

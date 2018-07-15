@@ -14,6 +14,9 @@ import com.company.project.service.VoteOptionService;
 import com.company.project.service.VoteService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -38,10 +41,6 @@ public class VoteController extends BaseController {
 	@Resource
 	private UsersService usersService;
 
-	/**
-	 * 选项类型 0 项目组成员,1 自定义选项
-	 */
-	private final static String OPTIONTYPE = "0";
 	@PostMapping
 	public Result add(@RequestBody VoteSaveDTO vote) {
         // 保存投票主表信息
@@ -50,9 +49,37 @@ public class VoteController extends BaseController {
 		vote.setLastUpdateBy(this.getUserName());
 		voteService.add(vote);
 		// 保存选项表信息
-		List<VoteOption> optionList;
-		if(OPTIONTYPE.equals(vote.getOptionType())){
+		List<VoteOption> optionList = saveVoteOptions(vote, userName);
+		voteOptionService.save(optionList);
 
+		return ResultGenerator.genSuccessResult();
+	}
+
+	@DeleteMapping("/{id}")
+	public Result delete(@PathVariable Integer id) {
+		voteService.unionDeleteById(id);
+		return ResultGenerator.genSuccessResult();
+	}
+
+	@PutMapping
+	public Result update(@RequestBody Vote vote) {
+		vote.setParticipants(0);
+		voteService.update(vote);
+		String userName = this.getUserName();
+		// 删除之前的选项
+		voteService.deleteOption(vote.getVoteId());
+		// 删除所有投票信息
+		voteService.deleteOptionDetail(vote.getVoteId());
+		// 保存选项表信息
+		List<VoteOption> optionList = saveVoteOptions(vote, userName);
+		voteOptionService.save(optionList);
+
+		return ResultGenerator.genSuccessResult();
+	}
+
+	private List<VoteOption> saveVoteOptions(Vote vote, String userName) {
+		List<VoteOption> optionList;
+		if(vote.getOptionType() == 0){
 			List<Users> usersList = usersService.getAllUser(new Users());
 			optionList = new ArrayList<>(5);
 			usersList.forEach(item->{
@@ -78,26 +105,19 @@ public class VoteController extends BaseController {
 				item.setLastUpdateDate(date);
 			});
 		}
-		voteOptionService.save(optionList);
-
-		return ResultGenerator.genSuccessResult();
-	}
-
-	@DeleteMapping("/{id}")
-	public Result delete(@PathVariable Integer id) {
-		voteService.deleteById(id);
-		return ResultGenerator.genSuccessResult();
-	}
-
-	@PutMapping
-	public Result update(@RequestBody Vote vote) {
-		voteService.update(vote);
-		return ResultGenerator.genSuccessResult();
+		return optionList;
 	}
 
 	@GetMapping("/{id}")
 	public Result detail(@PathVariable Integer id) {
 		VoteDTO voteList = voteService.findCombinationById(id);
+		return ResultGenerator.genSuccessResult(voteList);
+	}
+
+	@ApiOperation(value="查询前3个未关闭的投票")
+	@GetMapping("/top3")
+	public Result getNotCloseTop3() {
+		List<Vote> voteList = voteService.getNotCloseTop3();
 		return ResultGenerator.genSuccessResult(voteList);
 	}
 

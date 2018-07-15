@@ -6,11 +6,13 @@ import com.company.project.core.ResultGenerator;
 import com.company.project.dto.PraiseListQueryDTO;
 import com.company.project.model.Praise;
 import com.company.project.model.Tasks;
+import com.company.project.model.Vote;
 import com.company.project.service.PraiseService;
 import com.company.project.service.TasksDetailService;
 import com.company.project.service.TasksService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -93,4 +95,11 @@ public class TasksController extends BaseController{
         PageInfo<Tasks> pageInfo = new PageInfo<Tasks>(list);
         return ResultGenerator.genSuccessResult(pageInfo);
     }
+
+	@ApiOperation(value="查询前3个未接受的任务")
+	@GetMapping("/top3")
+	public Result getNotCloseTop3() {
+		List<Tasks> tasks = tasksService.getNotCloseTop3();
+		return ResultGenerator.genSuccessResult(tasks);
+	}
 }

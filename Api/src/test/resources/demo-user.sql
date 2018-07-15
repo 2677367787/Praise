@@ -133,11 +133,13 @@ CREATE TABLE `vote` (
   `additional` VARCHAR(2000) COMMENT '补充信息',
   `type` INT(10) COMMENT '投票类型 1.积分制,2.单选,3.多选',
   `votes_number` INT(10) DEFAULT 1 COMMENT '票数,单选,多选为默认为1 积分制根据输入',
+  `participants` INT(10) DEFAULT 0 COMMENT '参与人数',
   `select_myself` TINYINT(1) DEFAULT '0' COMMENT '是否可选择自己',
   `most_select` INT(10) COMMENT '最多选项',
   `least_select` INT(10) COMMENT '最少选项',
   `close_date` DATETIME NOT NULL COMMENT '关闭时间',
   `is_send_email` TINYINT(1) DEFAULT '0' COMMENT '是否发送邮件',
+  `option_type` INT(10) COMMENT '选项类型 0.所有注册用户 1.自定义选项',
   `create_by` VARCHAR (30) NOT NULL COMMENT '创建人',
   `create_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `last_update_by` VARCHAR(30) NOT NULL COMMENT '最后更新人',
@@ -145,6 +147,7 @@ CREATE TABLE `vote` (
   `enable_flag` INT(1) DEFAULT '1' COMMENT '是否有效',
   PRIMARY KEY (`vote_id`)
 ) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='投票表';
+
 
 DROP TABLE IF EXISTS `vote_option`;
 CREATE TABLE `vote_option` (
@@ -172,3 +175,32 @@ CREATE TABLE `vote_option_detail` (
   `enable_flag` INT(1) DEFAULT '1' COMMENT '是否有效',
   PRIMARY KEY (`option_detail_id`)
 ) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='选项明细';
+
+DROP TABLE IF EXISTS `log`;
+CREATE TABLE `log` (
+  `log_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键(自增长)',
+  `relevant` varchar(30) NOT NULL COMMENT '相关',
+  `be_from` varchar(30) NOT NULL COMMENT '来自',
+  `type` int(10) NOT NULL COMMENT '记录类型. 1、点赞 2、印象标签',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `create_by` varchar(30) NOT NULL COMMENT '创建人',
+  `create_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `last_update_by` varchar(30) NOT NULL COMMENT '最后更新人',
+  `last_update_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后更新时间',
+  `enable_flag` int(1) DEFAULT '1' COMMENT '是否有效',
+  PRIMARY KEY (`log_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COMMENT='日志动态表';
+
+DROP TABLE IF EXISTS `hot_words`;
+CREATE TABLE `hot_words` (
+  `hot_words_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '主键(自增长)',
+  `user_name` VARCHAR(30) NOT NULL COMMENT '用户',
+  `words` VARCHAR(500) NOT NULL COMMENT '热词',
+  `counter` INT(11) NOT NULL COMMENT '频率',
+  `create_by` VARCHAR(30) NOT NULL COMMENT '创建人',
+  `create_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `last_update_by` VARCHAR(30) NOT NULL COMMENT '最后更新人',
+  `last_update_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后更新时间',
+  `enable_flag` INT(1) DEFAULT '1' COMMENT '是否有效',
+  PRIMARY KEY (`hot_words_id`)
+) ENGINE=INNODB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COMMENT='点赞热词';

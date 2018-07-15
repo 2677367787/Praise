@@ -17,24 +17,31 @@
             <el-button type="primary" @click="onClear">Clear</el-button>
         </el-form-item>
       </el-form>
-      <el-table  :data="list" v-loading.body="listLoading" element-loading-text="数据加载中..." border fit highlight-current-row>
-          <el-table-column prop="date" label="#" type="index" width="60" align="center">
+      <el-table :data="list" v-loading.body="listLoading" element-loading-text="数据加载中..." 
+      border fit highlight-current-row
+      >
+          <el-table-column label="#" type="index" width="60" align="center">
           </el-table-column>
-          <el-table-column label="姓名">
+          <el-table-column label="姓名" sortable prop="username">
               <template slot-scope="scope" >
                   <router-link :to="{name:'home',query:{username:scope.row.username}}">{{scope.row.uniqueName}}</router-link>
               </template> 
           </el-table-column>
-          <el-table-column label="收到的赞">
+          <el-table-column label="收到的赞" sortable prop="gain">
               <template slot-scope="scope" >
-                  <el-button @click="showGainDetail(scope.row,'from')"type="text" v-if="scope.row.gain > 0" size="small">{{scope.row.gain}}　　(详细)</el-button> 
+                  <el-button @click="showGainDetail(scope.row,'from',scope.$index)"type="text" v-if="scope.row.gain > 0" size="small">{{scope.row.gain}}　　(详细)</el-button> 
                   <div v-else>0</div>
               </template> 
           </el-table-column>
-          <el-table-column label="送出的赞">
+          <el-table-column label="送出的赞" sortable prop="give">
               <template slot-scope="scope">
-                    <el-button @click="showGainDetail(scope.row,'to')" v-if="scope.row.give > 0" type="text" size="small">{{scope.row.give}}　　(详细)</el-button> 
+                    <el-button @click="showGainDetail(scope.row,'to',scope.$index)" v-if="scope.row.give > 0" type="text" size="small">{{scope.row.give}}　　(详细)</el-button> 
                   <div v-else>0</div>
+              </template>
+          </el-table-column>
+          <el-table-column label="快速点赞">
+              <template slot-scope="scope">
+                    <el-button @click="quickPraise(scope.row)" type="text" size="small">快速点赞</el-button>
               </template>
           </el-table-column>
       </el-table>
@@ -58,6 +65,34 @@
             </template>
           </el-col>
         </el-row>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="Pre()">上一位</el-button>
+          <el-button type="primary" @click="Next()">下一位</el-button>
+        </div>
+      </el-dialog>
+      <el-dialog title="快速点赞" :visible.sync="quickPraiseDialog">
+        <div slot="title">快速点赞</div>  
+        <el-row>
+          <el-col :span="24">
+              <el-form ref="editform" :model="editform" label-width="80px">
+                <el-form-item label="姓名">
+                  <el-input v-model="editform.uniqueName" :disabled="true"></el-input>
+                </el-form-item>
+                <el-form-item label="内容">
+                  <el-input
+                  type="textarea"
+                  :rows="4"
+                  class="input-conten"
+                  placeholder="请输入内容"
+                  v-model="editform.content">
+                  </el-input>
+                </el-form-item>
+                <el-form-item>
+                  <el-button type="primary" @click="praiseAdd('form')" :loading="logining">点赞</el-button>
+                </el-form-item>
+              </el-form>
+          </el-col>
+        </el-row>
       </el-dialog>
     </div>
 </template>
@@ -72,17 +107,26 @@ export default {
   },
   data() {
     return {
-      list: null,
+      list: '',
       listLoading: true,
       tabledata: PraiseVo.tabledata,
       dialogFormVisible: false,
+      quickPraiseDialog: false,
+      logining: false,
+      currIndex: 0,
       form: {
         praiseDate: [],
         userName: ''
       },
+      editform: {
+        content: '',
+        uniqueName: '',
+        praiseTo: ''
+      },
       pariseList: '',
       master: '',
       action: '',
+      actionType: '',
       pickerOptions: {
         shortcuts: [{
           text: '最近二周',
@@ -117,11 +161,11 @@ export default {
   },
   methods: {
     getCycle() {
+      console.log(1)
       this.$ajax.get(this.$apiUrl.getNewestMeeting).then(result => {
-        console.log(result.data.end)
         const end = new Date()
         const start = new Date()
-        if (start.getTime() > result.data.end) {
+        if (start.getTime() > (result.data.end + 3600 * 1000 * 24)) {
           start.setTime(result.data.end + 3600 * 1000 * 24)
           this.form.praiseDate = [start, end]
         } else {
@@ -144,6 +188,7 @@ export default {
       return param
     },
     query() {
+      console.log(2)
       const param = this.getParam()
       param.userName = this.form.userName
       this.listLoading = true
@@ -154,31 +199,79 @@ export default {
         this.listLoading = false
       })
     },
-    showGainDetail(row, type) {
+    showGainDetail(row, type, index) {
       this.master = row.uniqueName
       this.dialogFormVisible = true
-      const param = this.getParam()
-      if (type === 'from') {
-        param.praiseTo = row.praiseTo
-        this.action = '收到'
-      } else {
-        param.praiseFrom = row.praiseFrom
-        this.action = '送出'
-      }
-      this.$ajax.get(ApiUrl.praiseDetailUrl, param).then(result => {
-        this.pariseList = result.data
-      })
-      console.log(this.pariseList)
+      this.currIndex = index
+      this.getDetailData(row, type)
       this.listLoading = false
     },
     onClear() {
       const spaceModle = { praiseDate: [], userName: '' }
       this.form = spaceModle
+    },
+    quickPraise(row) {
+      this.quickPraiseDialog = true
+      this.editform.uniqueName = row.uniqueName
+      this.editform.praiseTo = row.username
+    },
+    praiseAdd() {
+      if (!this.editform.praiseTo) {
+        this.$message.error('异常,未找到工号,请刷新页面!')
+        return false
+      }
+      if (!this.editform.content) {
+        this.$message.error('请输入点赞内容!')
+        return false
+      }
+      this.logining = true
+      this.$ajax.post(ApiUrl.praiseAddUrl, this.editform).then(result => {
+        this.logining = false
+        this.$message.success('点赞成功!')
+        this.editform.content = ''
+        this.query()
+        this.quickPraiseDialog = false
+      }, result => {
+        this.logining = false
+      })
+    },
+    Next() {
+      const index = this.currIndex
+      if (index + 1 < this.list.length) {
+        this.currIndex++
+        const row = this.list[this.currIndex]
+        this.master = row.uniqueName
+        this.getDetailData(row, this.actionType)
+      }
+    },
+    Pre() {
+      const index = this.currIndex
+      if (index - 1 >= 0) {
+        this.currIndex--
+        const row = this.list[this.currIndex]
+        this.master = row.uniqueName
+        this.getDetailData(row, this.actionType)
+      }
+    },
+    getDetailData(row, type) {
+      const param = this.getParam()
+      if (type === 'from') {
+        param.praiseTo = row.praiseTo
+        this.action = '收到'
+        this.actionType = 'from'
+      } else {
+        param.praiseFrom = row.praiseFrom
+        this.action = '送出'
+        this.actionType = 'to'
+      }
+      this.$ajax.get(ApiUrl.praiseDetailUrl, param).then(result => {
+        this.pariseList = result.data
+      })
     }
   }
 }
 </script>
-<style rel="stylesheet/scss"  scoped>
+<style lang="scss" rel="stylesheet/scss"  scoped>
   a {
     color: #66b1ff;
   }
@@ -195,10 +288,13 @@ export default {
     margin-bottom: 10px;
   }
   .el-form-item {
-      margin-bottom: 0px;
+    margin-bottom: 15px;
+    &:last-child {
+        margin-bottom: 0;
+    }
   }
   .jimi_lists { 
-      margin: 10px;
+      margin: 15px 10px;
       position: relative;
   }
 
@@ -220,6 +316,8 @@ export default {
   .lim_dot {
       padding: 5px;
       margin: 0px;
+      color: black;
+      font-size: 17px;
   }
 
   .fl {
@@ -232,9 +330,10 @@ export default {
       background: #c8f064;
       margin-left: 10px;
       min-height: 30px;
-            padding: 0 5px;
+      padding: 0 5px;
       border-radius: 5px;
       min-width: 200px;
+      max-width: 80%;
   }
   .lim_bubble2 {
       float: left;
@@ -242,9 +341,10 @@ export default {
       background: #fff;
       margin-left: 10px;
       min-height: 30px;
-            padding: 0 5px;
+      padding: 0 5px;
       border-radius: 5px;
       min-width: 200px;
+      max-width: 80%;
   }
 
   .lim_tale {

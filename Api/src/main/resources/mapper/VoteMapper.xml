@@ -16,44 +16,75 @@
         <result column="least_select" jdbcType="INTEGER" property="leastSelect" />
         <result column="close_date" jdbcType="TIMESTAMP" property="closeDate" />
         <result column="is_send_email" jdbcType="BIT" property="isSendEmail" />
+        <result column="option_type" jdbcType="INTEGER" property="optionType" />
         <result column="create_by" jdbcType="VARCHAR" property="createBy" />
         <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
         <result column="last_update_by" jdbcType="VARCHAR" property="lastUpdateBy" />
         <result column="last_update_date" jdbcType="TIMESTAMP" property="lastUpdateDate" />
         <result column="enable_flag" jdbcType="INTEGER" property="enableFlag" />
     </resultMap>
-    <select id="findAll" resultMap="BaseResultMap">
+    <resultMap id="ListResultMap" type="com.company.project.model.Vote">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="vote_id" jdbcType="INTEGER" property="voteId" />
+        <result column="theme" jdbcType="VARCHAR" property="theme" />
+        <result column="additional" jdbcType="VARCHAR" property="additional" />
+        <result column="type" jdbcType="INTEGER" property="type" />
+        <result column="votes_number" jdbcType="INTEGER" property="votesNumber" />
+        <result column="participants" jdbcType="INTEGER" property="participants" />
+        <result column="select_myself" jdbcType="BIT" property="selectMyself" />
+        <result column="most_select" jdbcType="INTEGER" property="mostSelect" />
+        <result column="least_select" jdbcType="INTEGER" property="leastSelect" />
+        <result column="close_date" jdbcType="TIMESTAMP" property="closeDate" />
+        <result column="is_send_email" jdbcType="BIT" property="isSendEmail" />
+        <result column="option_type" jdbcType="INTEGER" property="optionType" />
+        <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+        <result column="last_update_by" jdbcType="VARCHAR" property="lastUpdateBy" />
+        <result column="last_update_date" jdbcType="TIMESTAMP" property="lastUpdateDate" />
+        <result column="enable_flag" jdbcType="INTEGER" property="enableFlag" />
+        <collection property="voteOptions" ofType="com.company.project.model.VoteOption">
+            <id column="option_id" jdbcType="INTEGER" property="optionId" />
+            <result column="vote_id" jdbcType="INTEGER" property="voteId" />
+            <result column="option_text" jdbcType="VARCHAR" property="optionText" />
+        </collection>
+    </resultMap>
+    <select id="findAll" resultMap="ListResultMap">
         SELECT
-            `vote_id`,
-            `theme`,
-            `additional`,
-            `type`,
-            `participants`,
-            `votes_number`,
-            `select_myself`,
-            `most_select`,
-            `least_select`,
-            `close_date`,
-            `is_send_email`,
-            `create_by`,
-            `create_date`,
-            `last_update_by`,
-            `last_update_date`,
-            `enable_flag`
+            v.`vote_id`,
+            v.`theme`,
+            v.`additional`,
+            v.`type`,
+            v.`votes_number`,
+            v.`participants`,
+            v.`select_myself`,
+            v.`most_select`,
+            v.`least_select`,
+            v.`close_date`,
+            v.`is_send_email`,
+            v.`option_type`,
+            v.`create_by`,
+            v.`create_date`,
+            v.`last_update_by`,
+            v.`last_update_date`,
+            v.`enable_flag`,
+            vp.`option_text`,
+            vp.`option_id`
         FROM
-            `praisesystem`.`vote` t
+            `praisesystem`.`vote`v LEFT JOIN  `vote_option` vp ON vp.`vote_id` = v.`vote_id`
         <where>
             <if test="praiseDateBegin != null and praiseDateBegin != ''">
-                AND t.create_date &gt;= #{praiseDateBegin}
+                AND v.create_date &gt;= #{praiseDateBegin}
             </if>
             <if test="praiseDateEnd != null and praiseDateEnd != ''">
-                AND t.create_date &lt; DATE_ADD(
+                AND v.create_date &lt; DATE_ADD(
                 STR_TO_DATE(#{praiseDateEnd}, '%Y-%m-%d %H'),
                 INTERVAL 1 DAY
                 )
             </if>
             <if test="userName != null and userName != ''">
-                AND t.create_by = #{userName}
+                AND v.create_by = #{userName}
             </if>
         </where>
     </select>
@@ -127,6 +158,7 @@
             `least_select`,
             `close_date`,
             `is_send_email`,
+            `option_type`,
             `create_by`,
             `last_update_by`
         )
@@ -140,8 +172,41 @@
             #{leastSelect},
             #{closeDate},
             #{isSendEmail},
+            #{optionType},
             #{createBy},
             #{lastUpdateBy}
         )
     </insert>
+    <delete id="deleteOption">
+        DELETE FROM `vote_option`  WHERE vote_id = #{id}
+    </delete>
+    <delete id="deleteOptionDetail">
+        DELETE FROM  `vote_option_detail` WHERE  option_id IN
+        (SELECT option_id FROM `vote_option` WHERE vote_id = #{id})
+    </delete>
+    <select id="getNotCloseTop3" resultMap="BaseResultMap">
+        SELECT
+            `vote_id`,
+            `theme`,
+            `additional`,
+            `type`,
+            `votes_number`,
+            `participants`,
+            `select_myself`,
+            `most_select`,
+            `least_select`,
+            `close_date`,
+            `is_send_email`,
+            `option_type`,
+            `create_by`,
+            `create_date`,
+            `last_update_by`,
+            `last_update_date`,
+            `enable_flag`
+        FROM
+            `praisesystem`.`vote`
+        WHERE `close_date` > NOW()
+        ORDER BY `close_date` DESC
+        LIMIT 0, 3;
+    </select>
 </mapper>

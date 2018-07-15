@@ -1,59 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.company.project.dao.MeetingMapper">
-  <resultMap id="BaseResultMap" type="com.company.project.model.Meeting">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="meeting_id" jdbcType="INTEGER" property="meetingId" />
-    <result column="tally" jdbcType="INTEGER" property="tally" />
-    <result column="start" jdbcType="DATE" property="start" />
-    <result column="end" jdbcType="DATE" property="end" />
-    <result column="theme" jdbcType="VARCHAR" property="theme" />
-    <result column="content" jdbcType="VARCHAR" property="content" />
-    <result column="is_send_email" jdbcType="INTEGER" property="isSendEmail" />
-    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
-    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
-    <result column="last_update_by" jdbcType="VARCHAR" property="lastUpdateBy" />
-    <result column="last_update_date" jdbcType="TIMESTAMP" property="lastUpdateDate" />
-    <result column="enable_flag" jdbcType="INTEGER" property="enableFlag" />
-  </resultMap>
-  <select id="getNewest" resultMap="BaseResultMap">
-	  SELECT
-		  `meeting_id`,
-		  `start`,
-		  `tally`,
-		  `end`,
-		  `theme`,
-		  `content`,
-		  `is_send_email`,
-		  `create_by`,
-		  `create_date`,
-		  `last_update_by`,
-		  `last_update_date`,
-		  `enable_flag`
-	  FROM
-		  `praisesystem`.`meeting`
-	  ORDER BY start DESC
-	  LIMIT 0, 1
-  </select>
-  <select id="getChart" resultMap="BaseResultMap">
-	SELECT
-	  `meeting_id`,
-	  `tally`,
-	  `start`,
-	  `end`,
-	  `theme`,
-	  `content`,
-	  `is_send_email`,
-	  `create_by`,
-	  `create_date`,
-	  `last_update_by`,
-	  `last_update_date`,
-	  `enable_flag`
-	FROM
-	  `praisesystem`.`meeting`
-	ORDER BY create_date DESC
-	LIMIT 0, 10
-  </select>
+    <resultMap id="BaseResultMap" type="com.company.project.model.Meeting">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="meeting_id" jdbcType="INTEGER" property="meetingId" />
+        <result column="tally" jdbcType="INTEGER" property="tally" />
+        <result column="start" jdbcType="DATE" property="start" />
+        <result column="end" jdbcType="DATE" property="end" />
+        <result column="theme" jdbcType="VARCHAR" property="theme" />
+        <result column="content" jdbcType="VARCHAR" property="content" />
+        <result column="is_send_email" jdbcType="INTEGER" property="isSendEmail" />
+        <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+        <result column="last_update_by" jdbcType="VARCHAR" property="lastUpdateBy" />
+        <result column="last_update_date" jdbcType="TIMESTAMP" property="lastUpdateDate" />
+        <result column="enable_flag" jdbcType="INTEGER" property="enableFlag" />
+    </resultMap>
+    <select id="getNewest" resultMap="BaseResultMap">
+        SELECT
+            `meeting_id`,
+            `start`,
+            `tally`,
+            `end`,
+            `theme`,
+            `content`,
+            `is_send_email`,
+            `create_by`,
+            `create_date`,
+            `last_update_by`,
+            `last_update_date`,
+            `enable_flag`
+        FROM
+            `praisesystem`.`meeting`
+        ORDER BY start DESC
+        LIMIT 0, 1
+    </select>
+    <select id="getChart" resultMap="BaseResultMap">
+        SELECT
+            `meeting_id`,
+            `tally`,
+            `start`,
+            `end`,
+            `theme`,
+            `content`,
+            `is_send_email`,
+            `create_by`,
+            `create_date`,
+            `last_update_by`,
+            `last_update_date`,
+            `enable_flag`
+        FROM
+            `praisesystem`.`meeting`
+        ORDER BY create_date DESC
+        LIMIT 0, 10
+    </select>
 </mapper>

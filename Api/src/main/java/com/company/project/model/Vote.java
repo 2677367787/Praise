@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author tanggzhi
@@ -108,8 +109,14 @@ public class Vote {
 	/**
 	 * 选项类型,项目组成员或自定义
 	 */
-	@Transient
-    private String optionType;
+	@Column(name = "option_type")
+    private Integer optionType;
+
+    /**
+     * 选项详细
+     */
+    @Transient
+    private List<VoteOption> voteOptions;
     /**
      * 获取主键(自增长)
      *
@@ -380,11 +387,11 @@ public class Vote {
         this.enableFlag = enableFlag;
     }
 
-	public String getOptionType() {
+	public Integer getOptionType() {
 		return optionType;
 	}
 
-	public void setOptionType(String optionType) {
+	public void setOptionType(Integer optionType) {
 		this.optionType = optionType;
 	}
 
@@ -395,4 +402,12 @@ public class Vote {
     public void setParticipants(Integer participants) {
         this.participants = participants;
     }
+
+	public List<VoteOption> getVoteOptions() {
+		return voteOptions;
+	}
+
+	public void setVoteOptions(List<VoteOption> voteOptions) {
+		this.voteOptions = voteOptions;
+	}
 }

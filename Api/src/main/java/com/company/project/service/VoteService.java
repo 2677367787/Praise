@@ -5,6 +5,8 @@ import com.company.project.dto.VoteDTO;
 import com.company.project.dto.VoteSaveDTO;
 import com.company.project.model.Vote;
 
+import java.util.List;
+
 
 /**
  *
@@ -25,4 +27,28 @@ public interface VoteService extends Service<Vote> {
 	 * @return 返回主键ID
 	 */
 	void add(VoteSaveDTO vote);
+
+	/**
+	 * 根据主键ID关联删除缩有记录
+	 * @param id 主表ID
+	 */
+	void unionDeleteById(Integer id);
+
+	/**
+	 * 根据主键ID关联删除缩有记录
+	 * @param id 主表ID
+	 */
+	void deleteOption(Integer id);
+
+	/**
+	 * 根据主键ID关联删除缩有记录
+	 * @param id 主表ID
+	 */
+	void deleteOptionDetail(Integer id);
+
+	/**
+	 * 查找还未关闭前3个投票
+	 * @return List 集合
+	 */
+	List<Vote> getNotCloseTop3();
 }

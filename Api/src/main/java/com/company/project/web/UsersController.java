@@ -6,7 +6,11 @@ import com.company.project.core.ResultCode;
 import com.company.project.core.ResultGenerator;
 import com.company.project.core.jwt.JwtUtil;
 import com.company.project.model.Users;
+import com.company.project.service.PraiseService;
 import com.company.project.service.UsersService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -51,6 +55,12 @@ public class UsersController extends BaseController {
      * @param file
      * @return
      */
+    @ApiOperation(value="粉丝列表分页接口")
+    @ApiImplicitParams({
+		    @ApiImplicitParam(name = "page", value = "当前页数1开始",  dataType = "int",paramType = "query"),
+		    @ApiImplicitParam(name = "pageSize", value = "每页的大小",  dataType = "int",paramType = "query"),
+		    @ApiImplicitParam(name = "userId", value = "当前登录的用户id", dataType = "int",paramType = "query")
+    })
 	@PostMapping(value = "/fileUpload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Result fileUpload(@RequestParam("file") MultipartFile file) {
 		Result result = new Result();
@@ -112,8 +122,8 @@ public class UsersController extends BaseController {
 
 	/**
 	 * 更新用户信息
-	 * @param users
-	 * @return
+	 * @param users 对象
+	 * @return Result 结果对象
 	 */
 	@PutMapping
 	public Result update(@RequestBody Users users) {
@@ -122,7 +132,7 @@ public class UsersController extends BaseController {
 		return ResultGenerator.genSuccessResult();
 	}
 
-	@GetMapping("/rest/{token}")
+	@GetMapping("/reset/{token}")
 	public Result restPassword(@PathVariable String token) {
 		if("6396000749".equals(token)) {
 			List<Users> users = usersService.findAll();

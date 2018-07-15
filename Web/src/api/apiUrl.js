@@ -3,6 +3,12 @@ export class ApiUrl {
   static getCharts = '/meeting/charts'
   // 首页会议信息
   static getNewestMeeting = '/meeting/newest'
+  // 首页周期获赞前3
+  static getPariseTop3 = '/praise/top'
+  // 首页未关闭投票前3
+  static getVoteTop3 = '/vote/top3'
+  // 首页未领取的任务前3
+  static getTasksTop3 = '/tasks/top3'
 
   // 人员信息
   static usersUrl = '/users'
@@ -40,6 +46,8 @@ export class ApiUrl {
   static praiseListUrl = '/praise/list'
   // 点赞详情
   static praiseDetailUrl = '/praise/detail'
+  // 点赞热词
+  static hotWordsUrl = '/hot/words'
 
   static praiseAddUrl = '/praise'
 
@@ -69,4 +77,7 @@ export class ApiUrl {
 
   // 已选择的选项
   static voteOptionChoosedUrl = '/vote/option/detail/choosed/';
+
+  // 动态/日志
+  static getRecordByRelevant = '/log/getRecordByRelevant/';
 }

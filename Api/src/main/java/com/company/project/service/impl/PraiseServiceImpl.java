@@ -1,9 +1,7 @@
 package com.company.project.service.impl;
 
 import com.company.project.dao.PraiseMapper;
-import com.company.project.dto.PieChartDTO;
-import com.company.project.dto.PraiseCountDTO;
-import com.company.project.dto.PraiseListQueryDTO;
+import com.company.project.dto.*;
 import com.company.project.model.Praise;
 import com.company.project.service.PraiseService;
 import com.company.project.core.AbstractService;
@@ -39,7 +37,7 @@ public class PraiseServiceImpl extends AbstractService<Praise> implements Praise
     }
     
     @Override
-	public List<Praise> getPraiseDetail(PraiseListQueryDTO praise){
+	public List<PraiseListDTO> getPraiseDetail(PraiseListQueryDTO praise){
     	return praiseMapper.getPraiseDetail(praise);
     }
 
@@ -50,5 +48,15 @@ public class PraiseServiceImpl extends AbstractService<Praise> implements Praise
 		}else {
 			return praiseMapper.getPraiseFromPieChartData(praise);
 		}
+	}
+
+	/**
+	 * 获取本周期获赞前3的人员
+	 * @param queryParam 查询参数
+	 * @return 集合对象
+	 */
+	@Override
+	public List<Praise> getPraiseTop3(QueryParam queryParam) {
+		return praiseMapper.getPraiseTop3(queryParam);
 	}
 }

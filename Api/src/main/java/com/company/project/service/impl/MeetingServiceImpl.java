@@ -13,10 +13,11 @@ import javax.annotation.Resource;
 
 
 /**
- * Created by tang zhi on 2018/05/13.
+ *
+ * @author tang zhi
+ * @date 2018/05/13
  */
 @Service
-@Transactional
 public class MeetingServiceImpl extends AbstractService<Meeting> implements MeetingService {
     @Resource
     private MeetingMapper meetingMapper;

@@ -52,6 +52,12 @@
                   size="small">
                   编辑
                 </el-button>
+                <el-button
+                  @click="deleteClick(scope.row)"
+                  type="text"
+                  size="small">
+                  删除
+                </el-button>
               </template>
             </el-table-column>
         </el-table>
@@ -109,6 +115,7 @@
     </div>
 </template>
 <script>
+import * as _ from 'lodash'
 export default {
   data() {
     return {
@@ -158,10 +165,7 @@ export default {
     },
     getParam() {
       const param = {}
-      console.log(this.form.praiseDate)
-
       if (this.form.praiseDate && this.form.praiseDate.length > 0) {
-        console.log('if')
         param.praiseDateBegin = this.$moment(this.form.praiseDate[0]).format(
           'YYYY-MM-DD'
         )
@@ -207,13 +211,14 @@ export default {
       } else {
         method = 'put'
       }
-
+      console.log(this.editform)
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.$ajax[method](this.$apiUrl.meetingUrl, this.editform).then(
             result => {
               this.$message.success('保存成功!')
               this.dialogFormVisible = false
+              this.editform = {}
               this.onQuery()
             }
           )
@@ -222,9 +227,20 @@ export default {
         }
       })
     },
+    deleteClick(row) {
+      this.$ajax.delete(this.$apiUrl.meetingUrl + '/' + row.meetingId).then(
+        result => {
+          this.$message.success('删除成功!')
+          this.onQuery()
+        }
+      )
+    },
     handleClick(row) {
+      this.editform = _.cloneDeep(row)
       this.editform.action = 'Edit'
       this.editform = row
+      this.editform.start = new Date(this.editform.start)
+      this.editform.end = new Date(this.editform.end)
       this.dialogFormVisible = true
     },
     onNewMeeting() {

@@ -1,5 +1,6 @@
 <template>
   <el-autocomplete
+  ref="suggestions"
   popper-class="my-autocomplete"
   v-model="model"
   :debounce="200"
@@ -60,11 +61,17 @@ export default {
       const param = { userName: queryString }
       this.$ajax.get(this.$apiUrl.usersUrl, param).then(result => {
         cb(result.data)
+        if (result.data.length === 1) {
+          this.$refs.suggestions.select(result.data[0])
+          console.log(this.$refs.suggestions)
+          this.$refs.suggestions.$children[0].blur()
+        }
       })
     },
     handleSelect(item) {
       this.formData[this.value] = item.userName
-      this.model = item.nickName
+      this.model = item.nickName + ' ' + item.userName
+      this.$emit('handleSelect', item)
     },
     handleIconClick() {
       this.model = ''
