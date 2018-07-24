@@ -10,8 +10,8 @@ const axiosIns = axios.create({})
 if (process.env.NODE_ENV === 'development') {
   axiosIns.defaults.baseURL = 'http://localhost:8088'
 }
-// axiosIns.defaults.baseURL = 'http://10.5.4.24:9001/web'
-axiosIns.defaults.baseURL = 'http://47.104.242.130/web/'
+axiosIns.defaults.baseURL = 'http://10.5.4.24:9001/web'
+// axiosIns.defaults.baseURL = 'http://47.104.242.130/web/'
 // 添加请求拦截器
 axiosIns.interceptors.request.use(function(config) {
   // 在发送请求之前做些什么

@@ -95,7 +95,7 @@ export default {
   text-align: center;
 }
 .input-conten{
-  max-width: 35%;
+  max-width: 80%;
   min-width: 300px;
 }
 </style>

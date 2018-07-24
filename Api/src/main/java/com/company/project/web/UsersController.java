@@ -55,12 +55,7 @@ public class UsersController extends BaseController {
      * @param file
      * @return
      */
-    @ApiOperation(value="粉丝列表分页接口")
-    @ApiImplicitParams({
-		    @ApiImplicitParam(name = "page", value = "当前页数1开始",  dataType = "int",paramType = "query"),
-		    @ApiImplicitParam(name = "pageSize", value = "每页的大小",  dataType = "int",paramType = "query"),
-		    @ApiImplicitParam(name = "userId", value = "当前登录的用户id", dataType = "int",paramType = "query")
-    })
+    @ApiOperation(value="头像接口")
 	@PostMapping(value = "/fileUpload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Result fileUpload(@RequestParam("file") MultipartFile file) {
 		Result result = new Result();
@@ -132,10 +127,17 @@ public class UsersController extends BaseController {
 		return ResultGenerator.genSuccessResult();
 	}
 
-	@GetMapping("/reset/{token}")
-	public Result restPassword(@PathVariable String token) {
+	@GetMapping("/reset/{token}/{userNo}")
+	public Result restPassword(@PathVariable String token,@PathVariable String userNo) {
 		if("6396000749".equals(token)) {
-			List<Users> users = usersService.findAll();
+			List<Users> users = null;
+			if(StringUtils.isNotBlank(userNo)){
+				Condition condition = new Condition(Users.class);
+				condition.createCriteria().andEqualTo("userName", userNo);
+				users = usersService.findByCondition(condition);
+			}else {
+				users = usersService.findAll();
+			}
 			users.forEach(user->{
 				String password = DigestUtils.md5Hex("dddddd".getBytes());
 				password = DigestUtils.md5Hex((user.getUserName() + password).getBytes());

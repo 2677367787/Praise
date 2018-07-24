@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.project.dao.HotWordsMapper">
+  <resultMap id="BaseResultMap" type="com.company.project.model.HotWords">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="hot_words_id" jdbcType="INTEGER" property="hotWordsId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="words" jdbcType="VARCHAR" property="words" />
+    <result column="counter" jdbcType="INTEGER" property="counter" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="last_update_by" jdbcType="VARCHAR" property="lastUpdateBy" />
+    <result column="last_update_date" jdbcType="TIMESTAMP" property="lastUpdateDate" />
+    <result column="enable_flag" jdbcType="INTEGER" property="enableFlag" />
+  </resultMap>
+    <delete id="deleteByUserName">
+        DELETE FROM hot_words WHERE user_name=#{userName}
+    </delete>
+    <select id="getListByUserName" resultMap="BaseResultMap">
+        SELECT words,counter FROM hot_words
+        WHERE user_name = #{userName}
+        union all
+        SELECT tag AS words,99 as counter FROM `impress_tag` WHERE user_name=#{userName}
+    </select>
+</mapper>
