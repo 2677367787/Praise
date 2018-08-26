@@ -34,6 +34,10 @@ public class MeetingController extends BaseController {
         meeting.setCreateBy(this.getUserName());
         meeting.setLastUpdateBy(this.getUserName());
 		meetingService.save(meeting);
+		// 是否发送邮件
+		if(meeting.getIsSendEmail()){
+
+		}
 		return ResultGenerator.genSuccessResult();
 	}
 

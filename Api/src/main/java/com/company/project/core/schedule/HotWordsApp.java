@@ -39,8 +39,8 @@ public class HotWordsApp {
 	 * 定时热词分析
 	 * 周二周四晚上7.30分析一次
 	 */
-	@Scheduled(cron = "0 0/1 * * * ?")
-	//@Scheduled(cron = "0 30 19 * * 2-4")
+	//@Scheduled(cron = "0 0/1 * * * ?")
+	@Scheduled(cron = "0 30 19 * * 2-4")
 	public void operationWords() {
 		logger.info("热词分析定时任务启动");
 

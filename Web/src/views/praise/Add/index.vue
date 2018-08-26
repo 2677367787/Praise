@@ -14,8 +14,11 @@
         type="textarea"
         :rows="4"
         class="input-conten"
-        placeholder="请输入内容"
-        v-model="form.content">
+        placeholder="请输入内容 按下ctrl+enter 或 alt+enter 快速点赞"
+        v-model="form.content"
+        @keyup.ctrl.enter.native="onSubmit('form')"
+        @keyup.alt.enter.native="onSubmit('form')"
+        >
         </el-input>
       </el-form-item>
       <el-form-item>
@@ -69,7 +72,6 @@ export default {
         this.logining = false
         this.$message.success('点赞成功!')
         this.form.content = ''
-        this.form.userName = ''
       }, result => {
         this.logining = false
       })

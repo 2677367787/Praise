@@ -3,14 +3,14 @@
   <el-form :model="ruleForm" :rules="formRules" ref="ruleForm" class="demo-ruleForm login-container">
     <h3 class="title">系统登录</h3>
     <el-form-item prop="userName">
-        <el-input v-model="ruleForm.userName" size="medium" auto-complete="off" placeholder="请输入用户名"></el-input>
+        <el-input v-model="ruleForm.userName" size="medium" @keyup.enter.native="submitForm('ruleForm')" auto-complete="off" placeholder="请输入用户名"></el-input>
     </el-form-item>
     <el-form-item prop="password">
-        <el-input type="password" :type="pwdType" size="medium" v-model="ruleForm.password" auto-complete="off" placeholder="请输入密码"></el-input>
+        <el-input type="password" :type="pwdType" @keyup.enter.native="submitForm('ruleForm')" size="medium" v-model="ruleForm.password" auto-complete="off" placeholder="请输入密码"></el-input>
         <span class="show-pwd" @click="showPwd"><svg-icon icon-class="eye" /></span>
     </el-form-item>
     <el-form-item class="login-button">
-        <el-button style="width:100%;" size="medium" @click="submitForm('ruleForm')" type="primary" :loading="logining">登录</el-button>
+        <el-button style="width:100%;" size="medium" @click="submitForm('ruleForm')" @keyup.enter.native="submitForm('ruleForm')" type="primary" :loading="logining">登录</el-button>
     </el-form-item>
     <el-row class="register-div"><el-button type="text" @click="dialogFormVisible=true">新用户注册</el-button></el-row>
   </el-form>
