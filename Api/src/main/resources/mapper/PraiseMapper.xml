@@ -26,7 +26,7 @@
                 INTERVAL 1 DAY
         )
     </select>
-    <select id="getPraiseList"  resultMap="BaseResultMap">
+    <select id="getPraiseList" resultMap="BaseResultMap">
         SELECT
         CONCAT(
         u.`nick_name`,
@@ -81,6 +81,7 @@
         ON t2.praise_to = u.`user_name`
 
         <where>
+            AND u.enable_flag = 1
             <if test="userName != null and userName != ''">
                 AND u.user_name = #{userName}
             </if>
@@ -194,4 +195,85 @@
         ORDER BY t2.gain DESC
         limit 0,3
     </select>
+    <select id="getProbablyPraise" resultType="String">
+        SELECT praise_to AS username FROM(SELECT praise_to,COUNT(1) FROM praise GROUP BY praise_to ORDER BY COUNT(1) DESC )t1 LIMIT 0,1
+        union
+        SELECT praise_from AS username FROM(SELECT praise_from,COUNT(1) FROM praise GROUP BY praise_from ORDER BY COUNT(1) DESC )t1 LIMIT 0,1
+        union
+        SELECT
+        praise_to AS username
+        FROM
+        (SELECT
+        praise_to,
+        COUNT(1)
+        FROM
+        praise
+        where praise_to = #{userName}
+        GROUP BY praise_to
+        ORDER BY COUNT(1) DESC) t1
+        LIMIT 0, 1
+        union
+        SELECT
+        praise_from AS username
+        FROM
+        (SELECT
+        praise_from,
+        COUNT(1)
+        FROM
+        praise
+        where praise_from = #{userName}
+        GROUP BY praise_from
+        ORDER BY COUNT(1) DESC) t1
+        LIMIT 0, 1
+        union
+        SELECT praise_to AS username FROM(SELECT praise_to,COUNT(1) FROM praise
+        where 1=1
+        <include refid="whereSql" />
+        GROUP BY praise_to ORDER BY COUNT(1) DESC )t1 LIMIT 0,1
+        union
+        SELECT praise_from AS username FROM(SELECT praise_from,COUNT(1) FROM praise
+        where 1=1
+        <include refid="whereSql" />
+        GROUP BY praise_from ORDER BY COUNT(1) DESC )t1 LIMIT 0,1
+        union
+        SELECT
+        praise_to AS username
+        FROM
+        (SELECT
+        praise_to,
+        COUNT(1)
+        FROM
+        praise
+        where praise_to = #{userName}
+        <include refid="whereSql" />
+        GROUP BY praise_to
+        ORDER BY COUNT(1) DESC) t1
+        LIMIT 0, 1
+        union
+        SELECT
+        praise_from AS username
+        FROM
+        (SELECT
+        praise_from,
+        COUNT(1)
+        FROM
+        praise
+        where praise_from = #{userName}
+        <include refid="whereSql" />
+        GROUP BY praise_from
+        ORDER BY COUNT(1) DESC) t1
+        LIMIT 0, 1
+    </select>
+    <sql id="whereSql">
+        <if test="beginDate != null and beginDate != ''">
+            AND create_date &gt;= #{beginDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND create_date &lt; DATE_ADD(
+            STR_TO_DATE(#{endDate}, '%Y-%m-%d'),
+            INTERVAL 1 DAY
+            )
+        </if>
+    </sql>
+
 </mapper>

@@ -161,7 +161,6 @@ export default {
   },
   methods: {
     getCycle() {
-      console.log(1)
       this.$ajax.get(this.$apiUrl.getNewestMeeting).then(result => {
         const end = new Date()
         const start = new Date()

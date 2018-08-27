@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 public class HttpHelper {
-	public static String post(String jsonStr, String url, String appId){
+	public static String post(String jsonStr, String url){
 		// 设置超时时间
 		RequestConfig defaultRequestConfig = RequestConfig.custom().setSocketTimeout(3000).setConnectTimeout(3000)
 				.setConnectionRequestTimeout(3000).build();

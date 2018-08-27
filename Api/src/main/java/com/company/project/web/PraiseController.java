@@ -120,26 +120,44 @@ public class PraiseController extends BaseController{
 	}
 
 	@GetMapping("/top")
-	public Result getPraiseDetail() throws ParseException {
+	public Result getPraiseDetail() {
+		QueryParam queryParam = getParam();
+		List<Praise> list = praiseService.getPraiseTop3(queryParam);
+		return ResultGenerator.genSuccessResult(list);
+	}
+
+	@GetMapping("/probably")
+	public Result getProbablyPraise() {
+
+		QueryParam queryParam = getParam();
+		queryParam.setUserName(this.getUserName());
+		List<String> list = praiseService.getProbablyPraise(queryParam);
+		return ResultGenerator.genSuccessResult(list);
+	}
+
+	private QueryParam getParam(){
 		Meeting meeting = meetingService.getNewest();
+		QueryParam queryParam = new QueryParam();
 		// 获取最新会议的结束日期
 		Date end = meeting.getEnd();
 		// 获取当前日期对比
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		String s = sdf.format(new Date());
-		Date now =  sdf.parse(s);
-		QueryParam queryParam = new QueryParam();
-		// 如果今天已经超过最新的会议周期 说明还没有发布新会议，默认会议范围为上次结束日期到今天
-		if(end.before(now)){
-			DateUtils.addDay(end,1);
-			queryParam.setBeginDate(DateUtils.getDateFormat(end));
-			queryParam.setEndDate(DateUtils.getDateFormat(now));
-		}else{
-			queryParam.setBeginDate(DateUtils.getDateFormat(meeting.getStart()));
-			queryParam.setEndDate(DateUtils.getDateFormat(end));
-		}
 
-		List<Praise> list = praiseService.getPraiseTop3(queryParam);
-		return ResultGenerator.genSuccessResult(list);
+		try {
+			Date now = sdf.parse(s);
+			// 如果今天已经超过最新的会议周期 说明还没有发布新会议，默认会议范围为上次结束日期到今天
+			if(end.before(now)){
+				DateUtils.addDay(end,1);
+				queryParam.setBeginDate(DateUtils.getDateFormat(end));
+				queryParam.setEndDate(DateUtils.getDateFormat(now));
+			}else{
+				queryParam.setBeginDate(DateUtils.getDateFormat(meeting.getStart()));
+				queryParam.setEndDate(DateUtils.getDateFormat(end));
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return queryParam;
 	}
 }

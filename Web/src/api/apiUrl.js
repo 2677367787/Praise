@@ -50,6 +50,7 @@ export class ApiUrl {
   static hotWordsUrl = '/hot/words'
 
   static praiseAddUrl = '/praise'
+  static probablyUrl = '/praise/probably'
 
   // 任务模块
   static addTasksUrl = '/tasks'

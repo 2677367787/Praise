@@ -22,4 +22,11 @@ public interface PraiseService extends Service<Praise> {
 	 * @return 集合对象
 	 */
 	List<Praise> getPraiseTop3(QueryParam queryParam);
+
+	/**
+	 * 查询你可能想点赞的人
+	 * @param queryParam 参数
+	 * @return 你可能想点赞的人
+	 */
+	List<String> getProbablyPraise(QueryParam queryParam);
 }

@@ -1,8 +1,11 @@
 <template>
   <div class="app-container">
-    <el-form ref="form" :model="form" label-width="80px">
+    <el-form ref="form" :model="form" label-width="180px">
       <el-form-item label="姓名">
         <user-input :formData="form" @handleSelect="handleSelect"></user-input>
+      </el-form-item>
+      <el-form-item label="你可能想点赞的人:" v-for="(item,index) in wantPraise" :key="''+index">
+        <el-tag type="info" size="small">{{item|parseUserName}}</el-tag>
       </el-form-item>
       <el-form-item>
         <el-row style="background:#fff;width:500px"> 
@@ -52,10 +55,19 @@ export default {
       form: {
         userName: '',
         content: ''
-      }
+      },
+      wantPraise: []
     }
   },
+  mounted() {
+    this.onLoad()
+  },
   methods: {
+    onLoad() {
+      this.$ajax.get(this.$apiUrl.probablyUrl, this.form).then(result => {
+        this.wantPraise = result.data
+      })
+    },
     onSubmit(formName) {
       this.form.praiseTo = this.form.userName
       if (!this.form.praiseTo) {

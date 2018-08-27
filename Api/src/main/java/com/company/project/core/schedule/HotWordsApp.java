@@ -38,6 +38,7 @@ public class HotWordsApp {
 	/**
 	 * 定时热词分析
 	 * 周二周四晚上7.30分析一次
+	 * todo 多线程实现
 	 */
 	//@Scheduled(cron = "0 0/1 * * * ?")
 	@Scheduled(cron = "0 30 19 * * 2-4")
