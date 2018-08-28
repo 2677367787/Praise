@@ -63,7 +63,6 @@ export default {
         cb(result.data)
         if (result.data.length === 1) {
           this.$refs.suggestions.select(result.data[0])
-          console.log(this.$refs.suggestions)
           this.$refs.suggestions.$children[0].blur()
         }
       })
@@ -71,11 +70,13 @@ export default {
     handleSelect(item) {
       this.formData[this.value] = item.userName
       this.model = item.nickName + ' ' + item.userName
+      this.formData[this.text] = item.nickName + ' ' + item.userName
       this.$emit('handleSelect', item)
     },
     handleIconClick() {
       this.model = ''
       this.formData[this.value] = ''
+      this.formData[this.text] = ''
     }
   },
   mounted() {

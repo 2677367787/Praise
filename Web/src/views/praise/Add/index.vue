@@ -1,11 +1,15 @@
 <template>
   <div class="app-container">
-    <el-form ref="form" :model="form" label-width="180px">
+    <el-form ref="form" :model="form" label-width="100px">
       <el-form-item label="姓名">
-        <user-input :formData="form" @handleSelect="handleSelect"></user-input>
+        <user-input :formData="form" @handleSelect="handleSelect" ref="txtUser"></user-input>
       </el-form-item>
-      <el-form-item label="你可能想点赞的人:" v-for="(item,index) in wantPraise" :key="''+index">
-        <el-tag type="info" size="small">{{item|parseUserName}}</el-tag>
+      <el-form-item label="猜你想赞:">
+          <el-row>
+            <div v-for="(item,index) in wantPraise" :key="''+index">
+              <div class="probably-btn"><el-button type="primary" size="mini" plain @click="chooseTag(item)">{{item|parseUserName}}</el-button></div>
+            </div>
+          </el-row>
       </el-form-item>
       <el-form-item>
         <el-row style="background:#fff;width:500px"> 
@@ -34,7 +38,7 @@
 <script>
 import { ApiUrl } from '@/api/apiUrl'
 import HotWordsChart from './components/HotWordsChart'
-
+import { parseUserName } from '@/filters/index.js'
 function createRandomItemStyle() {
   return {
     normal: {
@@ -54,7 +58,8 @@ export default {
       logining: false,
       form: {
         userName: '',
-        content: ''
+        content: '',
+        nickName: ''
       },
       wantPraise: []
     }
@@ -65,6 +70,7 @@ export default {
   methods: {
     onLoad() {
       this.$ajax.get(this.$apiUrl.probablyUrl, this.form).then(result => {
+        console.log(result.data)
         this.wantPraise = result.data
       })
     },
@@ -99,6 +105,15 @@ export default {
         console.log(chartData, myself)
         myself.$refs['hotWords'].setOptions(chartData)
       })
+    },
+    chooseTag(item) {
+      console.log(item)
+      this.form.nickName = item
+      this.form.userName = item
+      this.$refs['txtUser'].model = parseUserName(item)
+
+      console.log(this.$refs['txtUser'])
+      this.handleSelect(this.form)
     }
   }
 }
@@ -111,6 +126,10 @@ export default {
 .input-conten{
   max-width: 80%;
   min-width: 300px;
+}
+.probably-btn{
+  float: left;
+  padding-right: 10px;
 }
 </style>
 
