@@ -20,6 +20,7 @@ import javax.annotation.Resource;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -131,7 +132,7 @@ public class PraiseController extends BaseController{
 
 		QueryParam queryParam = getParam();
 		queryParam.setUserName(this.getUserName());
-		List<String> list = praiseService.getProbablyPraise(queryParam);
+		List<HashMap<String,String>> list = praiseService.getProbablyPraise(queryParam);
 		return ResultGenerator.genSuccessResult(list);
 	}
 

@@ -2,6 +2,7 @@ package com.company.project.service;
 import com.company.project.dto.*;
 import com.company.project.model.Praise;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.company.project.core.Service;
@@ -28,5 +29,5 @@ public interface PraiseService extends Service<Praise> {
 	 * @param queryParam 参数
 	 * @return 你可能想点赞的人
 	 */
-	List<String> getProbablyPraise(QueryParam queryParam);
+	List<HashMap<String,String>> getProbablyPraise(QueryParam queryParam);
 }

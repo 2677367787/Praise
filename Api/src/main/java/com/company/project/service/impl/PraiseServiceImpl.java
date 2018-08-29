@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -66,7 +67,7 @@ public class PraiseServiceImpl extends AbstractService<Praise> implements Praise
 	 * @return 你可能想点赞的人
 	 */
 	@Override
-	public List<String> getProbablyPraise(QueryParam queryParam) {
+	public List<HashMap<String,String>> getProbablyPraise(QueryParam queryParam) {
 		return praiseMapper.getProbablyPraise(queryParam);
 	}
 }
