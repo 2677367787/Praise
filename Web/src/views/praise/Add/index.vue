@@ -7,7 +7,7 @@
       <el-form-item label="猜你想赞:">
           <el-row>
             <div v-for="(item,index) in wantPraise" :key="''+index">
-              <div class="probably-btn"><el-button type="primary" size="mini" plain @click="chooseTag(item)">{{item|parseUserName}}</el-button></div>
+              <div class="probably-btn"><el-button type="primary" size="mini" plain @click="chooseTag(item[0])">{{item[0]|parseUserName}}</el-button></div>
             </div>
           </el-row>
       </el-form-item>
@@ -70,8 +70,18 @@ export default {
   methods: {
     onLoad() {
       this.$ajax.get(this.$apiUrl.probablyUrl, this.form).then(result => {
-        console.log(result.data)
-        this.wantPraise = result.data
+        var m = new Map()
+        result.data.forEach(r => {
+          if (m.has(r.username)) {
+            const weight = m.get(r.username)
+            if (weight > r.weight) {
+              m.set(r.username, r.weight)
+            }
+          } else {
+            m.set(r.username, r.weight)
+          }
+        })
+        this.wantPraise = [...m]
       })
     },
     onSubmit(formName) {

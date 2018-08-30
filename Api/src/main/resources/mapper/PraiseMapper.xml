@@ -197,19 +197,26 @@
     </select>
     <select id="getProbablyPraise" resultType="java.util.HashMap">
         <include refid="praiseToMe0" />
+        union all
         <include refid="praiseToMe1" />
+        union all
         <include refid="praiseFromMe0" />
+        union all
         <include refid="praiseFromMe1" />
+        union all
         <include refid="praiseTo0" />
+        union all
         <include refid="praiseFrom2" />
+        union all
         <include refid="praiseFrom3" />
+        union all
         <include refid="praiseMin" />
     </select>
     <sql id="praiseToMe0">
-        #本周赞我最多
+        <!--本周赞我最多-->
         SELECT
             praise_from AS username,
-            10 AS weight
+            100 AS weight
         FROM
             (SELECT
                  praise_from,
@@ -217,15 +224,15 @@
              FROM
                  praise
              WHERE praise_to = #{userName}
-             <include refid="praiseTo1" />
+             <include refid="whereSql" />
              GROUP BY praise_from
              ORDER BY COUNT(1) DESC LIMIT 3) t1
     </sql>
     <sql id="praiseToMe1">
-        #历史赞我最多
+        <!--历史赞我最多-->
         SELECT
             praise_from AS username,
-            10 AS weight
+            90 AS weight
         FROM
             (SELECT
                  praise_from,
@@ -237,10 +244,10 @@
              ORDER BY COUNT(1) DESC LIMIT 3) t1
     </sql>
     <sql id="praiseFromMe0">
-        #历史我赞的最多的
+        <!--历史我赞的最多的-->
         SELECT
             praise_to AS username,
-            9 AS weight
+            80 AS weight
         FROM
             (SELECT
                  praise_to,
@@ -252,10 +259,10 @@
              ORDER BY COUNT(1) DESC LIMIT 2) t1
     </sql>
     <sql id="praiseFromMe1">
-        #本周获赞最多的
+        <!--本周获赞最多的-->
         SELECT
             praise_to AS username,
-            9 AS weight
+            70 AS weight
         FROM
             (SELECT
                  praise_to,
@@ -263,15 +270,15 @@
              FROM
                  praise
              where 1=1
-             <include refid="praiseTo1" />
+             <include refid="whereSql" />
              GROUP BY praise_to
              ORDER BY COUNT(1) DESC LIMIT 2) t1
     </sql>
     <sql id="praiseTo0">
-        #历史获赞最多的
+        <!--历史获赞最多的-->
         SELECT
             praise_to AS username,
-            9 AS weight
+            60 AS weight
         FROM
             (SELECT
                  praise_to,
@@ -282,10 +289,10 @@
              ORDER BY COUNT(1) DESC LIMIT 2) t1
     </sql>
     <sql id="praiseFrom2">
-        #本周点赞最多的
+        <!--本周点赞最多的-->
         SELECT
             praise_from AS username,
-            10 AS weight
+            50 AS weight
         FROM
             (SELECT
                  praise_from,
@@ -293,15 +300,15 @@
              FROM
                  praise
              where 1=1
-             <include refid="praiseTo1" />
+             <include refid="whereSql" />
              GROUP BY praise_from
              ORDER BY COUNT(1) DESC LIMIT 2) t1
     </sql>
     <sql id="praiseFrom3">
-        #历史点赞最多的
+        <!--历史点赞最多的-->
         SELECT
             praise_from AS username,
-            10 AS weight
+            40 AS weight
         FROM
             (SELECT
                  praise_from,
@@ -314,7 +321,7 @@
     <sql id="praiseMin">
         SELECT
             praise_to AS username,
-            10 AS weight
+            30 AS weight
         FROM
             (SELECT
                  praise_to,

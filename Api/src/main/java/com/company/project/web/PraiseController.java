@@ -1,6 +1,7 @@
 package com.company.project.web;
 
 import com.company.project.core.BaseController;
+import com.company.project.core.EmaliUtils;
 import com.company.project.core.Result;
 import com.company.project.core.ResultGenerator;
 import com.company.project.dto.PieChartDTO;
@@ -10,9 +11,11 @@ import com.company.project.dto.QueryParam;
 import com.company.project.model.Log;
 import com.company.project.model.Meeting;
 import com.company.project.model.Praise;
+import com.company.project.model.Users;
 import com.company.project.service.LogService;
 import com.company.project.service.MeetingService;
 import com.company.project.service.PraiseService;
+import com.company.project.service.UsersService;
 import com.company.project.utils.DateUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,6 +38,9 @@ public class PraiseController extends BaseController{
 	private PraiseService praiseService;
 
 	@Resource
+	private UsersService usersService;
+
+	@Resource
 	private MeetingService meetingService;
 
 	@Resource
@@ -55,6 +61,11 @@ public class PraiseController extends BaseController{
 		log.setCreateBy(userName);
 		log.setLastUpdateBy(userName);
 		logService.save(log);
+		// 发送邮件
+		QueryParam queryParam = getParam();
+		List<Praise> top3List = praiseService.getPraiseTop3(queryParam);
+		List<Users> usersList = usersService.getAllUser(new Users());
+		EmaliUtils.praiseAdd(userName,praise.getPraiseTo(),top3List,usersList);
 		return ResultGenerator.genSuccessResult();
 	}
 
@@ -120,6 +131,10 @@ public class PraiseController extends BaseController{
 		return ResultGenerator.genSuccessResult(list);
 	}
 
+	/**
+	 * 获赞top3人员
+	 * @return
+	 */
 	@GetMapping("/top")
 	public Result getPraiseDetail() {
 		QueryParam queryParam = getParam();
