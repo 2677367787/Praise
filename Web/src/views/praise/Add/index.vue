@@ -86,6 +86,7 @@ export default {
     },
     onSubmit(formName) {
       this.form.praiseTo = this.form.userName
+      this.form.uniqueName = this.form.nickName
       if (!this.form.praiseTo) {
         this.$message.error('请选择要点赞的人员!')
         return false
@@ -117,12 +118,9 @@ export default {
       })
     },
     chooseTag(item) {
-      console.log(item)
-      this.form.nickName = item
       this.form.userName = item
       this.$refs['txtUser'].model = parseUserName(item)
-
-      console.log(this.$refs['txtUser'])
+      this.form.nickName = parseUserName(item)
       this.handleSelect(this.form)
     }
   }

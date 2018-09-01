@@ -107,7 +107,7 @@ export default {
   },
   data() {
     return {
-      list: '',
+      list: [],
       listLoading: true,
       tabledata: PraiseVo.tabledata,
       dialogFormVisible: false,
@@ -193,6 +193,7 @@ export default {
       this.listLoading = true
       this.$ajax.get(ApiUrl.praiseListUrl, param).then(result => {
         this.list = result.data
+        console.log(result.data)
         this.listLoading = false
       }, fail => {
         this.listLoading = false

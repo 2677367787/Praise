@@ -140,7 +140,7 @@
                  `praise` p
              WHERE p.`praise_from` = #{userName}
              GROUP BY p.`praise_to`
-             LIMIT 0, 15) b
+             LIMIT 0, 12) b
                 ON u.user_name = b.praise_to
     </select>
     <select id="getPraiseFromPieChartData" resultType="com.company.project.dto.PieChartDTO">
@@ -157,7 +157,7 @@
                  `praise` p
              WHERE p.`praise_to` = #{userName}
              GROUP BY p.`praise_from`
-             LIMIT 0, 15) b
+             LIMIT 0, 12) b
                 ON u.user_name = b.praise_from
     </select>
     <select id="getPraiseTop3" resultMap="BaseResultMap">
@@ -343,5 +343,43 @@
             )
         </if>
     </sql>
-
+    <select id="selectPraiseUserToEmail">
+        <include refid="praiseToMe0" />
+        union all
+        <include refid="praiseToMe1" />
+    </select>
+    <sql id="to">
+        SELECT
+            u.`nick_name` as name,
+            b.praiseNum
+        FROM
+            users u
+            JOIN
+            (SELECT
+                 p.`praise_to`,
+                 COUNT(1) praiseNum
+             FROM
+                 `praise` p
+             WHERE p.`praise_from` = #{userName}
+             GROUP BY p.`praise_to`
+             LIMIT 0, 3) b
+                ON u.user_name = b.praise_to
+    </sql>
+    <sql id="from">
+        SELECT
+            u.`nick_name` name,
+            b.praiseNum
+        FROM
+            users u
+            JOIN
+            (SELECT
+                 p.`praise_from`,
+                 COUNT(1) praiseNum
+             FROM
+                 `praise` p
+             WHERE p.`praise_to` = #{userName}
+             GROUP BY p.`praise_from`
+             LIMIT 0, 3) b
+                ON u.user_name = b.praise_from
+    </sql>
 </mapper>

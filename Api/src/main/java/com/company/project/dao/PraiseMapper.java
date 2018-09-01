@@ -46,4 +46,11 @@ public interface PraiseMapper extends Mapper<Praise> {
 	 * @return 你可能想点赞的人
 	 */
 	List<HashMap<String,String>> getProbablyPraise(QueryParam queryParam);
+
+	/**
+	 * 查询给 userName 赞最多的3个人和给 userName 点赞最多的3个人
+	 * @param userName 用户名
+	 * @return 人员列表
+	 */
+	List<PieChartDTO> selectPraiseUserToEmail(String userName);
 }

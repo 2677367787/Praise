@@ -70,4 +70,14 @@ public class PraiseServiceImpl extends AbstractService<Praise> implements Praise
 	public List<HashMap<String,String>> getProbablyPraise(QueryParam queryParam) {
 		return praiseMapper.getProbablyPraise(queryParam);
 	}
+
+	/**
+	 * 查询给 userName 赞最多的3个人和给 userName 点赞最多的3个人
+	 * @param userName 用户名
+	 * @return 人员列表
+	 */
+	@Override
+	public List<PieChartDTO> selectPraiseUserToEmail(String userName) {
+		return praiseMapper.selectPraiseUserToEmail(userName);
+	}
 }

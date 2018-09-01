@@ -62,10 +62,12 @@ public class PraiseController extends BaseController{
 		log.setLastUpdateBy(userName);
 		logService.save(log);
 		// 发送邮件
+
 		QueryParam queryParam = getParam();
 		List<Praise> top3List = praiseService.getPraiseTop3(queryParam);
 		List<Users> usersList = usersService.getAllUser(new Users());
-		EmaliUtils.praiseAdd(userName,praise.getPraiseTo(),top3List,usersList);
+		String to = this.getUserName() + "(" + this.getNickName() + ")";
+		EmaliUtils.praiseAdd(to,praise.getUniqueName(),top3List,usersList);
 		return ResultGenerator.genSuccessResult();
 	}
 
