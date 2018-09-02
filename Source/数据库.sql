@@ -1,4 +1,4 @@
-/*
+﻿/*
 SQLyog Ultimate v12.5.0 (64 bit)
 MySQL - 5.6.17 : Database - praisesystem
 *********************************************************************
@@ -265,3 +265,19 @@ insert  into `users`(`id`,`user_name`,`nick_name`,`password`,`portrait`,`signatu
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+CREATE TABLE `test_case` (
+  `case_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '主键(自增长)',
+  `content` VARCHAR(2000) DEFAULT NULL COMMENT '需求内容',
+  `level` INT(1) DEFAULT '0' COMMENT 'BUG 级别 10高 20中 30低级',
+  `status` INT(1) DEFAULT '0' COMMENT '状态 10 待接受,20待验证 ,30打回, 40关闭',
+  `handler_by` VARCHAR(30) DEFAULT NULL COMMENT '当前处理人',
+  `handler_date` DATETIME DEFAULT NULL COMMENT '接受时间',
+  `repulse_count` INT(1) DEFAULT '0' COMMENT '打回次数',
+  `create_by` VARCHAR(30) COMMENT '创建人',
+  `create_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `last_update_by` VARCHAR(30) COMMENT '最后更新人',
+  `last_update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '最后更新时间',
+  `enable_flag` INT(1) DEFAULT '1' COMMENT '是否有效',
+  PRIMARY KEY (`case_id`)
+) ENGINE=INNODB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COMMENT='任务表'

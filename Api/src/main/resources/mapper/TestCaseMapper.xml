@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.project.dao.TestCaseMapper">
+  <resultMap id="BaseResultMap" type="com.company.project.model.TestCase">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="case_id" jdbcType="INTEGER" property="caseId" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="handler_by" jdbcType="VARCHAR" property="handlerBy" />
+    <result column="handler_date" jdbcType="TIMESTAMP" property="handlerDate" />
+    <result column="repulse_count" jdbcType="INTEGER" property="repulseCount" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="last_update_by" jdbcType="VARCHAR" property="lastUpdateBy" />
+    <result column="last_update_date" jdbcType="TIMESTAMP" property="lastUpdateDate" />
+    <result column="enable_flag" jdbcType="INTEGER" property="enableFlag" />
+  </resultMap>
+</mapper>
