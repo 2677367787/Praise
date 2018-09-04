@@ -222,8 +222,8 @@
                  praise_from,
                  COUNT(1) qty
              FROM
-                 praise
-             WHERE praise_to = #{userName}
+                 praise p join users u on u.user_name = p.praise_from and u.enable_flag != 0
+             WHERE praise_to = #{userName} and praise_from != #{userName}
              <include refid="whereSql" />
              GROUP BY praise_from
              ORDER BY COUNT(1) DESC LIMIT 3) t1
@@ -238,7 +238,7 @@
                  praise_from,
                  COUNT(1) qty
              FROM
-                 praise
+                 praise p join users u on u.user_name = p.praise_from and u.enable_flag != 1
              WHERE praise_to = #{userName}
              GROUP BY praise_from
              ORDER BY COUNT(1) DESC LIMIT 3) t1
@@ -253,7 +253,7 @@
                  praise_to,
                  COUNT(1)
              FROM
-                 praise
+                 praise p join users u on u.user_name = p.praise_to and u.enable_flag != 1
              WHERE praise_from = #{userName}
              GROUP BY praise_to
              ORDER BY COUNT(1) DESC LIMIT 2) t1
@@ -268,8 +268,8 @@
                  praise_to,
                  COUNT(1)
              FROM
-                 praise
-             where 1=1
+                 praise p
+             where praise_to != #{userName}
              <include refid="whereSql" />
              GROUP BY praise_to
              ORDER BY COUNT(1) DESC LIMIT 2) t1
@@ -284,7 +284,8 @@
                  praise_to,
                  COUNT(1)
              FROM
-                 praise
+                 praise p join users u on u.user_name = p.praise_to and u.enable_flag != 1
+             where praise_to != #{userName}
              GROUP BY praise_to
              ORDER BY COUNT(1) DESC LIMIT 2) t1
     </sql>
@@ -298,8 +299,8 @@
                  praise_from,
                  COUNT(1) qty
              FROM
-                 praise
-             where 1=1
+                 praise p
+             where praise_from != #{userName}
              <include refid="whereSql" />
              GROUP BY praise_from
              ORDER BY COUNT(1) DESC LIMIT 2) t1
@@ -315,6 +316,7 @@
                  COUNT(1) qty
              FROM
                  praise
+             where praise_from != #{userName}
              GROUP BY praise_from
              ORDER BY COUNT(1) DESC LIMIT 2) t1
     </sql>
@@ -327,17 +329,27 @@
                  praise_to,
                  COUNT(1) qty
              FROM
-                 praise
+                 `praise` p
+             WHERE p.`praise_to` IN
+                   (SELECT
+                        praise_from
+                    FROM
+                        `praise` p
+                    where 1=1
+                    <include refid="whereSql" />
+                    GROUP BY praise_from)
+             <include refid="whereSql" />
              GROUP BY praise_to
-             ORDER BY COUNT(1)
+             ORDER BY qty
              LIMIT 1) t1
+        GROUP BY praise_to
     </sql>
     <sql id="whereSql">
         <if test="beginDate != null and beginDate != ''">
-            AND create_date &gt;= #{beginDate}
+            AND p.create_date &gt;= #{beginDate}
         </if>
         <if test="endDate != null and endDate != ''">
-            AND create_date &lt; DATE_ADD(
+            AND p.create_date &lt; DATE_ADD(
             STR_TO_DATE(#{endDate}, '%Y-%m-%d'),
             INTERVAL 1 DAY
             )
@@ -360,7 +372,7 @@
                  COUNT(1) praiseNum
              FROM
                  `praise` p
-             WHERE p.`praise_from` = #{userName}
+             WHERE p.`praise_from` = #{userName} and p.praise_to != #{userName}
              GROUP BY p.`praise_to`
              LIMIT 0, 3) b
                 ON u.user_name = b.praise_to
@@ -377,7 +389,7 @@
                  COUNT(1) praiseNum
              FROM
                  `praise` p
-             WHERE p.`praise_to` = #{userName}
+             WHERE p.`praise_to` = #{userName} and p.praise_from != #{userName}
              GROUP BY p.`praise_from`
              LIMIT 0, 3) b
                 ON u.user_name = b.praise_from
