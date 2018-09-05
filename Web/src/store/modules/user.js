@@ -34,11 +34,13 @@ const user = {
       return new Promise((resolve, reject) => {
         ajax.post(userInfo.url, userInfo).then(response => {
           const data = response.data
+          console.log(data)
           setToken(data.token)
           setUserInfo(data)
           commit('SET_TOKEN', data.token)
           commit('SET_NICK_NAME', data.nickName)
           commit('SET_NAME', data.userName)
+          commit('SET_AVATAR', data.avatar)
           resolve()
         }).catch(error => {
           reject(error)

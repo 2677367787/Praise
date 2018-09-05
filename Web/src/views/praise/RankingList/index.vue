@@ -52,7 +52,9 @@
             <template v-for="(user,index) in pariseList">  
               <div class="jimi_lists lim_operator clearfix">
                 <div class="header_img jimi3 fl">
-                  <svg-icon :icon-class="'defaultAvatar'" class="user-avatat"></svg-icon>
+                  <img v-if="user.portrait" :src="user.portrait" alt="" class="user-avatat">
+                  <svg-icon v-else :icon-class="'defaultAvatar'" class="user-avatat"></svg-icon>
+                  
                 </div>
                 <div class="unique-name">{{user.nickName}}({{(user.userName)}})&nbsp;&nbsp;&nbsp;<span class="time">{{user.createDate|parseTime('{m}-{d} {h}:{i}')}}</span></div>
                 <div :class="(index+1)%2==0?'lim_bubble':'lim_bubble2'">
@@ -265,6 +267,7 @@ export default {
         this.actionType = 'to'
       }
       this.$ajax.get(ApiUrl.praiseDetailUrl, param).then(result => {
+        console.log(result.data)
         this.pariseList = result.data
       })
     }

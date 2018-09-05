@@ -187,6 +187,7 @@ public class UsersController extends BaseController {
 					map.put("userId", list.get(0).getId().toString());
 					map.put("userName", list.get(0).getUserName());
 					map.put("nickName", list.get(0).getNickName());
+					map.put("avatar", list.get(0).getPortrait());
 					result.setData(map);
 					result.setCode(ResultCode.SUCCESS);
 				} else {

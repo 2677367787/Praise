@@ -238,7 +238,7 @@
                  praise_from,
                  COUNT(1) qty
              FROM
-                 praise p join users u on u.user_name = p.praise_from and u.enable_flag != 1
+                 praise p join users u on u.user_name = p.praise_from and u.enable_flag != 0
              WHERE praise_to = #{userName}
              GROUP BY praise_from
              ORDER BY COUNT(1) DESC LIMIT 3) t1
@@ -253,7 +253,7 @@
                  praise_to,
                  COUNT(1)
              FROM
-                 praise p join users u on u.user_name = p.praise_to and u.enable_flag != 1
+                 praise p join users u on u.user_name = p.praise_to and u.enable_flag != 0
              WHERE praise_from = #{userName}
              GROUP BY praise_to
              ORDER BY COUNT(1) DESC LIMIT 2) t1
@@ -284,7 +284,7 @@
                  praise_to,
                  COUNT(1)
              FROM
-                 praise p join users u on u.user_name = p.praise_to and u.enable_flag != 1
+                 praise p join users u on u.user_name = p.praise_to and u.enable_flag != 0
              where praise_to != #{userName}
              GROUP BY praise_to
              ORDER BY COUNT(1) DESC LIMIT 2) t1

@@ -5,8 +5,11 @@
     <el-dropdown trigger="hover" class="avatar-container">
         <span class="el-dropdown-link userinfo-inner">
           <div>
-            <div class="box-user-avatat" v-if="this.avatar ===''"><svg-icon :icon-class="'defaultAvatar'" class="user-avatat"></svg-icon></div>
-            <img :src="this.avatar" v-else/>
+            <div class="box-user-avatat">
+              <img v-if="this.avatar" :src="this.avatar" />
+              <svg-icon v-else :icon-class="'defaultAvatar'" class="user-avatat"></svg-icon>
+            </div>
+            
             {{this.nick_name}}({{this.name}}){{this.avatar}}
           </div>
         </span>

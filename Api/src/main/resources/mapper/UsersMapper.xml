@@ -30,7 +30,7 @@
     FROM
       `praisesystem`.`users` u
       <where>
-          and u.enable_flag = 1
+          and u.enable_flag != 0
           <if test="userName!='' and userName != null">
               and u.user_name like CONCAT('%', #{userName}, '%') or u.nick_name like CONCAT('%', #{userName}, '%')
           </if>
