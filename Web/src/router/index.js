@@ -48,7 +48,6 @@ export const constantRouterMap = [
       }
     ]
   },
-
   {
     path: '/praise',
     component: Layout,
@@ -58,6 +57,18 @@ export const constantRouterMap = [
         name: 'Add',
         component: () => import('@/views/praise/Add/index'),
         meta: { title: '我要点赞', icon: 'praise' }
+      }
+    ]
+  },
+  {
+    path: '/praise',
+    component: Layout,
+    children: [
+      {
+        path: 'to',
+        name: 'To',
+        component: () => import('@/views/praise/To/index'),
+        meta: { title: '我的点赞', icon: 'praise' }
       }
     ]
   },

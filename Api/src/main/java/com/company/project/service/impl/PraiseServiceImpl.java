@@ -80,4 +80,14 @@ public class PraiseServiceImpl extends AbstractService<Praise> implements Praise
 	public List<PieChartDTO> selectPraiseUserToEmail(String userName) {
 		return praiseMapper.selectPraiseUserToEmail(userName);
 	}
+
+	/**
+	 * 查询我点过的赞
+	 * @param queryParam 查询参数
+	 * @return 点赞列表
+	 */
+	@Override
+	public List<Praise> getPraiseToList(QueryParam queryParam) {
+		return praiseMapper.getPraiseToList(queryParam);
+	}
 }

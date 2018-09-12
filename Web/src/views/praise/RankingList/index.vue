@@ -54,7 +54,6 @@
                 <div class="header_img jimi3 fl">
                   <img v-if="user.portrait" :src="user.portrait" alt="" class="user-avatat">
                   <svg-icon v-else :icon-class="'defaultAvatar'" class="user-avatat"></svg-icon>
-                  
                 </div>
                 <div class="unique-name">{{user.nickName}}({{(user.userName)}})&nbsp;&nbsp;&nbsp;<span class="time">{{user.createDate|parseTime('{m}-{d} {h}:{i}')}}</span></div>
                 <div :class="(index+1)%2==0?'lim_bubble':'lim_bubble2'">

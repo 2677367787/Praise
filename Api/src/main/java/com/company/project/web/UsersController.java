@@ -50,11 +50,11 @@ public class UsersController extends BaseController {
 	@Value("${images.server.path}")
 	private String imagesServer;
 
-    /**
-     * 基于用户标识的头像上传
-     * @param file
-     * @return
-     */
+	/**
+	 * 上传头像
+	 * @param file 图片文件
+	 * @return 返回值
+	 */
     @ApiOperation(value="头像接口")
 	@PostMapping(value = "/fileUpload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Result fileUpload(@RequestParam("file") MultipartFile file) {
@@ -130,7 +130,7 @@ public class UsersController extends BaseController {
 	@GetMapping("/reset/{token}/{userNo}")
 	public Result restPassword(@PathVariable String token,@PathVariable String userNo) {
 		if("6396000749".equals(token)) {
-			List<Users> users = null;
+			List<Users> users;
 			if(StringUtils.isNotBlank(userNo)){
 				Condition condition = new Condition(Users.class);
 				condition.createCriteria().andEqualTo("userName", userNo);
@@ -177,11 +177,12 @@ public class UsersController extends BaseController {
 			condition.createCriteria().andEqualTo("userName", users.getUserName());
 			List<Users> list = usersService.findByCondition(condition);
 			if (list.size() == 1) {
-				String paaword = DigestUtils.md5Hex(users.getPassword().getBytes());
-				paaword = DigestUtils.md5Hex((users.getUserName() + paaword).getBytes());
-				if (list.get(0).getPassword().equals(paaword)) {
+				String password = DigestUtils.md5Hex(users.getPassword().getBytes());
+				password = DigestUtils.md5Hex((users.getUserName() + password).getBytes());
+				if (list.get(0).getPassword().equals(password)) {
 					String id = "";
-					String token = JwtUtil.createJWT(id, JwtUtil.generalSubject(list.get(0)), 1000L * 60L * 60L * 24L);
+					long millis = 1000 * 60 * 60 * 24 * 60L;//设置过期时间为60天
+					String token = JwtUtil.createJWT(id, JwtUtil.generalSubject(list.get(0)), millis);
 					Map<String, String> map = new HashMap<>(5);
 					map.put("token", token);
 					map.put("userId", list.get(0).getId().toString());

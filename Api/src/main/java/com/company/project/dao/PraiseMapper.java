@@ -53,4 +53,11 @@ public interface PraiseMapper extends Mapper<Praise> {
 	 * @return 人员列表
 	 */
 	List<PieChartDTO> selectPraiseUserToEmail(String userName);
+
+	/**
+	 * 查询我点过的赞
+	 * @param queryParam 查询参数
+	 * @return 点赞列表
+	 */
+	List<Praise> getPraiseToList(QueryParam queryParam);
 }

@@ -15,6 +15,24 @@
         <result column="last_update_date" jdbcType="TIMESTAMP" property="lastUpdateDate" />
         <result column="enable_flag" jdbcType="INTEGER" property="enableFlag" />
     </resultMap>
+    <select id="getPraiseToList" resultMap="BaseResultMap">
+        SELECT p.* FROM `praise` p
+        <where>
+            <if test="beginDate != null and beginDate != ''">
+                AND p.create_date &gt;= #{beginDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND p.create_date &lt; DATE_ADD(
+                STR_TO_DATE(#{endDate}, '%Y-%m-%d %H'),
+                INTERVAL 1 DAY
+                )
+            </if>
+            <if test="userName != null and userName != ''">
+                AND p.praise_from = #{userName}
+            </if>
+        </where>
+        order by p.create_date desc
+    </select>
     <select id="getPraiseCountInfo" resultType="com.company.project.dto.PraiseCountDTO">
         SELECT
             COUNT(1) as praiseCount

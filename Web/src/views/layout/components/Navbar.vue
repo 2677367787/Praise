@@ -6,11 +6,10 @@
         <span class="el-dropdown-link userinfo-inner">
           <div>
             <div class="box-user-avatat">
-              <img v-if="this.avatar" :src="this.avatar" />
+              <img v-if="this.avatar" :src="this.avatar" class="user-avatat"/>
               <svg-icon v-else :icon-class="'defaultAvatar'" class="user-avatat"></svg-icon>
             </div>
-            
-            {{this.nick_name}}({{this.name}}){{this.avatar}}
+            {{this.nick_name}}({{this.name}})
           </div>
         </span>
         <el-dropdown-menu slot="dropdown">

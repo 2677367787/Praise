@@ -7,9 +7,9 @@ import { getToken } from '@/utils/auth'
 
 const axiosIns = axios.create({})
 
-axiosIns.defaults.baseURL = location.origin + '/web'
-// axiosIns.defaults.baseURL = 'http://10.5.4.24:9001/web'
-// axiosIns.defaults.baseURL = 'http://47.104.242.130/web/'
+// axiosIns.defaults.baseURL = location.origin + '/web'
+axiosIns.defaults.baseURL = 'http://localhost:8088'
+// axiosIns.defaults.baseURL = 'http://10.5.4.24:9001/web/'
 
 // 添加请求拦截器
 axiosIns.interceptors.request.use(function(config) {

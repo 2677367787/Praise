@@ -24,6 +24,10 @@ public class QueryParam {
 	@JSONField (format="yyyy-MM-dd")
 	private String endDate;
 
+	private int pageNum;
+
+	private int pageSize;
+
 	public String getUserName() {
 		return userName;
 	}
@@ -46,5 +50,21 @@ public class QueryParam {
 
 	public void setBeginDate(String beginDate) {
 		this.beginDate = beginDate;
+	}
+
+	public int getPageNum() {
+		return pageNum;
+	}
+
+	public void setPageNum(int pageNum) {
+		this.pageNum = pageNum;
+	}
+
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
 	}
 }

@@ -8,15 +8,14 @@ import com.company.project.dto.PieChartDTO;
 import com.company.project.dto.PraiseListDTO;
 import com.company.project.dto.PraiseListQueryDTO;
 import com.company.project.dto.QueryParam;
-import com.company.project.model.Log;
-import com.company.project.model.Meeting;
-import com.company.project.model.Praise;
-import com.company.project.model.Users;
+import com.company.project.model.*;
 import com.company.project.service.LogService;
 import com.company.project.service.MeetingService;
 import com.company.project.service.PraiseService;
 import com.company.project.service.UsersService;
 import com.company.project.utils.DateUtils;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -98,6 +97,15 @@ public class PraiseController extends BaseController{
 	public Result list(PraiseListQueryDTO praise) {
 		List<Praise> list = praiseService.getPraiseList(praise);
 		return ResultGenerator.genSuccessResult(list);
+	}
+
+	@GetMapping("/to/list")
+	public Result getPraiseTo(QueryParam param) {
+		PageHelper.startPage(param.getPageNum(), param.getPageSize());
+		param.setUserName(this.getUserName());
+		List<Praise> list = praiseService.getPraiseToList(param);
+		PageInfo<Praise> pageInfo = new PageInfo<>(list);
+		return ResultGenerator.genSuccessResult(pageInfo);
 	}
 
 	@GetMapping("/detail")

@@ -48,6 +48,8 @@ export class ApiUrl {
   static praiseDetailUrl = '/praise/detail'
   // 点赞热词
   static hotWordsUrl = '/hot/words'
+  // 我的点赞
+  static myPraise = '/praise/to/list'
 
   static praiseAddUrl = '/praise'
   static probablyUrl = '/praise/probably'
