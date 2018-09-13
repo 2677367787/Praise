@@ -412,4 +412,22 @@
              LIMIT 0, 3) b
                 ON u.user_name = b.praise_from
     </sql>
+
+    <insert id="add" useGeneratedKeys="true" keyProperty="praiseId" keyColumn="praiseId">
+        INSERT INTO `praisesystem`.`praise` (
+            `praise_from`,
+            `praise_to`,
+            `content`,
+            `create_by`,
+            `last_update_by`
+        )
+        VALUES
+            (
+                #{praiseTo},
+                #{praiseFrom},
+                #{content},
+                #{createBy},
+                #{lastUpdateBy}
+            );
+    </insert>
 </mapper>

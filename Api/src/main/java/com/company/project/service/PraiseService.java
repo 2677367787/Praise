@@ -44,4 +44,10 @@ public interface PraiseService extends Service<Praise> {
 	 * @return 点赞列表
 	 */
 	List<Praise> getPraiseToList(QueryParam queryParam);
+
+	/**
+	 * 点赞
+	 * @param praise 点赞实体
+	 */
+	void Add(Praise praise);
 }

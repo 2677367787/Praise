@@ -204,3 +204,41 @@ CREATE TABLE `hot_words` (
   `enable_flag` INT(1) DEFAULT '1' COMMENT '是否有效',
   PRIMARY KEY (`hot_words_id`)
 ) ENGINE=INNODB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COMMENT='点赞热词';
+
+CREATE TABLE `test_case` (
+  `case_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '主键(自增长)',
+  `content` VARCHAR(2000) DEFAULT NULL COMMENT '需求内容',
+  `level` INT(1) DEFAULT '0' COMMENT 'BUG 级别 10高 20中 30低级',
+  `status` INT(1) DEFAULT '0' COMMENT '状态 10 待接受,20待验证 ,30打回, 40关闭',
+  `handler_by` VARCHAR(30) DEFAULT NULL COMMENT '当前处理人',
+  `handler_date` DATETIME DEFAULT NULL COMMENT '接受时间',
+  `repulse_count` INT(1) DEFAULT '0' COMMENT '打回次数',
+  `create_by` VARCHAR(30) COMMENT '创建人',
+  `create_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `last_update_by` VARCHAR(30) COMMENT '最后更新人',
+  `last_update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '最后更新时间',
+  `enable_flag` INT(1) DEFAULT '1' COMMENT '是否有效',
+  PRIMARY KEY (`case_id`)
+) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='测试表';
+
+CREATE TABLE `email` (
+  `email_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '主键(自增长)',
+  `relation_id` INT(11) NOT NULL COMMENT '关联ID',
+  `sender` VARCHAR(100) NOT NULL COMMENT '发件人',
+  `recipients` VARCHAR(100) NOT NULL COMMENT '收件人',
+  `cc` VARCHAR(1000) NOT NULL COMMENT '抄送',
+  `subject` VARCHAR(500) NOT NULL COMMENT '主题',
+  `mb_text` VARCHAR(2000) NOT NULL COMMENT '内容',
+  `click_see` VARCHAR(500)  COMMENT '点击',
+  `link_address` VARCHAR(500) COMMENT '系统地址',
+  `system_name` VARCHAR(500) COMMENT '系统名称',
+  `notes` VARCHAR(500)  COMMENT '备注',
+  `is_send` INT(1) DEFAULT '0' COMMENT '0.未发送 1.已发送',
+  `create_by` VARCHAR(30) COMMENT '创建人',
+  `create_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `last_update_by` VARCHAR(30) COMMENT '最后更新人',
+  `last_update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '最后更新时间',
+  `enable_flag` INT(1) DEFAULT '1' COMMENT '是否有效',
+  PRIMARY KEY (`email_id`)
+) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='邮件表';
+

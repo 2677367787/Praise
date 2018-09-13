@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.project.dao.EmailMapper">
+  <resultMap id="BaseResultMap" type="com.company.project.model.Email">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="email_id" jdbcType="INTEGER" property="emailId" />
+    <result column="relation_id" jdbcType="INTEGER" property="relationId" />
+    <result column="sender" jdbcType="VARCHAR" property="sender" />
+    <result column="recipients" jdbcType="VARCHAR" property="recipients" />
+    <result column="cc" jdbcType="VARCHAR" property="cc" />
+    <result column="subject" jdbcType="VARCHAR" property="subject" />
+    <result column="mb_text" jdbcType="VARCHAR" property="mbText" />
+    <result column="click_see" jdbcType="VARCHAR" property="clickSee" />
+    <result column="link_address" jdbcType="VARCHAR" property="linkAddress" />
+    <result column="system_name" jdbcType="VARCHAR" property="systemName" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="is_send" jdbcType="INTEGER" property="isSend" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="last_update_by" jdbcType="VARCHAR" property="lastUpdateBy" />
+    <result column="last_update_date" jdbcType="TIMESTAMP" property="lastUpdateDate" />
+    <result column="enable_flag" jdbcType="INTEGER" property="enableFlag" />
+  </resultMap>
+</mapper>

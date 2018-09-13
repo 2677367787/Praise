@@ -60,4 +60,10 @@ public interface PraiseMapper extends Mapper<Praise> {
 	 * @return 点赞列表
 	 */
 	List<Praise> getPraiseToList(QueryParam queryParam);
+
+	/**
+	 * 点赞
+	 * @param praise 点赞实体
+	 */
+	void add(Praise praise);
 }

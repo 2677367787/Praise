@@ -9,10 +9,7 @@ import com.company.project.dto.PraiseListDTO;
 import com.company.project.dto.PraiseListQueryDTO;
 import com.company.project.dto.QueryParam;
 import com.company.project.model.*;
-import com.company.project.service.LogService;
-import com.company.project.service.MeetingService;
-import com.company.project.service.PraiseService;
-import com.company.project.service.UsersService;
+import com.company.project.service.*;
 import com.company.project.utils.DateUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -43,6 +40,9 @@ public class PraiseController extends BaseController{
 	private MeetingService meetingService;
 
 	@Resource
+	private EmailService emailService;
+
+	@Resource
 	private LogService logService;
 
 	@PostMapping
@@ -51,7 +51,7 @@ public class PraiseController extends BaseController{
 		praise.setPraiseFrom(userName);
 		praise.setCreateBy(userName);
 		praise.setLastUpdateBy(userName);
-		praiseService.save(praise);
+		praiseService.Add(praise);
 		// 点赞记录
 		Log log = new Log();
 		log.setRelevant(praise.getPraiseTo());
@@ -61,12 +61,25 @@ public class PraiseController extends BaseController{
 		log.setLastUpdateBy(userName);
 		logService.save(log);
 		// 发送邮件
-
 		QueryParam queryParam = getParam();
 		List<Praise> top3List = praiseService.getPraiseTop3(queryParam);
 		List<Users> usersList = usersService.getAllUser(new Users());
-		String to = this.getUserName() + "(" + this.getNickName() + ")";
-		EmaliUtils.praiseAdd(to,praise.getUniqueName(),top3List,usersList);
+		String from = this.getNickName() + "(" + this.getUserName() + ")";
+		String subject = from + "赞了" + praise.getUniqueName() + ":" + praise.getContent();
+		//EmaliUtils.praiseAdd(to,,top3List,usersList);
+		Email email = new Email();
+		email.setSender("srm");
+		email.setRecipients("6396000749");
+		email.setCc("6396000749");
+		email.setSubject(subject);
+		email.setMbText("内容");
+		email.setClickSee("http://10.5.4.24:9001");
+		email.setSystemName("点赞系统");
+		email.setRelationId(praise.getPraiseId());
+		email.setCreateBy(this.getUserName());
+		email.setLastUpdateBy(this.getUserName());
+		email.setLinkAddress("http://10.5.4.24:9001");
+		emailService.save(email);
 		return ResultGenerator.genSuccessResult();
 	}
 

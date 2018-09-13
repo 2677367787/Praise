@@ -85,7 +85,7 @@
                     </el-input>
                   </el-form-item>
                   <el-form-item>
-                    <el-button type="primary" @click="updatePraise('form')" :loading="loading">点赞</el-button>
+                    <el-button type="primary" @click="updatePraise('form')" :loading="loading">修 改</el-button>
                   </el-form-item>
                 </el-form>
             </el-col>
@@ -178,6 +178,11 @@ export default {
             this.onQuery()
           }
         )
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
     },
     handleClick(row) {

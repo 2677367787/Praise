@@ -7,7 +7,13 @@
       <el-form-item label="猜你想赞:">
           <el-row>
             <div v-for="(item,index) in wantPraise" :key="''+index">
-              <div class="probably-btn"><el-button type="primary" size="mini" plain @click="chooseTag(item[0])">{{item[0]|parseUserName}}</el-button></div>
+              <div class="probably-btn">
+                <el-tooltip v-if="item[0]==='6396000749'" class="item" placement="bottom-start" effect="dark">
+                  <div slot="content">来自开发者特权推荐<br/>没错,掌握源代码就是可以为所欲为</div>
+                  <el-button type="primary" size="mini" plain @click="chooseTag(item[0])">{{item[0]|parseUserName}}</el-button>
+                </el-tooltip>
+                <el-button v-else type="primary" size="mini" plain @click="chooseTag(item[0])">{{item[0]|parseUserName}}</el-button>
+              </div>
             </div>
           </el-row>
       </el-form-item>
@@ -138,6 +144,9 @@ export default {
 .probably-btn{
   float: left;
   padding-right: 10px;
+}
+.item {
+  margin: 4px;
 }
 </style>
 

@@ -90,4 +90,13 @@ public class PraiseServiceImpl extends AbstractService<Praise> implements Praise
 	public List<Praise> getPraiseToList(QueryParam queryParam) {
 		return praiseMapper.getPraiseToList(queryParam);
 	}
+
+	/**
+	 * 点赞
+	 * @param praise 点赞实体
+	 */
+	@Override
+	public void Add(Praise praise) {
+		praiseMapper.add(praise);
+	}
 }
