@@ -53,6 +53,7 @@ export class ApiUrl {
 
   static praiseAddUrl = '/praise'
   static probablyUrl = '/praise/probably'
+  static rectentTop3 = '/praise/recent/top3'
 
   // 任务模块
   static addTasksUrl = '/tasks'

@@ -10,9 +10,9 @@
               <div class="probably-btn">
                 <el-tooltip v-if="item[0]==='6396000749'" class="item" placement="bottom-start" effect="dark">
                   <div slot="content">来自开发者特权推荐<br/>没错,掌握源代码就是可以为所欲为</div>
-                  <el-button type="primary" size="mini" plain @click="chooseTag(item[0])">{{item[0]|parseUserName}}</el-button>
+                  <el-button type="primary" size="mini" plain @click="handleRecommendTag(item[0])">{{item[0]|parseUserName}}</el-button>
                 </el-tooltip>
-                <el-button v-else type="primary" size="mini" plain @click="chooseTag(item[0])">{{item[0]|parseUserName}}</el-button>
+                <el-button v-else type="primary" size="mini" plain @click="handleRecommendTag(item[0])">{{item[0]|parseUserName}}</el-button>
               </div>
             </div>
           </el-row>
@@ -21,6 +21,15 @@
         <el-row style="background:#fff;width:500px"> 
           <hot-words-chart ref="hotWords"></hot-words-chart>
         </el-row>
+      </el-form-item>
+      <el-form-item label="撤回或编辑:" v-if="recentPraise.length > 0">
+          <el-row v-for="(item,index) in recentPraise" :key="''+index">
+            <div class="probably-btn">
+              <el-tag class="tag" closable @click.native="handleRecentTag(item)" @close="handleClose(item)">
+                To {{item.praiseTo|parseUserName}} : {{item.content|subContent}}
+              </el-tag>
+            </div>
+          </el-row>
       </el-form-item>
       <el-form-item label="内容">
         <el-input
@@ -35,7 +44,10 @@
         </el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit('form')" :loading="logining">点赞</el-button>
+        <el-button type="primary" @click="onSubmit('form')" :loading="logining">
+          <span v-if="this.isEdit">修改</span>
+          <span v-else>点赞</span>
+        </el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -45,6 +57,7 @@
 import { ApiUrl } from '@/api/apiUrl'
 import HotWordsChart from './components/HotWordsChart'
 import { parseUserName } from '@/filters/index.js'
+import * as _ from 'lodash'
 function createRandomItemStyle() {
   return {
     normal: {
@@ -67,11 +80,15 @@ export default {
         content: '',
         nickName: ''
       },
-      wantPraise: []
+      isEdit: false,
+      wantPraise: [],
+      recentPraise: [],
+      lastPraiseTo: ''
     }
   },
   mounted() {
     this.onLoad()
+    this.refreshRecent()
   },
   methods: {
     onLoad() {
@@ -90,6 +107,12 @@ export default {
         this.wantPraise = [...m]
       })
     },
+    refreshRecent() {
+      this.$ajax.get(this.$apiUrl.rectentTop3).then(result => {
+        console.log(result.data)
+        this.recentPraise = result.data
+      })
+    },
     onSubmit(formName) {
       this.form.praiseTo = this.form.userName
       this.form.uniqueName = this.form.nickName
@@ -102,16 +125,27 @@ export default {
         this.$message.error('请输入点赞内容!')
         return false
       }
+
       this.logining = true
       this.$ajax.post(ApiUrl.praiseAddUrl, this.form).then(result => {
         this.logining = false
         this.$message.success('点赞成功!')
         this.form.content = ''
+        if (this.isEdit) {
+          this.form = {}
+          this.isEdit = false
+          this.$refs['txtUser'].model = ''
+        }
+        this.refreshRecent()
       }, result => {
         this.logining = false
       })
     },
     handleSelect(item) {
+      if (this.lastPraiseTo === item.userName) {
+        console.log(this.lastPraiseTo, item.userName)
+        return
+      }
       const myself = this
       this.$ajax.get(this.$apiUrl.hotWordsUrl + '/' + item.userName).then(result => {
         const chartData = result.data.map(map => {
@@ -119,15 +153,36 @@ export default {
           const { words: name, counter: value } = map
           return { name, value, rgbColor }
         })
-        console.log(chartData, myself)
         myself.$refs['hotWords'].setOptions(chartData)
+        myself.lastPraiseTo = item.userName
       })
     },
-    chooseTag(item) {
+    handleRecommendTag(item) {
+      this.isEdit = false
+      this.form = {}
       this.form.userName = item
+      this.setData(item)
+    },
+    setData(item) {
       this.$refs['txtUser'].model = parseUserName(item)
-      this.form.nickName = parseUserName(item)
       this.handleSelect(this.form)
+    },
+    handleRecentTag(item) {
+      this.isEdit = true
+      this.form = {}
+      this.form = _.cloneDeep(item)
+      this.form.userName = item.praiseTo
+      this.setData(item.praiseTo)
+    },
+    handleClose(item) {
+      if (this.form.praiseId && this.form.praiseId === item.praiseId) {
+        this.form = {}
+        this.$refs['txtUser'].model = ''
+      }
+      this.$ajax.put(ApiUrl.praiseAddUrl, item).then(result => {
+        this.$message.success('撤回成功!')
+        this.refreshRecent()
+      })
     }
   }
 }
@@ -147,6 +202,9 @@ export default {
 }
 .item {
   margin: 4px;
+}
+.tag {
+  cursor: pointer;
 }
 </style>
 

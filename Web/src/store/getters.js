@@ -3,7 +3,15 @@ import { getUserInfo } from '@/utils/auth'
 const getters = {
   sidebar: state => state.app.sidebar,
   token: state => state.user.token,
-  avatar: state => state.user.avatar,
+  avatar: state => {
+    if (!state.user.avatar) {
+      const userInfo = getUserInfo()
+      if (!userInfo) return ''
+      const data = JSON.parse(userInfo)
+      return data.avatar
+    }
+    return state.user.avatar
+  },
   name: state => {
     if (!state.user.name) {
       const userInfo = getUserInfo()

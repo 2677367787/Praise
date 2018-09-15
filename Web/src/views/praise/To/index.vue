@@ -49,12 +49,12 @@
                   size="small">
                   编辑
                 </el-button>
-                <el-button
+                <!-- <el-button
                   @click="deleteClick(scope.row)"
                   type="text"
                   size="small">
-                  删除
-                </el-button>
+                  撤回
+                </el-button> -->
               </template>
             </el-table-column>
         </el-table>
@@ -68,7 +68,7 @@
         :total="total">
         </el-pagination>
         <el-dialog title="新会议" class="edit-region" :visible.sync="dialogFormVisible">
-          <div slot="title">快速点赞</div>  
+          <div slot="title">编辑</div>  
           <el-row>
             <el-col :span="24">
                 <el-form ref="editform" :model="editform" label-width="80px">
@@ -157,7 +157,7 @@ export default {
       this.onQuery()
     },
     updatePraise(formName) {
-      this.$ajax.put(this.$apiUrl.praiseAddUrl, this.editform).then(
+      this.$ajax.post(this.$apiUrl.praiseAddUrl, this.editform).then(
         result => {
           this.$message.success('保存成功!')
           this.dialogFormVisible = false
@@ -167,12 +167,13 @@ export default {
       )
     },
     deleteClick(row) {
+      row.enableFlag = 2
       this.$confirm('此操作将永久删除该内容, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$ajax.delete(this.$apiUrl.praiseAddUrl + '/' + row.praiseId).then(
+        this.$ajax.put(this.$apiUrl.praiseAddUrl, row).then(
           result => {
             this.$message.success('删除成功!')
             this.onQuery()

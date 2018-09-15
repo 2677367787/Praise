@@ -18,6 +18,7 @@
     <select id="getPraiseToList" resultMap="BaseResultMap">
         SELECT p.* FROM `praise` p
         <where>
+            and p.enable_flag = 1
             <if test="beginDate != null and beginDate != ''">
                 AND p.create_date &gt;= #{beginDate}
             </if>
@@ -66,6 +67,7 @@
         FROM
         `praise` p
         <where>
+            and p.enable_flag = 1
             <if test="praiseDateBegin != null and praiseDateBegin != ''">
                 AND p.create_date &gt;= #{praiseDateBegin}
             </if>
@@ -85,6 +87,7 @@
         FROM
         `praise` p
         <where>
+            and p.enable_flag = 1
             <if test="praiseDateBegin != null and praiseDateBegin != ''">
                 AND p.create_date &gt;= #{praiseDateBegin}
             </if>
@@ -127,6 +130,7 @@
             ON u.`user_name` = p.`praise_to`
         </if>
         <where>
+            and p.enable_flag = 1
             <if test="praiseDateBegin != null and praiseDateBegin != ''">
                 AND p.create_date &gt;= #{praiseDateBegin}
             </if>
@@ -423,11 +427,17 @@
         )
         VALUES
             (
-                #{praiseTo},
                 #{praiseFrom},
+                #{praiseTo},
                 #{content},
                 #{createBy},
                 #{lastUpdateBy}
             );
     </insert>
+    <select id="getRecentTop3" resultMap="BaseResultMap">
+        SELECT p.* FROM `praise` p JOIN `email` e ON p.`praise_id` = e.`relation_id`
+        WHERE p.`enable_flag` = 1 AND e.`is_send` = 0
+        ORDER BY p.`create_date` DESC
+        LIMIT 0,3
+    </select>
 </mapper>

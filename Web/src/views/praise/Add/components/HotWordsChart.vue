@@ -74,7 +74,6 @@ export default {
   },
   methods: {
     setOptions(chartData) {
-      console.log(chartData)
       this.chart = echarts.init(this.$el, 'shine')
       this.chart.setOption({
         tooltip: {

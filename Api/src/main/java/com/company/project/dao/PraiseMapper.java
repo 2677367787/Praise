@@ -66,4 +66,11 @@ public interface PraiseMapper extends Mapper<Praise> {
 	 * @param praise 点赞实体
 	 */
 	void add(Praise praise);
+
+	/**
+	 * 获得最近的3个点赞信息,需要未发送邮件的
+	 * @param userName 用户名
+	 * @return 点赞列表
+	 */
+	List<Praise> getRecentTop3(String userName);
 }

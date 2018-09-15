@@ -142,3 +142,12 @@ export function parseUserName(userName) {
   }
   return userName
 }
+
+export function subContent(value, size) {
+  let length = 30
+  if (size) length = size
+  if (value && value.length > length) {
+    value = value.substring(0, length) + '...'
+  }
+  return value
+}

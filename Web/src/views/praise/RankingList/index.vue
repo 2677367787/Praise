@@ -47,8 +47,9 @@
       </el-table>
       <el-dialog id="showMsg" title="详细信息" :visible.sync="dialogFormVisible">
         <div slot="title">{{master}}{{action}}</div>  
-        <el-row>
+        <el-row ref="dockerDiv">
           <el-col :span="24">
+            <el-input ref="placeholder" @keyup.native.right="Next()" @keyup.native.left="Pre()"></el-input>
             <template v-for="(user,index) in pariseList">  
               <div class="jimi_lists lim_operator clearfix">
                 <div class="header_img jimi3 fl">
@@ -188,13 +189,11 @@ export default {
       return param
     },
     query() {
-      console.log(2)
       const param = this.getParam()
       param.userName = this.form.userName
       this.listLoading = true
       this.$ajax.get(ApiUrl.praiseListUrl, param).then(result => {
         this.list = result.data
-        console.log(result.data)
         this.listLoading = false
       }, fail => {
         this.listLoading = false
@@ -206,6 +205,9 @@ export default {
       this.currIndex = index
       this.getDetailData(row, type)
       this.listLoading = false
+
+      console.log(this.$refs['placeholder'])
+      this.$refs['placeholder'].focus()
     },
     onClear() {
       const spaceModle = { praiseDate: [], userName: '' }
@@ -237,6 +239,7 @@ export default {
       })
     },
     Next() {
+      this.$refs.dockerDiv.$el.scrollTop = 0
       const index = this.currIndex
       if (index + 1 < this.list.length) {
         this.currIndex++
@@ -266,9 +269,12 @@ export default {
         this.actionType = 'to'
       }
       this.$ajax.get(ApiUrl.praiseDetailUrl, param).then(result => {
-        console.log(result.data)
         this.pariseList = result.data
       })
+    },
+    down() {
+      alert(1)
+      this.$refs.dockerDiv.$el.scrollTop += 15
     }
   }
 }

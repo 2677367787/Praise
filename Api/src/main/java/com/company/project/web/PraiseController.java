@@ -47,6 +47,14 @@ public class PraiseController extends BaseController{
 
 	@PostMapping
 	public Result add(@RequestBody Praise praise) {
+		if(praise.getPraiseId() != null){
+			Email email = emailService.findBy("relationId",praise.getPraiseId());
+			if(email.getIsSend() == 1){
+				return ResultGenerator.genFailResult("超过两分钟无法修改!");
+			}
+			praiseService.update(praise);
+			return ResultGenerator.genSuccessResult();
+		}
 		String userName = this.getUserName();
 		praise.setPraiseFrom(userName);
 		praise.setCreateBy(userName);
@@ -90,7 +98,14 @@ public class PraiseController extends BaseController{
 	}
 
 	@PutMapping
-	public Result update(@RequestBody Praise praise) {
+	public Result updateEnable(@RequestBody Praise praise) {
+		Email email = emailService.findBy("relationId",praise.getPraiseId());
+		if(email.getIsSend() == 1){
+			return ResultGenerator.genFailResult("超过两分钟无法撤回!");
+		}
+		email.setEnableFlag(0);
+		emailService.update(email);
+		praise.setEnableFlag(0);
 		praiseService.update(praise);
 		return ResultGenerator.genSuccessResult();
 	}
@@ -98,6 +113,12 @@ public class PraiseController extends BaseController{
 	@GetMapping("/{id}")
 	public Result detail(@PathVariable Integer id) {
 		Praise praise = praiseService.findById(id);
+		return ResultGenerator.genSuccessResult(praise);
+	}
+
+	@GetMapping("/recent/top3")
+	public Result getRecentTop3() {
+		List<Praise> praise = praiseService.getRecentTop3(this.getUserName());
 		return ResultGenerator.genSuccessResult(praise);
 	}
 

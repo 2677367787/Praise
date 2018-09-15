@@ -99,4 +99,14 @@ public class PraiseServiceImpl extends AbstractService<Praise> implements Praise
 	public void Add(Praise praise) {
 		praiseMapper.add(praise);
 	}
+
+	/**
+	 * 获得最近的3个点赞信息,需要未发送邮件的
+	 * @param userName 用户名
+	 * @return 点赞列表
+	 */
+	@Override
+	public List<Praise> getRecentTop3(String userName) {
+		return praiseMapper.getRecentTop3(userName);
+	}
 }
