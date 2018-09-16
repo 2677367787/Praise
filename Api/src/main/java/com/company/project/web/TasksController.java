@@ -16,6 +16,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 
@@ -38,7 +39,11 @@ public class TasksController extends BaseController{
 
     private static final Integer COMPLETE = 4;
 
-    @PostMapping
+	public TasksController(HttpServletRequest request) {
+		super(request);
+	}
+
+	@PostMapping
     public Result add(@RequestBody Tasks tasks) {
         tasks.setCreateBy(this.getUserName());
         tasks.setLastUpdateBy(this.getUserName());

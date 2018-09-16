@@ -14,6 +14,7 @@ import tk.mybatis.mapper.entity.Condition;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -24,6 +25,10 @@ import java.util.List;
 public class ImpressTagController extends BaseController{
     @Resource
     private ImpressTagService impressTagService;
+
+    public ImpressTagController(HttpServletRequest request) {
+        super(request);
+    }
 
     @PostMapping
     public Result add(@RequestBody ImpressTag impressTag) {

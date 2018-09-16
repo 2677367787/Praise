@@ -8,11 +8,15 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class BaseController {
 	
-    @Autowired
-    protected HttpServletRequest request;
+    protected final HttpServletRequest request;
 
-     
-    protected  Integer getUserId(){
+	@Autowired
+	public BaseController(HttpServletRequest request) {
+		this.request = request;
+	}
+
+
+	protected  Integer getUserId(){
     	Object userId = request.getAttribute("userId");
         return userId == null? 0 : Integer.parseInt(userId.toString());
     }

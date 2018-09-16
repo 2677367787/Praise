@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -49,6 +50,10 @@ public class UsersController extends BaseController {
 	
 	@Value("${images.server.path}")
 	private String imagesServer;
+
+	public UsersController(HttpServletRequest request) {
+		super(request);
+	}
 
 	/**
 	 * 上传头像

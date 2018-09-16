@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -23,6 +24,10 @@ import java.util.List;
 public class TasksDetailController extends BaseController {
     @Resource
     private TasksDetailService tasksDetailService;
+
+    public TasksDetailController(HttpServletRequest request) {
+        super(request);
+    }
 
 
     @PostMapping

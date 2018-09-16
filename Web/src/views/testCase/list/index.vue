@@ -14,7 +14,7 @@
                 <user-input :formData="form"></user-input>
                 <el-button type="primary" @click="onQuery">Query</el-button>
                 <el-button type="primary" @click="onClear">Clear</el-button>
-                <el-button type="primary" @click="dialogFormVisible=true">发布任务</el-button>
+                <el-button type="primary" @click="dialogFormVisible=true">发布新bug</el-button>
             </el-form-item>
         </el-form>
         <el-table
@@ -76,6 +76,9 @@
         </el-pagination>
         <el-dialog title="发布任务" class="edit-region" :visible.sync="dialogFormVisible">
             <el-form :model="editform" label-width="80px">
+                <el-form-item label="菜单路径"  prop="demandTitle"> 
+                    <el-input v-model="editform.menuPath" placeholder="请输入任务大纲" auto-complete="off"></el-input>
+                </el-form-item>
                 <el-form-item label="任务大纲"  prop="demandTitle"> 
                     <el-input v-model="editform.demandTitle" placeholder="请输入任务大纲" auto-complete="off"></el-input>
                 </el-form-item>
@@ -92,23 +95,6 @@
             <div slot="footer" class="dialog-footer">
                     <el-button @click="dialogFormVisible = false">取 消</el-button>
                     <el-button type="primary" @click="saveTasks">确 定</el-button>
-            </div>
-        </el-dialog>
-        <el-dialog title="点赞" class="edit-region" :visible.sync="dialogEnergyVisible">
-            <el-form :model="detailform" label-position="top" label-width="80px">
-                <el-form-item label="需求补充">
-                      <el-input
-                      type="textarea"
-                      :rows="4"
-                      class="input-conten"
-                      placeholder="请输入内容"
-                      v-model="detailform.demand_content">
-                      </el-input>
-                </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                    <el-button @click="dialogEnergyVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="saveTasksDetail()">确 定</el-button>
             </div>
         </el-dialog>
     </div>

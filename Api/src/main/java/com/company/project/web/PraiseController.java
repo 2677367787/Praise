@@ -16,6 +16,7 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -44,6 +45,10 @@ public class PraiseController extends BaseController{
 
 	@Resource
 	private LogService logService;
+
+	public PraiseController(HttpServletRequest request) {
+		super(request);
+	}
 
 	@PostMapping
 	public Result add(@RequestBody Praise praise) {

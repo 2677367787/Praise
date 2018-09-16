@@ -20,6 +20,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,6 +41,10 @@ public class VoteController extends BaseController {
 
 	@Resource
 	private UsersService usersService;
+
+	public VoteController(HttpServletRequest request) {
+		super(request);
+	}
 
 	@PostMapping
 	public Result add(@RequestBody VoteSaveDTO vote) {

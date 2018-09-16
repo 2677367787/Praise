@@ -14,6 +14,7 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,10 @@ public class MeetingController extends BaseController {
 
 	@Resource
 	private PraiseService praiseService;
+
+	public MeetingController(HttpServletRequest request) {
+		super(request);
+	}
 
 	@PostMapping
 	public Result add(@RequestBody Meeting meeting) {

@@ -13,6 +13,7 @@ import org.wltea.analyzer.core.Lexeme;
 import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.*;
@@ -28,6 +29,10 @@ public class PublicController extends BaseController {
 
     @Resource
     private HotWordsApp hotWordsApp;
+
+    public PublicController(HttpServletRequest request) {
+        super(request);
+    }
 
     @GetMapping("/valid/{userName}")
     public Result validUsername(@PathVariable String userName) {

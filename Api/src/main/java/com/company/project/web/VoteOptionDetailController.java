@@ -13,6 +13,7 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 
@@ -30,7 +31,11 @@ public class VoteOptionDetailController extends BaseController {
     @Resource
     private VoteService voteService;
 
-    @PostMapping
+	public VoteOptionDetailController(HttpServletRequest request) {
+		super(request);
+	}
+
+	@PostMapping
     public Result add(@RequestBody OptionDetailSave optionDetailSave) {
 	    List<VoteOptionDetail>  voteOptionDetailList = optionDetailSave.getVoteOptionDetailList();
 	    voteOptionDetailList.forEach(vod->{

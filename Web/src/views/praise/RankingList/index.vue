@@ -47,9 +47,8 @@
       </el-table>
       <el-dialog id="showMsg" title="详细信息" :visible.sync="dialogFormVisible">
         <div slot="title">{{master}}{{action}}</div>  
-        <el-row ref="dockerDiv">
+        <el-row ref="dockerDiv" tabindex="0" @click.native="focusHidden()" @keyup.native.right="Next()"  @keyup.native.left="Pre()">
           <el-col :span="24">
-            <el-input ref="placeholder" @keyup.native.right="Next()" @keyup.native.left="Pre()"></el-input>
             <template v-for="(user,index) in pariseList">  
               <div class="jimi_lists lim_operator clearfix">
                 <div class="header_img jimi3 fl">
@@ -65,11 +64,13 @@
                 </div>
               </div>
             </template>
+            <input type="input"  style="width:0px;height:0px;border:none" ref="placeholder"></input>
           </el-col>
         </el-row>
         <div slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="Pre()">上一位</el-button>
-          <el-button type="primary" @click="Next()">下一位</el-button>
+          <span>方向键 ↑↓移动滚动条, ← → 翻页</span>
+          <el-button type="primary" @click="Pre()">(←)上一位</el-button>
+          <el-button type="primary" @click="Next()">下一位(→)</el-button>
         </div>
       </el-dialog>
       <el-dialog title="快速点赞" :visible.sync="quickPraiseDialog">
@@ -205,9 +206,7 @@ export default {
       this.currIndex = index
       this.getDetailData(row, type)
       this.listLoading = false
-
       console.log(this.$refs['placeholder'])
-      this.$refs['placeholder'].focus()
     },
     onClear() {
       const spaceModle = { praiseDate: [], userName: '' }
@@ -270,12 +269,22 @@ export default {
       }
       this.$ajax.get(ApiUrl.praiseDetailUrl, param).then(result => {
         this.pariseList = result.data
+        this.$refs.dockerDiv.$el.focus()
       })
     },
     down() {
-      alert(1)
-      this.$refs.dockerDiv.$el.scrollTop += 15
+      console.log('down')
+      this.$refs.dockerDiv.$el.scrollTop += 30
+    },
+    top() {
+      console.log('top')
+      this.$refs.dockerDiv.$el.scrollTop -= 30
+    },
+    focusHidden() {
+      console.log(1)
+      this.$refs.dockerDiv.$el.focus()
     }
+
   }
 }
 </script>

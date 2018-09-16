@@ -7,6 +7,8 @@ import com.company.project.model.Users;
 import com.company.project.service.HotWordsService;
 import com.company.project.service.PraiseService;
 import com.company.project.service.UsersService;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import org.apache.tomcat.util.threads.ThreadPoolExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +20,9 @@ import org.wltea.analyzer.core.Lexeme;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.StringReader;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * @author tangzhi
@@ -40,11 +44,10 @@ public class HotWordsApp {
 	 * 周二周四晚上7.30分析一次
 	 * todo 多线程实现
 	 */
-	//@Scheduled(cron = "0 0/1 * * * ?")
-	@Scheduled(cron = "0 30 19 * * 2-4")
+	@Scheduled(cron = "0 0/1 * * * ?")
+	//@Scheduled(cron = "0 30 19 * * 2-4")
 	public void operationWords() {
-		logger.info("热词分析定时任务启动");
-
+		logger.info("热词分析定时任务启动" + new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss:SSS").format(new Date()));
 		List<Users> list = usersService.findAll();
 		list.forEach(user->{
 			PraiseListQueryDTO plq = new PraiseListQueryDTO();
@@ -71,8 +74,24 @@ public class HotWordsApp {
 			});
 			hotWordsService.save(hotWordsList);
 		});
+		logger.info("热词分析定时任务结束" + new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss:SSS").format(new Date()));
+	}
 
-		logger.info("热词分析定时任务结束");
+	public void hotWords(){
+		//定义线程总数
+		int threadCount = 4;
+
+		//定义每个线程处理的数据量
+
+		int dataCount = 5;
+		List<Users> list = usersService.findAll();
+
+		ExecutorService pool = new ThreadPoolExecutor(threadCount, threadCount,
+				0L, TimeUnit.MILLISECONDS,
+				new LinkedBlockingQueue<Runnable>(1024), namedThreadFactory, new ThreadPoolExecutor.AbortPolicy());
+
+		pool.execute(()-> System.out.println(Thread.currentThread().getName()));
+		pool.shutdown();//gracefully shutdown
 	}
 
 	/**
