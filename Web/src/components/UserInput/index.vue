@@ -69,8 +69,8 @@ export default {
     },
     handleSelect(item) {
       this.formData[this.value] = item.userName
-      this.model = item.nickName + ' ' + item.userName
-      this.formData[this.text] = item.nickName + ' ' + item.userName
+      this.model = item.nickName + '(' + item.userName + ')'
+      this.formData[this.text] = item.nickName + '(' + item.userName + ')'
       this.$emit('handleSelect', item)
     },
     handleIconClick() {

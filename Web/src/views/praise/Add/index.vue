@@ -164,7 +164,9 @@ export default {
       this.setData(item)
     },
     setData(item) {
+      console.log(item)
       this.$refs['txtUser'].model = parseUserName(item)
+      this.form.nickName = parseUserName(item)
       this.handleSelect(this.form)
     },
     handleRecentTag(item) {
