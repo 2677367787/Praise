@@ -8,6 +8,7 @@ import com.company.project.service.HotWordsService;
 import com.company.project.service.PraiseService;
 import com.company.project.service.UsersService;
 import io.jsonwebtoken.lang.Collections;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.threads.ThreadPoolExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,7 +79,7 @@ public class HotWordsApp {
 		logger.info("热词分析定时任务结束" + new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss:SSS").format(new Date()));
 	}
 
-	@Scheduled(cron = "0 0/1 * * * ?")
+	//@Scheduled(cron = "0 0/1 * * * ?")
 	public void hotWords(){
 		logger.info("热词分析定时任务启动" + new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss:SSS").format(new Date()));
 		//定义线程总数
@@ -153,6 +154,11 @@ public class HotWordsApp {
 				List<PraiseListDTO> praiseList = praiseService.getPraiseDetail(plq);
 				StringBuilder praiseContent = new StringBuilder();
 				praiseList.forEach(p -> praiseContent.append(p.getContent()));
+
+				// 如果点赞词为空,不用分析了
+				if(StringUtils.isBlank(praiseContent.toString())){
+					continue;
+				}
 
 				Map<String,Integer> wordsList = getAnalyzer(praiseContent.toString());
 				List<HotWords> hotWordsList = new ArrayList<>(5);

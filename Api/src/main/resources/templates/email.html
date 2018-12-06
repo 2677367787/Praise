@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="ThemeBucket">
+    <link rel="shortcut icon" href="#" type="image/png">
+    <title>Editable Table</title>
+    <!--data table-->
+    <link rel="stylesheet" href="js/data-tables/DT_bootstrap.css" />
+    <link th:href="@{css/style.css}" rel="stylesheet">
+    <link th:href="@{css/style-responsive.css}" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script type="text/javascript" th:src="@{js/html5shiv.js}"></script>
+    <script type="text/javascript" th:src="@{js/respond.min.js}"></script>
+    <![endif]-->
+</head>
+
+<body class="sticky-header">
+<section>
+    <!-- left side start-->
+    <div th:replace="side :: side"></div>
+    <!-- left side end-->
+    <!-- main content start-->
+    <div class="main-content">
+        <!-- header section start-->
+        <div th:replace="header :: header"></div>
+        <!-- header section end-->
+        <!-- page heading start-->
+        <div class="page-heading">
+            <h3>
+                自动记账
+            </h3>
+            <ul class="breadcrumb">
+                <li>
+                    <a href="#">账单</a>
+                </li>
+                <li class="active">邮件</li>
+            </ul>
+        </div>
+        <!-- page heading end-->
+        <!--body wrapper start-->
+        <div class="wrapper">
+            <div class="row">
+                <div class="col-sm-12">
+                    <section class="panel">
+                        <header class="panel-heading">
+                            Editable Table
+                            <span class="tools pull-right">
+                                <a href="javascript:;" class="fa fa-chevron-down"></a>
+                                <a href="javascript:;" class="fa fa-times"></a>
+                            </span>
+                        </header>
+                        <div class="panel-body">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Sender</th>
+                                    <th>Send Date</th>
+                                    <th>Subject</th>
+                                    <th>Content</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="flow : ${accountFlowList.list}">
+                                    <td th:text="${#dates.format(flow.sendDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                                    <td th:text="${flow.subject}">1</td>
+                                    <td th:text="${flow.money}">2.23</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="dataTables_info" id="editable-sample_info" th:text="'Showing '+${accountFlowList.pageNum}+' to '+${accountFlowList.pageSize}+' of '+${accountFlowList.total}+' entries'">Showing 1 to 5 of 28 entries</div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="dataTables_paginate paging_bootstrap pagination">
+                                        <ul>
+                                            <li class="prev disabled"><a href="#">← Prev</a></li>
+                                            <li th:each="navigate,navigateState : ${accountFlowList.navigatepageNums}" th:class="${navigateState.index eq 0}?'active':''"><a href="#" th:text="${navigate}">1</a></li>
+                                            <li class="next"><a href="#">Next → </a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <!--body wrapper end-->
+        <!--footer section start-->
+        <div th:replace="footer :: copyright"></div>
+        <!--footer section end-->
+    </div>
+    <!-- main content end-->
+</section>
+<!-- Placed js at the end of the document so the pages load faster -->
+<script th:src="@{js/jquery-1.10.2.min.js}"></script>
+<script th:src="@{js/jquery-ui-1.9.2.custom.min.js}"></script>
+<script th:src="@{js/jquery-migrate-1.2.1.min.js}"></script>
+<script th:src="@{js/bootstrap.min.js}"></script>
+<script th:src="@{js/modernizr.min.js}"></script>
+<script th:src="@{js/jquery.nicescroll.js}"></script>
+<!--data table-->
+<script type="text/javascript" th:src="@{js/data-tables/jquery.dataTables.js}"></script>
+<script type="text/javascript" th:src="@{js/data-tables/DT_bootstrap.js}"></script>
+<!--common scripts for all pages-->
+<script th:src="@{js/scripts.js}"></script>
+<!--script for editable table-->
+<script th:src="@{js/editable-table.js}"></script>
+<!-- END JAVASCRIPTS -->
+<script>
+    jQuery(document).ready(function() {
+        EditableTable.init();
+    });
+</script>
+</body>
+
+</html>

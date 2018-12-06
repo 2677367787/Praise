@@ -69,6 +69,7 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
 		converters.add(converter);
 	}
 
+
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
@@ -78,6 +79,10 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
 
 		registry.addResourceHandler("/webjars/**")
 				.addResourceLocations("classpath:/META-INF/resources/webjars/");
+
+		//将所有/static/** 访问都映射到classpath:/static/ 目录下
+		String[] staticResource = new String[]{"/**/*.svg","/**/*.woff","/**/*.ttf","/**/*.otf","/**/*.eot","/**/*.css","/**/*.js","/**/*.jpg","/**/*.png","/**/*.gif"};
+		registry.addResourceHandler(staticResource).addResourceLocations("classpath:/static/");
 
 	}
 
@@ -128,39 +133,41 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(new ProcessInterceptor());
-		registry.addInterceptor(new HandlerInterceptorAdapter() {
-			@Override
-			public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-				// 验证签名
-				String token = request.getHeader("t-token");
-				System.out.println(token);
-				System.out.println(request.getRequestURI());
-				if (token == null) {
-					return requestFail(request, response);
-				}
-
-				try {
-					Claims claims = JwtUtil.parseJWT(token);
-					if (claims != null) {
-						String jsonStr = claims.getSubject();
-						System.out.println(jsonStr);
-
-						JSONObject user = JSONObject.parseObject(jsonStr);
-						request.setAttribute("nickName", user.get("nickName"));
-						request.setAttribute("userName", user.get("userName"));
-						request.setAttribute("userId", user.get("userId"));
-						return true;
-					} else {
-						return requestFail(request, response);
-					}
-				} catch (Exception ex) {
-					return requestFail(request, response);
-				}
-			}
-		}).addPathPatterns("/**").excludePathPatterns("/images/**")
-                .excludePathPatterns("/users/login")
-                .excludePathPatterns("/public/**")
-                .excludePathPatterns("/users/rest/**");
+//		registry.addInterceptor(new HandlerInterceptorAdapter() {
+//			@Override
+//			public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+//				// 验证签名
+//				String token = request.getHeader("t-token");
+//				System.out.println(token);
+//				System.out.println(request.getRequestURI());
+//				if (token == null) {
+//					return requestFail(request, response);
+//				}
+//
+//				try {
+//					Claims claims = JwtUtil.parseJWT(token);
+//					if (claims != null) {
+//						String jsonStr = claims.getSubject();
+//						System.out.println(jsonStr);
+//
+//						JSONObject user = JSONObject.parseObject(jsonStr);
+//						request.setAttribute("nickName", user.get("nickName"));
+//						request.setAttribute("userName", user.get("userName"));
+//						request.setAttribute("userId", user.get("userId"));
+//						return true;
+//					} else {
+//						return requestFail(request, response);
+//					}
+//				} catch (Exception ex) {
+//					return requestFail(request, response);
+//				}
+//			}
+//		}).addPathPatterns("/**").excludePathPatterns("/images/**")
+//                .excludePathPatterns("/users/login")
+//                .excludePathPatterns("/public/**")
+//                .excludePathPatterns("/users/rest/**")
+//				.excludePathPatterns("/doc/**")
+//				.excludePathPatterns("/static/**");
 
 		super.addInterceptors(registry);
 	}

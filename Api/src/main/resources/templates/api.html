@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="ThemeBucket">
+    <link rel="shortcut icon" href="#" type="image/png">
+    <title>Editable Table</title>
+    <!--data table-->
+    <link rel="stylesheet" href="js/data-tables/DT_bootstrap.css" />
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <link th:href="@{/css/style-responsive.css}" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script type="text/javascript" th:src="@{js/html5shiv.js}"></script>
+    <script type="text/javascript" th:src="@{js/respond.min.js}"></script>
+    <![endif]-->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.12.2/bootstrap-table.min.css">
+
+</head>
+
+<body class="sticky-header">
+<section>
+    <!-- left side start-->
+    <div th:replace="side :: side"></div>
+    <!-- left side end-->
+    <!-- main content start-->
+    <div class="main-content">
+        <!-- header section start-->
+        <div th:replace="header :: header"></div>
+        <!-- header section end-->
+        <!-- page heading start-->
+        <div class="page-heading">
+            <h3>
+                资料
+            </h3>
+            <ul class="breadcrumb">
+                <li>
+                    <a href="#">WebService文档</a>
+                </li>
+                <li class="active">WebService文档</li>
+            </ul>
+        </div>
+        <!-- page heading end-->
+        <!--body wrapper start-->
+        <div class="wrapper">
+            <div class="row">
+                <div class="col-sm-12">
+                    <section class="panel">
+                        <header class="panel-heading">
+                            Editable Table
+                            <span class="tools pull-right">
+                                <a href="javascript:;" class="fa fa-chevron-down"></a>
+                                <a href="javascript:;" class="fa fa-times"></a>
+                            </span>
+                        </header>
+                        <div class="panel-body">
+                            <table class="table table-bordered" id="table">
+
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <!--body wrapper end-->
+        <!--footer section start-->
+        <div th:replace="footer :: copyright"></div>
+        <!--footer section end-->
+    </div>
+    <!-- main content end-->
+</section>
+<!-- Placed js at the end of the document so the pages load faster -->
+<script th:src="@{/js/jquery-1.10.2.min.js}"></script>
+
+<script th:src="@{/table/bootstrap-table.min.js}"></script>
+<script th:src="@{/table/bootstrap-table-locale-all.min.js}"></script>
+
+<script>
+    $.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['zh-CN']);
+    $('#table').bootstrapTable({
+        search:true,
+        sidePagination: "client",
+        pagination: true, //分页
+        trimOnSearch:true,
+        pageSize: 5,//如果设置了分页，页面数据条数
+        pageList: [5, 10, 20, 40],	//如果设置了分页，设置可供选择的页面数据条数。设置为All 则显示所有记录。
+        paginationPreText: '‹',//指定分页条中上一页按钮的图标或文字,这里是<
+        paginationNextText: '›',//指定分页条中下一页按钮的图标或文字,这里是>
+        url:'/meeting',
+        responseHandler:function(res){
+            if(res.code === 200){
+                console.log(res.data.list);
+                return res.data.list;
+            }
+        },
+        columns: [{
+            field: 'content',
+            title: 'Item ID'
+        }, {
+            field: 'theme',
+            title: 'Item Name'
+        }, {
+            field: 'isSendEmail',
+            title: 'Item Price'
+        }]
+    });
+</script>
+</body>
+
+</html>
