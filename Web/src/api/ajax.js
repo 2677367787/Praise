@@ -1,44 +1,50 @@
-import axios from 'axios'
-import NProgress from 'nprogress'
-import 'nprogress/nprogress.css'
-import Vue from 'vue'
-import store from '../store'
-import { getToken } from '@/utils/auth'
+import axios from 'axios';
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
+import Vue from 'vue';
+import store from '../store';
+import { getToken } from '@/utils/auth';
 
 const axiosIns = axios.create({})
 
-axiosIns.defaults.baseURL = location.origin + '/web'
-// axiosIns.defaults.baseURL = 'http://localhost:8088'
+// axiosIns.defaults.baseURL = location.origin + '/web'
+axiosIns.defaults.baseURL = 'http://localhost:8087';
 // axiosIns.defaults.baseURL = 'http://10.5.4.24:9001/web/'
 
 // 添加请求拦截器
-axiosIns.interceptors.request.use(function(config) {
-  // 在发送请求之前做些什么
-  NProgress.start()
-  if (store.getters.token) {
-    config.headers['t-token'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
+axiosIns.interceptors.request.use(
+  function(config) {
+    // 在发送请求之前做些什么
+    NProgress.start()
+    if (store.getters.token) {
+      config.headers['t-token'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
+    }
+    return config
+  },
+  function(error) {
+    // 对请求错误做些什么
+    console.log('错误的传参')
+    return Promise.reject(error)
   }
-  return config
-}, function(error) {
-  // 对请求错误做些什么
-  console.log('错误的传参')
-  return Promise.reject(error)
-})
+)
 
-axiosIns.interceptors.response.use((res) => {
-  // 对响应数据做些事
-  NProgress.done()
-  if (!res.data) {
-    return Promise.reject(res)
+axiosIns.interceptors.response.use(
+  res => {
+    // 对响应数据做些事
+    NProgress.done()
+    if (!res.data) {
+      return Promise.reject(res)
+    }
+    return res
+  },
+  error => {
+    NProgress.done()
+    return Promise.reject(error)
   }
-  return res
-}, (error) => {
-  NProgress.done()
-  return Promise.reject(error)
-})
+)
 const ajaxMethod = ['get', 'post', 'put', 'delete']
 const ajax = {}
-ajaxMethod.forEach((method) => {
+ajaxMethod.forEach(method => {
   ajax[method] = function(uri, data, config) {
     if (method === 'get') {
       data = { params: data }
@@ -50,7 +56,7 @@ ajaxMethod.forEach((method) => {
             resolve(response.data)
           } else if (response.data.code === 401) {
             store.dispatch('FedLogOut').then(() => {
-              location.reload()// 为了重新实例化vue-router对象 避免bug
+              location.reload() // 为了重新实例化vue-router对象 避免bug
             })
           } else {
             Vue.prototype.$message.error(response.data.message, 1000)
@@ -71,7 +77,7 @@ ajaxMethod.forEach((method) => {
           console.log(error.config)
         })
     })
-  }
+  };
 })
 export default ajax
 

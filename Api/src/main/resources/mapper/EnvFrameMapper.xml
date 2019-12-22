@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.project.dao.EnvFrameMapper">
+    <resultMap id="BaseResultMap" type="com.company.project.model.EnvFrame">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="parent_id" jdbcType="INTEGER" property="parentId"/>
+        <result column="level" jdbcType="INTEGER" property="level"/>
+        <result column="level_name" jdbcType="VARCHAR" property="levelName"/>
+        <result column="label" jdbcType="VARCHAR" property="label"/>
+    </resultMap>
+    <select id="findAllAndTable" resultType="com.company.project.dto.env.EnvFrameDTO">
+        SELECT
+            `id`,
+            `parent_id` parentId,
+            `level`,
+            `level_name` levelName,
+            `label`
+        FROM
+            `praisesystem`.`env_frame`
+        UNION ALL
+        SELECT
+            eft.id,
+            eft.`panel_id` parentId,
+            '2' `level`,
+            '表格' levelName,
+            et.`table_name` label
+        FROM
+            `env_frame_table` eft
+            JOIN `env_frame` ef
+                ON eft.`panel_id` = ef.`id`
+            JOIN `env_table` et
+                ON eft.`table_id` = et.`id`
+    </select>
+</mapper>

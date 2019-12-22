@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.project.dao.EnvFrameTableMapper">
+    <resultMap id="BaseResultMap" type="com.company.project.model.EnvFrameTable">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="panel_id" jdbcType="INTEGER" property="panelId"/>
+        <result column="table_id" jdbcType="INTEGER" property="tableId"/>
+    </resultMap>
+    <select id="findTableFrame" resultType="com.company.project.dto.env.TableStruct">
+        SELECT
+        et.`table_name` tableName,
+        eth.`table_id` tableId,
+        eth.`field`,
+        eth.`cell_name` cellName,
+        eth.`cell_type` cellType,
+        eth.`id` headId
+        FROM
+        `env_table` et
+        LEFT JOIN `env_table_head` eth
+        ON et.`id` = eth.`table_id`
+        <where>
+            <if test="panelId != null and panelId != ''">
+                and et.panel_id = #{panelId}
+            </if>
+        </where>
+    </select>
+
+    <resultMap type="com.company.project.dto.env.TableStruct" id="tableStructResultMap">
+        <id property="tableId" column="table_id"/>
+        <result property="tableName" column="table_name"/>
+        <collection property="tableStructList" ofType="com.company.project.dto.env.TableStruct">
+            <id property="headId" column="id"/>
+            <result property="tableId" column="table_id"/>
+            <result property="cellName" column="cell_name"/>
+            <result property="cellType" column="cell_type"/>
+            <result property="field" column="field"/>
+        </collection>
+
+    </resultMap>
+    <select id="findTableFrame2" resultMap="tableStructResultMap">
+        SELECT
+            et.`table_name` ,
+            et.`id` table_id ,
+            eth.`field`,
+            eth.`cell_name` ,
+            eth.`cell_type` ,
+            eth.`id`
+        FROM
+            `env_table` et
+            LEFT JOIN `env_table_head` eth
+                ON et.`id` = eth.`table_id`
+    </select>
+</mapper>
