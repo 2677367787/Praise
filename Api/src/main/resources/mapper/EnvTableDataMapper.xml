@@ -1,42 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.company.project.dao.EnvTableDataMapper">
-  <resultMap id="BaseResultMap" type="com.company.project.model.EnvTableData">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="head_id" jdbcType="INTEGER" property="headId" />
-    <result column="row_id" jdbcType="INTEGER" property="rowId" />
-    <result column="content" jdbcType="VARCHAR" property="content" />
-    <result column="tips" jdbcType="VARCHAR" property="tips" />
-  </resultMap>
+    <resultMap id="BaseResultMap" type="com.company.project.model.EnvTableData">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="head_id" jdbcType="INTEGER" property="headId"/>
+        <result column="row_id" jdbcType="INTEGER" property="rowId"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="tips" jdbcType="VARCHAR" property="tips"/>
+    </resultMap>
     <update id="updateByEntity">
         UPDATE
             `env_table_data`
         SET
             `content` = #{content},
-            `tips` = #{tips}
+            `tips`    = #{tips}
         WHERE `head_id` = #{headId}
-        AND `row_id` = #{rowId}
+              AND `row_id` = #{rowId}
     </update>
     <select id="findAllTableData" resultType="com.company.project.dto.env.TableStruct">
-      SELECT
-          et.`table_name` tableName,
-          eth.`table_id` tableId,
-          eth.`field`,
-          eth.`cell_name` cellName,
-          eth.`cell_type` cellType,
-          eth.`id` headId,
-          etd.`row_id` rowId,
-          etd.`content`,
-          etd.`tips`,
-          etd.`id`
-      FROM
-          `env_table` et
-          JOIN `env_table_head` eth
-              ON et.`id` = eth.`table_id`
-          JOIN `env_table_data` etd
-              ON eth.`id` = etd.`head_id`
-  </select>
+        SELECT
+            eft.`panel_id`  panelId,
+            et.`table_name` tableName,
+            eth.`table_id`  tableId,
+            eth.`field`,
+            eth.`cell_name` cellName,
+            eth.`cell_type` cellType,
+            eth.`id`        headId,
+            etd.`row_id`    rowId,
+            etd.`content`,
+            etd.`tips`,
+            etd.`id`
+        FROM
+            `env_frame_table` eft
+            JOIN `env_table` et
+                ON eft.`table_id` = et.`id`
+            JOIN `env_table_head` eth
+                ON et.`id` = eth.`table_id`
+            JOIN `env_table_data` etd
+                ON eth.`id` = etd.`head_id`
+                AND eft.`panel_id` = etd.`panel_id`
+    </select>
 </mapper>

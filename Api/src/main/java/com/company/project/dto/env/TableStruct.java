@@ -15,6 +15,7 @@ import java.util.List;
 @ToString
 public class TableStruct {
     private Integer id;
+    private Integer panelId;
     private String tableName;
     private Integer headId;
     private Integer tableId;

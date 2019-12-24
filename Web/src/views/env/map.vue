@@ -15,7 +15,7 @@
                  v-for="table in panel.tables">
               <div class="btn-panel">
                 <el-button type="primary"
-                           @click="handleEdit('add',{},table.tableStruct)"
+                           @click="handleEdit('add',{},table.tableStruct,panel.id)"
                            size="mini">新 增</el-button>
               </div>
               <el-table :data="table.tableData"
@@ -108,7 +108,7 @@ export default {
     };
   },
   methods: {
-    handleEdit(operate, row, struct) {
+    handleEdit(operate, row, struct, panelId) {
       console.log(row)
       console.log(struct)
       struct.forEach(cell => {
@@ -118,6 +118,7 @@ export default {
             row[cell.field][cell.field] = ''
             row[cell.field].tips = ''
             row[cell.field].headId = cell.headId
+            row[cell.field].panelId = panelId
           }
         }
       })
@@ -148,6 +149,7 @@ export default {
       });
     },
     onRowSave() {
+      console.log(this.form)
       const param = [];
       Object.keys(this.form).forEach(field => {
         this.form[field]['content'] = this.form[field][field];

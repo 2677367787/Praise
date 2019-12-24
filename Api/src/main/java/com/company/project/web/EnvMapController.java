@@ -10,10 +10,12 @@ import com.company.project.service.*;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -43,7 +45,7 @@ public class EnvMapController {
 
     @GetMapping
     public Result mapFrameData() {
-        Multimap<Integer, Map<String, Object>> tableDataMap = getTableData();
+        Map<Integer, Map<Long, List<TableStruct>>> tableDataMap = getTableData();
         Multimap<Integer, TableStruct> tableStructMap = getTableStruct();
 
         //所有面板和表格的关系数据
@@ -58,7 +60,6 @@ public class EnvMapController {
                     .filter(f -> f.getPanelId().equals(map.getId()))
                     .collect(Collectors.toList());
 
-
             List<EnvTableDTO> envTables = new ArrayList<>(16);
             for (EnvFrameTable table : tables) {
                 EnvTableDTO envTable = new EnvTableDTO();
@@ -67,14 +68,50 @@ public class EnvMapController {
                 //通过表格ID查询表格结构
                 Collection<TableStruct> tabStruct = tableStructMap.asMap().get(table.getTableId());
                 if (tabStruct != null) {
-                    envTable.setTableStruct(tabStruct);
+                    List<TableStruct> aa = new ArrayList<>();
+                    for (TableStruct tableStruct : tabStruct) {
+                        TableStruct a1 = new TableStruct();
+                        BeanUtils.copyProperties(tableStruct, a1);
+                        aa.add(a1);
+                    }
+                    envTable.setTableStruct(aa);
+                }
+
+                if (tableDataMap.containsKey(table.getPanelId())) {
+                    Map<Long, List<TableStruct>> allTableData = tableDataMap.get(table.getPanelId());
+                    List<Map<String, Map<String, Object>>> rr = new ArrayList<>();
+                    allTableData.forEach((k, v) -> {
+                        List<TableStruct> currTableData = v.stream().filter(f -> f.getTableId().equals(table.getTableId())).collect(Collectors.toList());
+                        Map<String, Map<String, Object>> result;
+                        Map<Long, Map<String, Map<String, Object>>> row = new HashMap<>(16);
+
+                        for (TableStruct tab : currTableData) {
+                            Map<String, Object> fieldProperty = Maps.newHashMap();
+                            if (row.containsKey(tab.getRowId())) {
+                                result = row.get(tab.getRowId());
+                            } else {
+                                result = new HashMap<>(16);
+                                row.put(tab.getRowId(), result);
+                                rr.add(result);
+                            }
+
+                            fieldProperty.put("rowId", tab.getRowId());
+                            fieldProperty.put("headId", tab.getHeadId());
+                            fieldProperty.put("id", tab.getId());
+                            fieldProperty.put(tab.getField(), tab.getContent());
+                            fieldProperty.put("tips", tab.getTips());
+                            result.put(tab.getField(), fieldProperty);
+
+                        }
+                    });
+                    envTable.setTableData(rr);
                 }
 
                 //通过表格ID查询表格数据
-                Collection<Map<String, Object>> arrayListMultimap = tableDataMap.asMap().get(table.getTableId());
-                if (arrayListMultimap != null) {
-                    envTable.setTableData(arrayListMultimap);
-                }
+//                Collection<Map<String, Object>> arrayListMultimap = tableDataMap.asMap().get(table.getTableId());
+//                if (arrayListMultimap != null) {
+//                    envTable.setTableData(arrayListMultimap);
+//                }
                 envTables.add(envTable);
             }
             map.setTables(envTables);
@@ -198,27 +235,32 @@ public class EnvMapController {
         return ResultGenerator.genSuccessResult();
     }
 
-    private Multimap<Integer, Map<String, Object>> getTableData() {
+    private Map<Integer, Map<Long, List<TableStruct>>> getTableData() {
         List<TableStruct> tableData = envTableDataService.findAllTableData();
-        Multimap<Integer, Map<String, Object>> listMultimap = ArrayListMultimap.create();
 
-        Map<Long, Long> rowMap = new HashMap<>(16);
-        Map<String, Object> mapRow = Maps.newHashMap();
-        for (TableStruct tab : tableData) {
-            Map<String, Object> map = Maps.newHashMap();
-            if (!rowMap.containsKey(tab.getRowId())) {
-                mapRow = Maps.newHashMap();
-                listMultimap.put(tab.getTableId(), mapRow);
-                rowMap.put(tab.getRowId(), tab.getRowId());
-            }
-            map.put("rowId", tab.getRowId());
-            map.put("headId", tab.getHeadId());
-            map.put("id", tab.getId());
-            map.put(tab.getField(), tab.getContent());
-            map.put("tips", tab.getTips());
-            mapRow.put(tab.getField(), map);
-        }
-        return listMultimap;
+
+        return tableData.parallelStream()
+                .collect(Collectors.groupingBy(TableStruct::getPanelId, Collectors.groupingBy(TableStruct::getRowId)));
+
+//        Multimap<Integer, Map<String, Object>> listMultimap = ArrayListMultimap.create();
+//
+//        Map<Long, Long> row = new HashMap<>(16);
+//        Map<String, Object> rowMap = Maps.newHashMap();
+//        for (TableStruct tab : tableData) {
+//            Map<String, Object> map = Maps.newHashMap();
+//            if (!row.containsKey(tab.getRowId())) {
+//                rowMap = Maps.newHashMap();
+//                listMultimap.put(tab.getTableId(), rowMap);
+//                row.put(tab.getRowId(), tab.getRowId());
+//            }
+//            map.put("rowId", tab.getRowId());
+//            map.put("headId", tab.getHeadId());
+//            map.put("id", tab.getId());
+//            map.put(tab.getField(), tab.getContent());
+//            map.put("tips", tab.getTips());
+//            rowMap.put(tab.getField(), map);
+//        }
+//        return listMultimap;
     }
 
     @GetMapping("/table/frame")

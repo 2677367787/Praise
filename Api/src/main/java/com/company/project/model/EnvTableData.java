@@ -14,6 +14,12 @@ public class EnvTableData {
     /**
      * title头Id
      */
+    @Column(name = "panel_id")
+    private Integer panelId;
+
+    /**
+     * title头Id
+     */
     @Column(name = "head_id")
     private Integer headId;
 
@@ -121,5 +127,14 @@ public class EnvTableData {
      */
     public void setTips(String tips) {
         this.tips = tips;
+    }
+
+    public Integer getPanelId() {
+        return panelId;
+    }
+
+    public EnvTableData setPanelId(Integer panelId) {
+        this.panelId = panelId;
+        return this;
     }
 }

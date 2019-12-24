@@ -6,6 +6,7 @@ import lombok.ToString;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Mr.Tang
@@ -18,7 +19,7 @@ public class EnvTableDTO {
 
     private Integer id;
 
-    private Object tableStruct;
+    private List<TableStruct> tableStruct;
 
-    private Object tableData;
+    private List<Map<String, Map<String, Object>>> tableData;
 }
