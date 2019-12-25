@@ -54,68 +54,65 @@ public class EnvMapController {
 
         List<EnvFrameDTO> frameList = envFrameService.findAllAndTable();
         List<EnvFrameDTO> mapFrame = buildEnvMap(frameList, 0);
-        mapFrame.get(0).getChildren().forEach(map -> {
-            //查询面板下所有的表格
-            List<EnvFrameTable> tables = panelMapTables.stream()
-                    .filter(f -> f.getPanelId().equals(map.getId()))
-                    .collect(Collectors.toList());
+        for (EnvFrameDTO frameDTO : mapFrame) {
+            frameDTO.getChildren().forEach(map -> {
+                //查询面板下所有的表格
+                List<EnvFrameTable> tables = panelMapTables.stream()
+                        .filter(f -> f.getPanelId().equals(map.getId()))
+                        .collect(Collectors.toList());
 
-            List<EnvTableDTO> envTables = new ArrayList<>(16);
-            for (EnvFrameTable table : tables) {
-                EnvTableDTO envTable = new EnvTableDTO();
+                List<EnvTableDTO> envTables = new ArrayList<>(16);
+                for (EnvFrameTable table : tables) {
+                    EnvTableDTO envTable = new EnvTableDTO();
 
-                envTable.setId(table.getTableId());
-                //通过表格ID查询表格结构
-                Collection<TableStruct> tabStruct = tableStructMap.asMap().get(table.getTableId());
-                if (tabStruct != null) {
-                    List<TableStruct> aa = new ArrayList<>();
-                    for (TableStruct tableStruct : tabStruct) {
-                        TableStruct a1 = new TableStruct();
-                        BeanUtils.copyProperties(tableStruct, a1);
-                        aa.add(a1);
-                    }
-                    envTable.setTableStruct(aa);
-                }
-
-                if (tableDataMap.containsKey(table.getPanelId())) {
-                    Map<Long, List<TableStruct>> allTableData = tableDataMap.get(table.getPanelId());
-                    List<Map<String, Map<String, Object>>> rr = new ArrayList<>();
-                    allTableData.forEach((k, v) -> {
-                        List<TableStruct> currTableData = v.stream().filter(f -> f.getTableId().equals(table.getTableId())).collect(Collectors.toList());
-                        Map<String, Map<String, Object>> result;
-                        Map<Long, Map<String, Map<String, Object>>> row = new HashMap<>(16);
-
-                        for (TableStruct tab : currTableData) {
-                            Map<String, Object> fieldProperty = Maps.newHashMap();
-                            if (row.containsKey(tab.getRowId())) {
-                                result = row.get(tab.getRowId());
-                            } else {
-                                result = new HashMap<>(16);
-                                row.put(tab.getRowId(), result);
-                                rr.add(result);
-                            }
-
-                            fieldProperty.put("rowId", tab.getRowId());
-                            fieldProperty.put("headId", tab.getHeadId());
-                            fieldProperty.put("id", tab.getId());
-                            fieldProperty.put(tab.getField(), tab.getContent());
-                            fieldProperty.put("tips", tab.getTips());
-                            result.put(tab.getField(), fieldProperty);
-
+                    envTable.setId(table.getTableId());
+                    //通过表格ID查询表格结构
+                    Collection<TableStruct> tabStruct = tableStructMap.asMap().get(table.getTableId());
+                    if (tabStruct != null) {
+                        List<TableStruct> aa = new ArrayList<>();
+                        for (TableStruct tableStruct : tabStruct) {
+                            TableStruct a1 = new TableStruct();
+                            BeanUtils.copyProperties(tableStruct, a1);
+                            aa.add(a1);
                         }
-                    });
-                    envTable.setTableData(rr);
-                }
+                        envTable.setTableStruct(aa);
+                    }
 
-                //通过表格ID查询表格数据
-//                Collection<Map<String, Object>> arrayListMultimap = tableDataMap.asMap().get(table.getTableId());
-//                if (arrayListMultimap != null) {
-//                    envTable.setTableData(arrayListMultimap);
-//                }
-                envTables.add(envTable);
-            }
-            map.setTables(envTables);
-        });
+                    if (tableDataMap.containsKey(table.getPanelId())) {
+                        Map<Long, List<TableStruct>> allTableData = tableDataMap.get(table.getPanelId());
+                        List<Map<String, Map<String, Object>>> rr = new ArrayList<>();
+                        allTableData.forEach((k, v) -> {
+                            List<TableStruct> currTableData = v.stream().filter(f -> f.getTableId().equals(table.getTableId())).collect(Collectors.toList());
+                            Map<String, Map<String, Object>> result;
+                            Map<Long, Map<String, Map<String, Object>>> row = new HashMap<>(16);
+
+                            for (TableStruct tab : currTableData) {
+                                Map<String, Object> fieldProperty = Maps.newHashMap();
+                                if (row.containsKey(tab.getRowId())) {
+                                    result = row.get(tab.getRowId());
+                                } else {
+                                    result = new HashMap<>(16);
+                                    row.put(tab.getRowId(), result);
+                                    rr.add(result);
+                                }
+
+                                fieldProperty.put("rowId", tab.getRowId());
+                                fieldProperty.put("headId", tab.getHeadId());
+                                fieldProperty.put("id", tab.getId());
+                                fieldProperty.put(tab.getField(), tab.getContent());
+                                fieldProperty.put("tips", tab.getTips());
+                                result.put(tab.getField(), fieldProperty);
+
+                            }
+                        });
+                        envTable.setTableData(rr);
+                    }
+                    envTables.add(envTable);
+                }
+                map.setTables(envTables);
+            });
+        }
+
         return ResultGenerator.genSuccessResult(mapFrame);
     }
 

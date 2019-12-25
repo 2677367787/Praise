@@ -16,7 +16,8 @@
         eth.`field`,
         eth.`cell_name` cellName,
         eth.`cell_type` cellType,
-        eth.`id` headId
+        eth.`id` headId,
+        eth.`weight`
         FROM
         `env_table` et
         LEFT JOIN `env_table_head` eth
@@ -37,6 +38,7 @@
             <result property="cellName" column="cell_name"/>
             <result property="cellType" column="cell_type"/>
             <result property="field" column="field"/>
+            <result property="weight" column="weight"/>
         </collection>
 
     </resultMap>
@@ -47,7 +49,8 @@
             eth.`field`,
             eth.`cell_name` ,
             eth.`cell_type` ,
-            eth.`id`
+            eth.`id`,
+            eth.`weight`
         FROM
             `env_table` et
             LEFT JOIN `env_table_head` eth

@@ -1,20 +1,28 @@
 <template>
   <div class="map-panel">
-    <el-tabs :tab-position="'left'">
+    <el-tabs tab-position="left"
+             v-model="activeSystem"
+             @tab-click="setActiveSystem">
       <el-tab-pane v-for="tag in frameData"
                    :key="tag.id"
+                   :name="tag.label"
                    :label="tag.label">
-        <span slot="label">
-          <a href="javascript:void;">{{ tag.label }}</a>
-        </span>
-        <el-tabs type="border-card">
+        <el-tabs type="border-card"
+                 v-model="activePanel"
+                 @tab-click="setActivePanel">
+          <el-button type="text"
+                     @click="isEdit=!isEdit"
+                     size="mini">编辑模式</el-button>
           <el-tab-pane v-for="panel in tag.children"
                        :key="panel.id"
+                       :name="panel.label"
                        :label="panel.label">
             <div class="tab-panel"
                  v-for="table in panel.tables">
-              <div class="btn-panel">
+              <div class="btn-panel"
+                   v-if="isEdit">
                 <el-button type="primary"
+                           plain
                            @click="handleEdit('add',{},table.tableStruct,panel.id)"
                            size="mini">新 增</el-button>
               </div>
@@ -25,17 +33,17 @@
                 <el-table-column :label="head.cellName"
                                  v-for="head in table.tableStruct"
                                  :key="head.headId"
-                                 :property="head.field"
-                                 :render-header="labelHead">
+                                 :min-width="head.weight"
+                                 :property="head.field">
                   <template slot-scope="scope">
                     <span v-if="head.cellType === '0'">
                       {{ cellValue(scope.row,scope.column.property) }}
                     </span>
                     <span v-else-if="head.cellType === '1'">
-                      <el-button type="text"
-                                 size="small">
-                        {{ cellValue(scope.row,scope.column.property) }}
-                      </el-button>
+                      <a target="_blank"
+                         :href="scope.row[scope.column.property]['tips'] || ''">
+                        <el-button type="text">{{ cellValue(scope.row,scope.column.property) }}</el-button>
+                      </a>
                     </span>
                     <el-tooltip placement="bottom"
                                 v-else>
@@ -46,7 +54,8 @@
                 </el-table-column>
                 <el-table-column fixed="right"
                                  label="操作"
-                                 width="100">
+                                 width="100"
+                                 v-if="isEdit">
                   <template slot-scope="scope">
                     <el-button @click="handleEdit('edit',scope.row,table.tableStruct)"
                                type="text"
@@ -91,6 +100,7 @@
 <script>
 import { ApiUrl } from '@/api/apiUrl';
 import tag from './tag';
+import Cookies from 'js-cookie'
 export default {
   components: {
     tag
@@ -100,11 +110,13 @@ export default {
       frameData: [],
       tableStruct: [],
       rowData: [],
-      isEdit: true,
+      isEdit: false,
       panelName: '',
       panelTips: '',
       dialogVisible: false,
-      form: {}
+      form: {},
+      activeSystem: '',
+      activePanel: ''
     };
   },
   methods: {
@@ -162,11 +174,26 @@ export default {
         this.dialogVisible = false
       });
     },
+    setActiveSystem(tab, event) {
+      if (tab.name) {
+        Cookies.set('activeSystem', tab.name, { expires: 365 });
+      }
+    },
+    setActivePanel(tab, event) {
+      if (tab.name) {
+        Cookies.set('activePanel', tab.name, { expires: 365 });
+      }
+    },
     loadData() {
       this.$ajax.get(ApiUrl.envMapUrl).then(result => {
         this.frameData = result.data;
-        console.log(result.data);
+        this.activeSystem = Cookies.get('activeSystem') || '';
+        this.activePanel = Cookies.get('activePanel') || '';
       });
+    },
+    openNewTab(row, field) {
+      console.log(row)
+      window.location.href = row[field] && row[field]['tips'] || '';
     },
     cellValue(row, field) {
       return row[field] && row[field][field] || '';

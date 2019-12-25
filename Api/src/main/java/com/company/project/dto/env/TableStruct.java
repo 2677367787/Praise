@@ -25,6 +25,7 @@ public class TableStruct {
     private Long rowId;
     private String content;
     private String tips;
+    private Integer weight;
 
     private List<TableStruct> tableStructList;
 }

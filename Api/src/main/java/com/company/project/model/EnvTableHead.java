@@ -35,6 +35,11 @@ public class EnvTableHead {
     private String cellType;
 
     /**
+     * 列宽度
+     */
+    private String weight;
+
+    /**
      * 获取主键(自增长)
      *
      * @return id - 主键(自增长)
@@ -122,5 +127,14 @@ public class EnvTableHead {
      */
     public void setCellType(String cellType) {
         this.cellType = cellType;
+    }
+
+    public String getWeight() {
+        return weight;
+    }
+
+    public EnvTableHead setWeight(String weight) {
+        this.weight = weight;
+        return this;
     }
 }

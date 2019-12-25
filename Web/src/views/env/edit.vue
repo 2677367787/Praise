@@ -53,6 +53,9 @@
             <el-table-column prop="cellType"
                              label="字段类型">
             </el-table-column>
+            <el-table-column prop="weight"
+                             label="宽度">
+            </el-table-column>
             <el-table-column fixed="right"
                              label="操作"
                              width="100">
@@ -124,6 +127,11 @@
             <el-radio label="1">超链接</el-radio>
             <el-radio label="2">气泡</el-radio>
           </el-radio-group>
+        </el-form-item>
+        <el-form-item label="列宽度">
+          <el-input v-model="row.weight"
+                    placeholder="请输入字段描述"
+                    @keyup.enter.native="rowSave"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer"
@@ -254,7 +262,7 @@ export default {
       this.form.type = 'table'
     },
     showRowPanel(operate, row, tableId) {
-      console.log(tableId)
+      console.log(row)
       this.cellDialogVisible = true;
       this.row = {};
       if (operate === 'add') {
@@ -357,7 +365,7 @@ export default {
   flex-wrap: wrap;
 }
 .block {
-  width: 450px;
+  width: 500px;
   margin-right: 100px;
 }
 .custom-tree-node {
